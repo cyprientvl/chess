@@ -19,7 +19,6 @@ export class UserController extends Controller {
     return user;
   }
 
-  @Security("jwt", ['user:write'])
   @Post("/")
   public async createUser(@Body() requestBody: CreateUserBody): Promise<UserDTO> {
     return await userService.createUser(requestBody);
