@@ -5,6 +5,8 @@ import { TsoaRoute, fetchMiddlewares, ExpressTemplateService } from '@tsoa/runti
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { UserController } from './../controllers/user.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { LeaderboardController } from './../controllers/leaderboard.controller';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AuthController } from './../controllers/auth.controller';
 import { expressAuthentication } from './../middlewares/authMiddleware';
 // @ts-ignore - no great way to install types from subpackage
@@ -42,6 +44,24 @@ const models: TsoaRoute.Models = {
             "id": {"dataType":"double","required":true},
             "password": {"dataType":"string"},
             "username": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "LeaderboardEntryDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "username": {"dataType":"string","required":true},
+            "score": {"dataType":"double","required":true},
+            "rank": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "LeaderboardDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "list": {"dataType":"array","array":{"dataType":"refObject","ref":"LeaderboardEntryDTO"},"required":true},
         },
         "additionalProperties": false,
     },
@@ -186,6 +206,35 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'updateUser',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/leaderboard',
+            ...(fetchMiddlewares<RequestHandler>(LeaderboardController)),
+            ...(fetchMiddlewares<RequestHandler>(LeaderboardController.prototype.getLeaderboard)),
+
+            async function LeaderboardController_getLeaderboard(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new LeaderboardController();
+
+              await templateService.apiHandler({
+                methodName: 'getLeaderboard',
                 controller,
                 response,
                 next,
