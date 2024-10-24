@@ -46,6 +46,4 @@ User.init(
 
 
 User.hasMany(Game, { foreignKey: "owner_id", as: "game_owner" });
-User.hasMany(Game, { foreignKey: "winner_id", as: "game_winner" });
-Game.belongsTo(User, { foreignKey: "winner_id", as: "winner" });
 Game.belongsTo(User, { foreignKey: "owner_id", as: "owner" });
