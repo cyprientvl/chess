@@ -10,9 +10,9 @@ export interface GameAttributes {
   public: boolean;
   winner?: User;
   owner_id: number;
-  winner_id: number;
-  creation_date: string;
-  date_end: string;
+  winner_id?: number;
+  creation_date: number;
+  date_end?: number;
   owner_color: Color
 }
 
@@ -24,8 +24,8 @@ export class Game
   public owner_id!: number;
   public public!: boolean;
   public winner!: User;
-  public creation_date!: string;
-  public date_end!: string;
+  public creation_date!: number;
+  public date_end!: number;
   public owner_color!: Color
   public winner_id!: number;
 }
@@ -50,11 +50,11 @@ Game.init(
       allowNull: true,
     },
     creation_date: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     date_end: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     owner_color: {
@@ -67,8 +67,5 @@ Game.init(
     tableName: "Game",
   }
 );
-Game.belongsTo(User, { foreignKey: "winner_id", as: "winner" });
-Game.belongsTo(User, { foreignKey: "owner_id", as: "owner" });
-User.hasMany(Game, { foreignKey: "owner_id", as: "gameOwner" });
-User.hasMany(Game, { foreignKey: "winner_id", as: "gameWinner" });
+
 
