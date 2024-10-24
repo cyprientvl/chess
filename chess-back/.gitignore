@@ -1,3 +1,5 @@
 node_modules
 build
 .env
+chess-back/public/swagger.json
+chess-back/src/routes/index.ts
