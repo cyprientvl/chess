@@ -64,3 +64,5 @@ GameAction.init(
     }
 );
 
+Game.hasMany(GameAction, { foreignKey: "game_id", as: "gameActions" });
+GameAction.belongsTo(Game, { foreignKey: "author_id", as: "game" });

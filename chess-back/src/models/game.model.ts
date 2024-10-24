@@ -2,6 +2,7 @@ import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/database"; // Connexion à la base de données
 import { User } from "./user.model";
 import { Color } from "../enums/color.enum";
+import { GameAction } from "./gameAction.model";
 
 export interface GameAttributes {
   id?: number;
@@ -46,7 +47,7 @@ Game.init(
     },
     winner_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     creation_date: {
       type: DataTypes.STRING,
@@ -66,4 +67,8 @@ Game.init(
     tableName: "Game",
   }
 );
+Game.belongsTo(User, { foreignKey: "winner_id", as: "winner" });
+Game.belongsTo(User, { foreignKey: "owner_id", as: "owner" });
+User.hasMany(Game, { foreignKey: "owner_id", as: "gameOwner" });
+User.hasMany(Game, { foreignKey: "winner_id", as: "gameWinner" });
 
