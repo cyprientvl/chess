@@ -8,9 +8,8 @@ export interface GameAttributes {
   id?: number;
   owner?: User;
   public: boolean;
-  winner?: User;
   owner_id: number;
-  winner_id?: number;
+  owner_win?: boolean;
   creation_date: number;
   date_end?: number;
   owner_color: Color
@@ -23,11 +22,10 @@ export class Game
   public owner!: User;
   public owner_id!: number;
   public public!: boolean;
-  public winner!: User;
   public creation_date!: number;
   public date_end!: number;
   public owner_color!: Color
-  public winner_id!: number;
+  public owner_win!: boolean;
 }
 
 Game.init(
@@ -45,9 +43,9 @@ Game.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
-    winner_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
+    owner_win: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
     },
     creation_date: {
       type: DataTypes.INTEGER,

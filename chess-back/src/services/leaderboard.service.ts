@@ -8,20 +8,13 @@ export class LeaderboardService {
         const users = await User.findAll();
 
         const whereClause: WhereOptions<GameAttributes> = {
-            winner_id: {
-                [Op.not]: null
-            } as unknown as number // Cast pour satisfaire le type
+            owner_win: true,
         };
 
 
         // Obtenir tous les jeux avec leurs gagnants
         const games = await Game.findAll({
-            where: whereClause,
-            include: [{
-                model: User,
-                as: 'winner',
-                required: false
-            }]
+            where: whereClause
         });
 
         // Calculer le nombre de victoires par utilisateur
@@ -34,9 +27,11 @@ export class LeaderboardService {
 
         // Compter les victoires
         games.forEach(game => {
-            if (game.winner) {
-                const currentVictories = userVictories.get(game.winner.username) || 0;
-                userVictories.set(game.winner.username, currentVictories + 1);
+            if (game.owner_win) {
+                const winner = game.owner;
+                if (winner) {
+                    userVictories.set(winner.username, userVictories.get(winner.username)! + 1);
+                }
             }
         });
 
