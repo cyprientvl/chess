@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Patch, Path, Post, Route, Security, Tags
 import { CreateGameBody } from "../interfaces/createGameBody";
 import { GameDTO } from "../dto/game.dto";
 import { gameService } from "../services/game.service";
+import { InsertActionBody } from "../interfaces/insertActionBody.interface";
 
 @Route("game")
 @Tags("Games")
@@ -10,6 +11,11 @@ export class GameController extends Controller {
     @Post("/")
     public async createGame(@Body() requestBody: CreateGameBody): Promise<GameDTO> {
       return await gameService.createGame(requestBody);
+    }
+
+    @Post("{id}/action")
+    public async movePiece(@Body() requestBody: InsertActionBody, @Path() id: number){
+        return await gameService.addAction(requestBody, id);
     }
 
   /*@Get("{id}")

@@ -55,7 +55,7 @@ Game.init(
     },
     date_end: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     owner_color: {
       type: DataTypes.STRING,
