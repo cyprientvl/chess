@@ -66,6 +66,71 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"Color": {
+				"enum": [
+					"black",
+					"white"
+				],
+				"type": "string"
+			},
+			"GameDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"owner": {
+						"$ref": "#/components/schemas/UserDTO"
+					},
+					"public": {
+						"type": "boolean"
+					},
+					"winner": {
+						"$ref": "#/components/schemas/UserDTO"
+					},
+					"creation_date": {
+						"type": "number",
+						"format": "double"
+					},
+					"date_end": {
+						"type": "number",
+						"format": "double"
+					},
+					"owner_color": {
+						"$ref": "#/components/schemas/Color"
+					}
+				},
+				"required": [
+					"id",
+					"owner",
+					"public",
+					"creation_date",
+					"owner_color"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateGameBody": {
+				"properties": {
+					"owner_id": {
+						"type": "number",
+						"format": "double"
+					},
+					"isPublic": {
+						"type": "boolean"
+					},
+					"ownerColor": {
+						"$ref": "#/components/schemas/Color"
+					}
+				},
+				"required": [
+					"owner_id",
+					"isPublic",
+					"ownerColor"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"AuthBody": {
 				"properties": {
 					"username": {
@@ -194,13 +259,7 @@
 				"tags": [
 					"Users"
 				],
-				"security": [
-					{
-						"jwt": [
-							"user:write"
-						]
-					}
-				],
+				"security": [],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -249,6 +308,38 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/UpdateUser"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/game": {
+			"post": {
+				"operationId": "CreateGame",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GameDTO"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Games"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateGameBody"
 							}
 						}
 					}
