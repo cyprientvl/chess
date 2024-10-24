@@ -6,13 +6,13 @@ import { Color } from "../enums/color.enum";
 export interface GameAttributes {
   id?: number;
   owner?: User;
-  isPublic: boolean;
+  public: boolean;
   winner?: User;
   owner_id: number;
   winner_id: number;
-  creationDate: string;
-  dateEnd: string;
-  ownerColor: Color
+  creation_date: string;
+  date_end: string;
+  owner_color: Color
 }
 
 export class Game
@@ -21,13 +21,12 @@ export class Game
   public id!: number;
   public owner!: User;
   public owner_id!: number;
-  public isPublic!: boolean;
+  public public!: boolean;
   public winner!: User;
-  public creationDate!: string;
-  public dateEnd!: string;
-  public ownerColor!: Color
+  public creation_date!: string;
+  public date_end!: string;
+  public owner_color!: Color
   public winner_id!: number;
-
 }
 
 Game.init(
@@ -41,7 +40,7 @@ Game.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    isPublic: {
+    public: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
@@ -49,22 +48,22 @@ Game.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    creationDate: {
-        type: DataTypes.STRING,
-        allowNull: false,
+    creation_date: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    dateEnd: {
-        type: DataTypes.STRING,
-        allowNull: false,
+    date_end: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    ownerColor: {
-        type: DataTypes.STRING,
-        allowNull: false,
+    owner_color: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
   },
   {
     sequelize,
-    tableName: "User",
+    tableName: "Game",
   }
 );
 
