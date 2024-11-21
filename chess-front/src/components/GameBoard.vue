@@ -1,25 +1,39 @@
 <template>
   <Suspense>
-    <div id="damier" class="p-4">
-      <div class="chess-board">
-        <div v-for="row in 8" :key="'row-' + row" class="flex">
-          <div v-for="col in 8" :key="'cell-' + row + '-' + col" :class="[
-            'chess-cell cursor-pointer',
-            ((row + col) % 2 === 0) ? 'bg-white' : 'noir'
-          ]" @click="handleCellClick(row, col)">
-            <div v-if="board[row - 1][col - 1]?.piece" class="piece"
-              :class="{ 'piece-black': board[row - 1][col - 1]?.piece?.color === 'BLACK' }"
-              v-html="getPieceSVG(getPieceType(board[row - 1][col - 1]?.piece!))">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <template #fallback>
       <div class="flex justify-content-center align-items-center min-h-screen">
         <ProgressSpinner />
       </div>
     </template>
+
+    <div id="main">
+      <div id="pieceKilled">
+        <h2>Pièces tuées</h2>
+        <div class="flex">
+          <div v-for="piece in pieceKilled" :key="piece.i + '-' + piece.j" class="piece"
+            :class="{ 'piece-black': piece.color === 'BLACK' }" v-html="getPieceSVG(getPieceType(piece))">
+          </div>
+        </div>
+      </div>
+      <div id="damier" class="p-4">
+        <h1>C'est au {{ colorPlayer }} de jouer !</h1>
+
+        <div class="chess-board">
+          <div v-for="row in 8" :key="'row-' + row" class="flex">
+            <div v-for="col in 8" :key="'cell-' + row + '-' + col" :class="[
+              'chess-cell cursor-pointer',
+              ((row + col) % 2 === 0) ? 'bg-white' : 'noir'
+            ]" @click="handleCellClick(row, col)">
+              <div v-if="board[row - 1][col - 1]?.piece" class="piece"
+                :class="{ 'piece-black': board[row - 1][col - 1]?.piece?.color === 'BLACK' }"
+                v-html="getPieceSVG(getPieceType(board[row - 1][col - 1]?.piece!))">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </Suspense>
 </template>
 
@@ -52,6 +66,8 @@ const initialBoard: Case[][] = Array(8).fill(null).map(() =>
 );
 
 const board = ref<Case[][]>(initialBoard);
+const colorPlayer = ref<'BLACK' | 'WHITE'>();
+const pieceKilled = ref<Piece[]>([]);
 
 const selectedPiece = ref<{ row: number, col: number } | null>(null);
 
@@ -63,6 +79,8 @@ onMounted(async () => {
   try {
     const response = await getCurrentGame();
     board.value = response.listCase;
+    colorPlayer.value = response.turn;
+    pieceKilled.value = response.pieceKilled;
   } catch (error) {
     console.error(error);
     toast.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue' });
@@ -90,6 +108,8 @@ const handleCellClick = async (row: number, col: number) => {
 
       if (response.success) {
         board.value = response.listCase;
+        colorPlayer.value = response.turn;
+        pieceKilled.value = response.pieceKilled;
       } else {
         toast.add({ severity: 'error', summary: 'Mouvement invalide', detail: 'Veuillez réessayer' });
       }
@@ -146,5 +166,18 @@ const getPieceSVG = (pieceType: PieceType | null) => {
 
 .noir {
   background-color: var(--p-green-900);
+}
+
+#main {
+  display: flex;
+  justify-content: space-around;
+  gap: 50px;
+  vertical-align: top;
+}
+
+@media screen and (max-width: 768px) {
+  #main {
+    flex-direction: column;
+  }
 }
 </style>
