@@ -1,7 +1,8 @@
 import config from '@/config.json';
 export const ApiUrl = config.VUE_APP_API_BASE_URL;
 
-export const ApiUrlConnection = `/auth`;
+export const ApiUrlConnection = `/auth/login`;
+export const ApiUrlRegister = `/auth/register`;
 
 // game
 export const ApiUrlGame = '/game';
