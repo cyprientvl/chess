@@ -1,6 +1,11 @@
 import { Action } from "../enums/action.enum";
 import { Color } from "../enums/color.enum";
+import { PieceType } from "../enums/piece.enum";
+import { MovePiece } from "../interfaces/movePiece.interface";
+import { ReturnAction } from "../interfaces/returnAction.interface";
+import { GameAction } from "../models/gameAction.model";
 import { Case } from "./case";
+import { deleteGameStorage, getGameStorage } from "./chessStorage";
 import { Game } from "./game";
 import { King } from "./Piece/king";
 import { Pawn } from "./Piece/pawn";
@@ -122,4 +127,36 @@ function checkTowerUpgrade(game: Game, i: number, j: number): string {
     }
     
     return Action['NOPROMOTION'];
+}
+
+export async function upgradePiece(userId: number, piece: PieceType){
+        
+    const game = getGameStorage(userId);
+
+    if(!game) return {success: false}
+    
+    if(game.isPieceToPromote() && piece != PieceType.PAWN){
+
+        let pieceToPromote = game.getPieceToPromote();
+        const index = game.getPieceKilled().findIndex(p => p.color == pieceToPromote.color && piece == p.pieceType);
+        
+        if(index == -1) return {success: false}
+        game.getPieceKilled().slice(index);
+
+        let p = game.getListCase()[pieceToPromote.i][pieceToPromote.j].piece;
+        if(!p) return {success: false}
+        p.pieceType = piece;
+
+        const gameAction = await GameAction.findOne({where: {game_id: game.getIdInDB()}, order: [['id', 'DESC']], limit: 1})
+        if(gameAction){
+            gameAction.piece = piece + ":" + pieceToPromote.color;
+            await gameAction.save();
+        }
+        
+        game.setPieceToPromote(-1, -1, Color.WHITE)
+        return {success: true}
+    }
+
+    return {success: false}
+
 }

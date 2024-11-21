@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, Route, Security, Tags } from "tsoa";
+import { Body, Controller, Delete, Get, Post, Request, Route, Security, Tags } from "tsoa";
 import { CreateGameBody } from "../interfaces/createGameBody.interface";
 import { gameService } from "../services/game.service";
 import { Request as ExpressRequest } from 'express';
@@ -57,6 +57,11 @@ export class GameController extends Controller {
 
     @Post("/piece/upgrade")
     public async upgradePiece(@Request() req: ExpressRequest, @Body() body: {piece: PieceType}){
-      return gameService.upgradePiece(req.user.id, body.piece);
+      return await gameService.upgradePiece(req.user.id, body.piece);
+    }
+
+    @Delete("/")
+    public delete(@Request() req: ExpressRequest){
+      return gameService.delete(req.user.id);
     }
 }

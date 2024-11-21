@@ -1,6 +1,5 @@
-import { checkKingStatus, movePiece } from "../algorithm/algorithm";
+import { checkKingStatus, movePiece, upgradePiece } from "../algorithm/algorithm";
 import { createGameStorage, deleteGameStorage, getGameStorage } from "../algorithm/chessStorage";
-import { Color } from "../enums/color.enum";
 import { PieceType } from "../enums/piece.enum";
 import { CreateGameBody } from "../interfaces/createGameBody.interface";
 import { MovePiece } from "../interfaces/movePiece.interface";
@@ -101,30 +100,13 @@ export class GameService {
         return userId; 
     }
 
-    upgradePiece(userId: number, piece: PieceType){
-        
-        const game = getGameStorage(userId);
+    async upgradePiece(userId: number, piece: PieceType){
+        return await upgradePiece(userId, piece);
+    }
 
-        if(!game) return {success: false}
-        
-        if(game.isPieceToPromote() && piece != PieceType.PAWN){
-
-            let pieceToPromote = game.getPieceToPromote();
-            const index = game.getPieceKilled().findIndex(p => p.color == pieceToPromote.color && piece == p.pieceType);
-            
-            if(index == -1) return {success: false}
-            game.getPieceKilled().slice(index);
-
-            let p = game.getListCase()[pieceToPromote.i][pieceToPromote.j].piece;
-            if(!p) return {success: false}
-            p.pieceType = piece;
-
-            game.setPieceToPromote(-1, -1, Color.WHITE)
-            return {success: true}
-        }
-
-        return {success: false}
-
+    async delete(userId: number){
+        deleteGameStorage(userId);
+        return {success: true};
     }
 }
 
