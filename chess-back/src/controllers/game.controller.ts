@@ -12,7 +12,7 @@ export class GameController extends Controller {
     @Post("/piece/move")
     @Security("jwt", [])
     public async movePiece(@Request() req: ExpressRequest, @Body() requestBody: MovePiece){
-      
+      console.log("route move")
       const response = await gameService.movePiece(req.user.id, requestBody);
 
       if(!response){

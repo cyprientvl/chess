@@ -73,8 +73,8 @@ function isOccupiedByOwnPiece(listCase: Case[][], king: King, i: number, j: numb
 }
 
 function nextTurn(game: Game){
-    if(game.getUserTurn() == 'WHITE') game.setUserTurn(Color['BLACK']);
-    if(game.getUserTurn() == 'BLACK') game.setUserTurn(Color['WHITE']);
+    if(game.getUserTurn() == 'WHITE') return game.setUserTurn(Color['BLACK']);
+    if(game.getUserTurn() == 'BLACK') return game.setUserTurn(Color['WHITE']);
 }
 
 export function movePiece(game: Game, i: number, j: number, toI: number, toJ: number): { success: boolean, result: string }{
@@ -88,6 +88,7 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
 
     if(!piece || piece.color != game.getUserTurn()) return {success: false, result: ''}
     
+    console.log("=================")
     if(!piece.move(toI, toJ, listCase)) return {success: false, result: ''}
 
     let p = listCase[toI][toJ].piece;
@@ -104,6 +105,7 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
         resultAction = Action['MOVE']
     }
 
+    console.log("passe ici")
     listCase[i][j].piece = undefined;
     listCase[toI][toJ].piece = piece;
     checkTowerUpgrade(game, toI, toJ);

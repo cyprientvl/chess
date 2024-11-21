@@ -58,9 +58,13 @@ export class GameService {
     async movePiece(userId: number, movePieceBody: MovePiece){
         let game = getGameStorage(userId);
         if(game){
-            let returnAction: ReturnAction = { success: true, result: [], listCase: game.getListCase(), turn: game.getUserTurn(), pieceKilled: game.getPieceKilled() }
 
             const result = movePiece(game, movePieceBody.i, movePieceBody.j, movePieceBody.toI, movePieceBody.toJ);
+
+            let returnAction: ReturnAction = { success: true, result: [], 
+                listCase: game.getListCase(), 
+                turn: game.getUserTurn(), 
+                pieceKilled: game.getPieceKilled() }
 
             if(!result.success){
                 returnAction.success = false;
@@ -72,6 +76,7 @@ export class GameService {
             game.getListCase().forEach(element=>{
                 element.forEach(c =>{
                     if(c.piece && c.piece.pieceType == 'KING'){
+                        console.log("king check");
                         const r = checkKingStatus(game.getListCase(), c.piece);
                         returnAction.result.push(r.status+":"+r.king.color);
                         if(r.status == 'KINGLOSE'){

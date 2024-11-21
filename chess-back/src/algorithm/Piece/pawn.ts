@@ -16,6 +16,7 @@ export class Pawn extends Piece{
             return true;
         }
 
+
         if (Math.abs(toJ - this.j) === 1 && toI === this.i + direction) {
             return true;
         }
@@ -35,17 +36,14 @@ export class Pawn extends Piece{
     }
 
     move(toI: number, toJ: number, listCase: Case[][]): boolean {
-        if (
-            this.movePawn(toI, toJ) &&
-            listCase[toI][toJ] === null 
-        ) {
+        if (this.movePawn(toI, toJ) && listCase[toI][toJ].piece == undefined ) {
             return true;
         }
-    
+
         if (this.canCapture(toI, toJ, listCase[toI][toJ].piece)) {
             return true;
         }
-    
+
         return false;
     }
 }
