@@ -1,56 +1,85 @@
 <template>
-  <div id="damier" class="p-4">
-    <div class="chess-board">
-      <div v-for="row in 8" :key="'row-' + row" class="flex">
-        <div v-for="col in 8" :key="'cell-' + row + '-' + col" :class="[
-          'chess-cell cursor-pointer',
-          ((row + col) % 2 === 0) ? 'bg-white' : 'noir'
-        ]" @click="handleCellClick(row, col)">
-          <div v-if="board[row - 1][col - 1]" class="piece"
-            :class="{ 'piece-black': board[row - 1][col - 1].includes('BLACK') }"
-            v-html="getPieceSVG(board[row - 1][col - 1])">
+  <Suspense>
+    <div id="damier" class="p-4">
+      <div class="chess-board">
+        <div v-for="row in 8" :key="'row-' + row" class="flex">
+          <div v-for="col in 8" :key="'cell-' + row + '-' + col" :class="[
+            'chess-cell cursor-pointer',
+            ((row + col) % 2 === 0) ? 'bg-white' : 'noir'
+          ]" @click="handleCellClick(row, col)">
+            <div v-if="board[row - 1][col - 1]?.piece" class="piece"
+              :class="{ 'piece-black': board[row - 1][col - 1]?.piece?.color === 'BLACK' }"
+              v-html="getPieceSVG(getPieceType(board[row - 1][col - 1]?.piece!))">
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+    <template #fallback>
+      <div class="flex justify-content-center align-items-center min-h-screen">
+        <ProgressSpinner />
+      </div>
+    </template>
+  </Suspense>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { PieceType, PIECES_SVG } from '@/assets/Pieces';
-
+import ProgressSpinner from 'primevue/progressspinner';
 import { useToast } from 'primevue/usetoast';
-const toast = useToast();
-
 import { useGameService } from '@/composables/game/gameService';
 import router from '@/router';
 import { AxiosError } from 'axios';
-const { move } = useGameService();
 
-const initialBoard = [
-  [PieceType.BLACK_ROOK, PieceType.BLACK_KNIGHT, PieceType.BLACK_BISHOP, PieceType.BLACK_QUEEN, PieceType.BLACK_KING, PieceType.BLACK_BISHOP, PieceType.BLACK_KNIGHT, PieceType.BLACK_ROOK],
-  Array(8).fill(PieceType.BLACK_PAWN),
-  Array(8).fill(null),
-  Array(8).fill(null),
-  Array(8).fill(null),
-  Array(8).fill(null),
-  Array(8).fill(PieceType.WHITE_PAWN),
-  [PieceType.WHITE_ROOK, PieceType.WHITE_KNIGHT, PieceType.WHITE_BISHOP, PieceType.WHITE_QUEEN, PieceType.WHITE_KING, PieceType.WHITE_BISHOP, PieceType.WHITE_KNIGHT, PieceType.WHITE_ROOK],
-];
+interface Piece {
+  pieceType: string;
+  color: 'BLACK' | 'WHITE';
+  i: number;
+  j: number;
+}
 
-const board = ref(initialBoard);
+interface Case {
+  piece?: Piece;
+  color: 'BLACK' | 'WHITE';
+}
+
+const toast = useToast();
+const { move, getCurrentGame } = useGameService();
+
+const initialBoard: Case[][] = Array(8).fill(null).map(() =>
+  Array(8).fill(null).map(() => ({ color: 'WHITE', piece: undefined }))
+);
+
+const board = ref<Case[][]>(initialBoard);
+
 const selectedPiece = ref<{ row: number, col: number } | null>(null);
 
+const getPieceType = (piece: Piece): PieceType => {
+  return `${piece.color}_${piece.pieceType}` as PieceType;
+};
+
+onMounted(async () => {
+  try {
+    const response = await getCurrentGame();
+    board.value = response.listCase;
+  } catch (error) {
+    console.error(error);
+    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue' });
+    if (error instanceof AxiosError && error?.response?.status === 404) {
+      router.push('/');
+    }
+  }
+});
+
 const handleCellClick = async (row: number, col: number) => {
-  const piece = board.value[row - 1][col - 1];
+  const currentCase = board.value[row - 1][col - 1];
 
   if (selectedPiece.value === null) {
-    if (piece) {
+    if (currentCase.piece) {
       selectedPiece.value = { row: row - 1, col: col - 1 };
     }
   } else {
-    // Envoyer le mouvement à l'API pour validation
     try {
       const response = await move({
         i: selectedPiece.value.row,
@@ -60,25 +89,17 @@ const handleCellClick = async (row: number, col: number) => {
       });
 
       if (response.success) {
-        // Mettre à jour le plateau avec la nouvelle position
-        const { row: fromRow, col: fromCol } = selectedPiece.value;
-        board.value[row - 1][col - 1] = board.value[fromRow][fromCol];
-        board.value[fromRow][fromCol] = null;
+        board.value = response.listCase;
       } else {
-        console.log('Mouvement invalide');
         toast.add({ severity: 'error', summary: 'Mouvement invalide', detail: 'Veuillez réessayer' });
       }
     } catch (error) {
       console.error(error);
       toast.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue' });
-
-      if (error instanceof AxiosError) {
-        if (error?.response?.status == 404) {
-          router.push('/');
-        }
+      if (error instanceof AxiosError && error?.response?.status === 404) {
+        router.push('/');
       }
     }
-
     selectedPiece.value = null;
   }
 };
