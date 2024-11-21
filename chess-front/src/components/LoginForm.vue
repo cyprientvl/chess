@@ -48,6 +48,8 @@ import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
+import { useUserService } from '@/composables/user/userService';
+const { authenticate } = useUserService();
 
 const router = useRouter();
 const toast = useToast();
@@ -69,33 +71,11 @@ const login = async () => {
 
   try {
     loading.value = true;
-    const response = await fetch('http://localhost:3000/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: username.value,
-        password: password.value,
-        grant_type: 'password',
-      }),
-    });
+    await authenticate({ username: username.value, password: password.value });
 
-    if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('username', username.value); // Stocker le nom d'utilisateur
-      toast.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Login successful',
-        life: 3000
-      });
-      emit('loginSuccess', username.value);
-      router.push('/');
-    } else {
-      throw new Error('Invalid credentials');
-    }
+    emit('loginSuccess', username.value);
+    router.push('/');
+
   } catch (error) {
     toast.add({
       severity: 'error',
