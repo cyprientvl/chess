@@ -66,7 +66,7 @@ onMounted(async () => {
   } catch (error) {
     console.error(error);
     toast.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue' });
-    if (error instanceof AxiosError && error?.response?.status === 404) {
+    if (error instanceof AxiosError) {
       router.push('/');
     }
   }
