@@ -11,13 +11,18 @@ import { King } from "./Piece/king";
 import { Pawn } from "./Piece/pawn";
 
 export function checkKingStatus(listCase: Case[][], king: King): { king: King, status: string } {
+    console.log("verify king")
     if (isKingThreatened(listCase, king)) {
+        console.log("isKingThreatened")
+
         if (canKingMove(listCase, king)) {
+            console.log("canKingMove")
             return { king: king, status: Action['KINGMOVE'] }; 
         } else {
             return { king: king, status: Action['KINGLOSE'] };
         }
     }
+    console.log("end")
     return { king: king, status: Action['KINGSAFE'] };
 }
 
