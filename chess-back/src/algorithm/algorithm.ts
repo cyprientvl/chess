@@ -108,6 +108,8 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
     console.log("passe ici")
     listCase[i][j].piece = undefined;
     listCase[toI][toJ].piece = piece;
+    piece.i = toI;
+    piece.j = toJ;
     checkTowerUpgrade(game, toI, toJ);
     nextTurn(game);
 

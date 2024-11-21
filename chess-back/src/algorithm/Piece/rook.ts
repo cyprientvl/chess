@@ -4,7 +4,8 @@ import { Case } from "../case";
 
 export class Rook extends Piece{
     move(toI: number, toJ: number, listCase: Case[][]): boolean {
-
+        console.log("move rook")
+        console.log(toI, toJ, this.i, this.j);
         if (this.i !== toI && this.j !== toJ) {
             return false;
         }
