@@ -4,8 +4,9 @@ import { Case } from "../case";
 
 export class Pawn extends Piece{
     move(toI: number, toJ: number, listCase: Case[][]): boolean {
-        if(this.color == 'WHITE' && toI-1 == this.i && toJ == this.j) return true;
-        if(this.color == 'BLACK' && toI+1 == this.i && toJ == this.j) return true;
+        console.log("move")
+        if(this.color == 'WHITE' && toI+1 == this.i && toJ == this.j) return true;
+        if(this.color == 'BLACK' && toI-1 == this.i && toJ == this.j) return true;
         return false;
     }
 

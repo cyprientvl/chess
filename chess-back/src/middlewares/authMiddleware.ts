@@ -17,16 +17,19 @@ export const expressAuthentication = async (req: Request, securityName: string, 
           return reject({ message: "Token missing" });
         }
 
-        const decoded = jwt.verify(token, process.env.SECRET_TOKEN);
-        if(scopes && scopes.length > 0){
+        const decoded = jwt.verify(token, "secret");
+        req.user = {id: decoded.id};
+
+        /*if(scopes && scopes.length > 0){
           if(scopes.filter(e => decoded.roles.includes(e)).length > 0){
             resolve(decoded);
           }else{
             return reject({ message: "Invalid permission" }); 
           }
-        }
+        }*/
         resolve(decoded);
     } catch (err) {
+      console.log(err);
         return reject({ message: "Invalid token" });
 
     }

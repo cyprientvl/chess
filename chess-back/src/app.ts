@@ -9,6 +9,16 @@ const PORT = process.env.PORT || 3000;
 
 const app: Application = express();
 
+declare global {
+  namespace Express {
+    interface Request {
+      user: {
+        id: number
+      }; 
+    }
+  }
+}
+
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(express.static("public"));

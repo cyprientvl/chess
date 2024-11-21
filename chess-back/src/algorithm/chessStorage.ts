@@ -2,25 +2,25 @@ import { Game } from "./game";
 
 let games = new Map<Number, Game>();
 
-export function createGame(id: number): string{
+export function createGameStorage(id: number){
 
     if(games.has(id)){
-        return "ALREADEXIST";
+        return undefined;
     }
 
     let game: Game = new Game();
     game.initGame();
     games.set(id, game);
 
-    return "CREATED"
+    return game
 
 }
 
-export function getGame(id: number): Game | undefined{
+export function getGameStorage(id: number): Game | undefined{
     return games.get(id);
 }
 
-export function deleteGame(id: number){
+export function deleteGameStorage(id: number){
     if(games.has(id)){
         games.delete(id);
     }

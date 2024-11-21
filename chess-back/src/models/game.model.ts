@@ -12,7 +12,8 @@ export interface GameAttributes {
   owner_win?: boolean;
   creation_date: number;
   date_end?: number;
-  owner_color: Color
+  owner_color: Color;
+  gameAction?: GameAction[];
 }
 
 export class Game
@@ -26,6 +27,7 @@ export class Game
   public date_end!: number;
   public owner_color!: Color
   public owner_win!: boolean;
+  public gameAction?: GameAction[];
 }
 
 Game.init(
@@ -45,7 +47,7 @@ Game.init(
     },
     owner_win: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
     },
     creation_date: {
       type: DataTypes.INTEGER,
@@ -53,7 +55,7 @@ Game.init(
     },
     date_end: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     owner_color: {
       type: DataTypes.STRING,
@@ -65,5 +67,4 @@ Game.init(
     tableName: "Game",
   }
 );
-
 

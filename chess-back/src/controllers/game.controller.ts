@@ -1,16 +1,53 @@
-import { Body, Controller, Delete, Get, Patch, Path, Post, Route, Security, Tags } from "tsoa";
+import { Body, Controller, Delete, Get, Patch, Path, Post, Request, Route, Security, Tags } from "tsoa";
 import { CreateGameBody } from "../interfaces/createGameBody";
 import { GameDTO } from "../dto/game.dto";
 import { gameService } from "../services/game.service";
-
+import { Request as ExpressRequest } from 'express'; // Pour typage de la requête
+import { MovePiece } from "../interfaces/movePiece.interface";
 @Route("game")
 @Tags("Games")
 export class GameController extends Controller {
 
-    @Post("/")
-    public async createGame(@Body() requestBody: CreateGameBody): Promise<GameDTO> {
-      return await gameService.createGame(requestBody);
+    @Post("/move")
+    @Security("jwt", [])
+    public async move(@Request() req: ExpressRequest, @Body() requestBody: MovePiece){
+      const response = await gameService.move(req.user.id, requestBody);
+
+      if(!response){
+        this.setStatus(404);
+        return null;
+      }
+
+      return response;
     }
+
+    @Post("/")
+    @Security("jwt", [])
+    public async createGame(@Body() requestBody: CreateGameBody, @Request() req: ExpressRequest): Promise<{gameId: number}> {
+      console.log("=== " + req.user.id);
+
+      const rep = await gameService.createGame(requestBody, req.user.id);
+
+      if(!rep){
+        this.setStatus(500);
+        return {gameId: -1};
+      }
+
+      return {gameId: req.user.id}
+    }
+
+    @Get("/")
+    @Security("jwt", [])
+    public async getGame(@Request() req: ExpressRequest){
+      const game = gameService.getGame(req.user.id);
+      if(!game){
+        this.setStatus(404);
+        return null;
+      }
+      return game;
+    }
+
+    
 
   /*@Get("{id}")
   @Security("jwt", ['user:read'])

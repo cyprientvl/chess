@@ -15,7 +15,7 @@ export class AuthService {
         if(!user) return null;
         if(user.password == Buffer.from(password).toString('base64')){
             
-            let roles: string[] = []
+            /*let roles: string[] = []
             console.log(user.role);
             switch (user.role) {
                 case "admin":
@@ -29,8 +29,8 @@ export class AuthService {
                     break;
                 default:
                     break;
-            }
-            const token = await jwt.sign({ id: user.id, username: user.username, roles: roles }, process.env.SECRET_TOKEN);
+            }*/
+            const token = await jwt.sign({ id: user.id, username: user.username }, "secret");
             return token
         }
 

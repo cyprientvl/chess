@@ -6,7 +6,6 @@ export interface GameActionAttributes {
     id?: number;
     game_id: number;
     game?: Game;
-    action_id: number;
     from: string;
     to: string;
     piece: string;
@@ -16,10 +15,9 @@ export interface GameActionAttributes {
 export class GameAction
     extends Model<GameActionAttributes>
     implements GameActionAttributes {
-    public id!: number;
+    public id?: number;
     public game_id!: number;
     public game!: Game;
-    public action_id!: number;
     public from!: string;
     public to!: string;
     public piece!: string;
@@ -34,10 +32,6 @@ GameAction.init(
             primaryKey: true,
         },
         game_id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        action_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
@@ -64,5 +58,5 @@ GameAction.init(
     }
 );
 
-Game.hasMany(GameAction, { foreignKey: "game_id", as: "game_actions" });
-GameAction.belongsTo(Game, { foreignKey: "author_id", as: "game" });
+Game.hasMany(GameAction, { foreignKey: "game_id", as: "gameAction" });
+GameAction.belongsTo(Game, { foreignKey: "game_id", as: "gameAction" });

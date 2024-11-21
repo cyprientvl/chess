@@ -18,7 +18,17 @@ export class Game{
     listCase: Case[][] = [];
     pieceKilled: Piece[] = [];
     turn: Color = Color.WHITE;
+    
+    ownerColor: Color = Color.WHITE;
+    idInBd: number = 0;
 
+    public setOwnerColor(color: Color){
+        this.ownerColor = color;
+    }
+
+    public setIdInBd(id: number){
+        this.idInBd = id;
+    }
 
     initGame(){
         this.listCase = []
@@ -72,8 +82,13 @@ export class Game{
         return p;
     }
 
+    public get(){
+        return { listCase: this.listCase, turn: this.turn, pieceKilled: this.pieceKilled}
+    }
+
  
 }
+
 
 
 
