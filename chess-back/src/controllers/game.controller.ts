@@ -47,7 +47,11 @@ export class GameController extends Controller {
       return game;
     }
 
-    
+    @Get("/user-game")
+    @Security("jwt", [])
+    public async getUserGameId(@Request() req: ExpressRequest){
+      return {gameId: gameService.getUserGameId(req.user.id)};
+    }
 
   /*@Get("{id}")
   @Security("jwt", ['user:read'])

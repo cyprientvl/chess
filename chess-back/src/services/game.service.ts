@@ -51,18 +51,16 @@ export class GameService {
       
         if(!moveAction) return null;
 
-        const t = {i: moveAction.from.split(":")[0],
-                   j: moveAction.from.split(":")[1],
-                   toI: moveAction.to.split(":")[0],
-                   toJ: moveAction.to.split(":")[1]
-          }
-
-        return moveAction || null;
+        return {i: moveAction.from.split(":")[0],
+            j: moveAction.from.split(":")[1],
+            toI: moveAction.to.split(":")[0],
+            toJ: moveAction.to.split(":")[1]
+        }
       }
       
 
     async move(userId: number, movePieceBody: MovePiece){
-        let game = getGameStorage(1);
+        let game = getGameStorage(userId);
         console.log("game")
         if(game){
             let returnAction: ReturnAction = { success: true, result: [], listCase: game.listCase, turn: game.turn, pieceKilled: game.pieceKilled }
@@ -101,6 +99,13 @@ export class GameService {
         }
 
         return undefined;
+    }
+
+    getUserGameId(userId: number){
+        const game = getGameStorage(userId);
+        if(!game) return -1;
+
+        return userId; 
     }
 }
 
