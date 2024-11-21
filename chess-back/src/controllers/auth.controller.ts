@@ -1,13 +1,13 @@
 import { Body, Controller, Middlewares, Post, Route, Security, Tags } from "tsoa";
 import { UserDTO } from "../dto/user.dto";
-import { AuthBody } from "../interfaces/AuthBody";
+import { AuthBody } from "../interfaces/authBody.interface";
 import { authService } from "../services/auth.service";
 
 @Route("auth")
 @Tags("Auth")
 export class AuthController extends Controller {
 
-  @Post("/")
+  @Post("/login")
   public async auth(@Body() bodyAuth: AuthBody): Promise<{token: string} | null>{
     const token = await authService.auth(bodyAuth);
 

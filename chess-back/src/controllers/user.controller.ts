@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Patch, Path, Post, Route, Security, Tags } from "tsoa";
 import { UserDTO } from "../dto/user.dto";
 import { userService } from "../services/user.service";
-import { CreateUserBody } from "../interfaces/createUserBody";
-import { UpdateUser } from "../interfaces/updateUser";
+import { CreateUserBody } from "../interfaces/createUserBody.interface";
+import { UpdateUser } from "../interfaces/updateUser.interface";
 
 @Route("user")
 @Tags("Users")

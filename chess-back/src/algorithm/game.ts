@@ -15,20 +15,14 @@ let listPiece: PieceType[] = [
 
 export class Game{
 
-    listCase: Case[][] = [];
-    pieceKilled: Piece[] = [];
-    turn: Color = Color.WHITE;
+    private listCase: Case[][] = [];
+    private pieceKilled: Piece[] = [];
+    private userTurn: Color = Color.WHITE;
     
-    ownerColor: Color = Color.WHITE;
-    idInBd: number = 0;
+    private ownerColor: Color = Color.WHITE;
+    private idInDB: number = 0;
 
-    public setOwnerColor(color: Color){
-        this.ownerColor = color;
-    }
-
-    public setIdInBd(id: number){
-        this.idInBd = id;
-    }
+    private pieceToPromote = {i: -1, j: -1, color: Color.WHITE};
 
     initGame(){
         this.listCase = []
@@ -82,11 +76,55 @@ export class Game{
         return p;
     }
 
-    public get(){
-        return { listCase: this.listCase, turn: this.turn, pieceKilled: this.pieceKilled}
+    public getFormatedGame(){
+        return { listCase: this.listCase, turn: this.userTurn, pieceKilled: this.pieceKilled}
     }
 
- 
+    public isPieceToPromote(){
+        return this.pieceToPromote.i != -1 && this.pieceToPromote.j != -1 
+    }
+
+    public getPieceToPromote(){
+        return this.pieceToPromote
+    }
+
+    public setPieceToPromote(i: number, j: number, color: Color){
+        this.pieceToPromote.i = i;
+        this.pieceToPromote.j = j;
+        this.pieceToPromote.color = color; 
+    }
+
+    public setOwnerColor(color: Color){
+        this.ownerColor = color;
+    }
+
+    public setIdInBd(id: number){
+        this.idInDB = id;
+    }
+
+    public getListCase(){
+        return this.listCase;
+    }
+
+    public getPieceKilled(){
+        return this.pieceKilled;
+    }
+
+    public getUserTurn(){
+        return this.userTurn;
+    }
+
+    public setUserTurn(newUserTurn: Color){
+        this.userTurn = newUserTurn;
+    }
+
+    public getOwnerColor(){
+        return this.ownerColor;
+    }
+
+    public getIdInDB(){
+        return this.idInDB;
+    }
 }
 
 

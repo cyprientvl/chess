@@ -1,4 +1,4 @@
-import { AuthBody } from "../interfaces/AuthBody";
+import { AuthBody } from "../interfaces/authBody.interface";
 import { userService } from "./user.service";
 const jwt = require("jsonwebtoken");
 const env = require('dotenv').config()

@@ -1,17 +1,19 @@
+import { Action } from "../enums/action.enum";
 import { Color } from "../enums/color.enum";
 import { Case } from "./case";
 import { Game } from "./game";
 import { King } from "./Piece/king";
+import { Pawn } from "./Piece/pawn";
 
 export function checkKingStatus(listCase: Case[][], king: King): { king: King, status: string } {
     if (isKingThreatened(listCase, king)) {
         if (canKingMove(listCase, king)) {
-            return { king: king, status: "KINGMOVE" }; 
+            return { king: king, status: Action['KINGMOVE'] }; 
         } else {
-            return { king: king, status: "KINGLOSE" };
+            return { king: king, status: Action['KINGLOSE'] };
         }
     }
-    return { king: king, status: "KINGSAFE" };
+    return { king: king, status: Action['KINGSAFE'] };
 }
 
 function isKingThreatened(listCase: Case[][], king: King): boolean {
@@ -66,44 +68,58 @@ function isOccupiedByOwnPiece(listCase: Case[][], king: King, i: number, j: numb
 }
 
 function nextTurn(game: Game){
-    if(game.turn == 'WHITE') game.turn = Color['BLACK'];
-    if(game.turn == 'BLACK') game.turn = Color['WHITE'];
+    if(game.getUserTurn() == 'WHITE') game.setUserTurn(Color['BLACK']);
+    if(game.getUserTurn() == 'BLACK') game.setUserTurn(Color['WHITE']);
 }
 
 export function movePiece(game: Game, i: number, j: number, toI: number, toJ: number): { success: boolean, result: string }{
 
-    if(!isInBounds(i, j) || !isInBounds(toI, toJ)){
-        return {success: false, result: ''}
-    }
+    if(!isInBounds(i, j) || !isInBounds(toI, toJ)) return {success: false, result: ''};
 
-    if(i == toI && j == toJ){
-        return {success: false, result: ''}
-    }
-
-    let piece = game.listCase[i][j].piece
-    if(!piece || piece.color != game.turn) return {success: false, result: ''}
+    if(i == toI && j == toJ) return {success: false, result: ''};
     
-    if(piece.move(toI, toJ, game.listCase)){
+    let listCase = game.getListCase();
+    let piece = listCase[i][j].piece
 
-        let p = game.listCase[toI][toJ].piece;
+    if(!piece || piece.color != game.getUserTurn()) return {success: false, result: ''}
+    
+    if(!piece.move(toI, toJ, listCase)) return {success: false, result: ''}
 
-        if(p){
-            if(p.color == piece.color){
-                return {success: false, result: ''}
-            }
-            game.pieceKilled.push(p);
-            game.listCase[i][j].piece = undefined;
-            game.listCase[toI][toJ].piece = piece;
-            nextTurn(game);
-            return {success: true, result: 'KILLED'}
+    let p = listCase[toI][toJ].piece;
 
-        }else{
-            game.listCase[i][j].piece = undefined;
-            game.listCase[toI][toJ].piece = piece;
-            nextTurn(game);
-            return {success: true, result: 'MOVE'}
+    let resultAction = ""
+
+    if(p){
+        if(p.color == piece.color){
+            return {success: false, result: ''}
         }
+        game.getPieceKilled().push(p);
+        resultAction = Action['KILLED']
+    }else{
+        resultAction = Action['MOVE']
     }
 
-    return {success: false, result: ''}
+    listCase[i][j].piece = undefined;
+    listCase[toI][toJ].piece = piece;
+    checkTowerUpgrade(game, toI, toJ);
+    nextTurn(game);
+
+    return {success: true, result: resultAction}
+}
+
+function checkTowerUpgrade(game: Game, i: number, j: number): string {
+    const piece = game.getListCase()[i][j].piece;
+    
+    if (!piece || !(piece instanceof Pawn)) return Action['NOPROMOTION'];
+    
+    if (game.getUserTurn() == Color.WHITE && i == 0) {
+        game.setPieceToPromote(i, j, Color.WHITE);
+        return Action['WHITEPROMOTION']
+    }
+    if (game.getUserTurn() == Color.BLACK && i == 7) {
+        game.setPieceToPromote(i, j, Color.BLACK);
+        return Action['BLACKPROMOTION']
+    }
+    
+    return Action['NOPROMOTION'];
 }

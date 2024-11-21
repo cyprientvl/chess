@@ -1,6 +1,6 @@
 import { UserDTO } from "../dto/user.dto";
-import { CreateUserBody } from "../interfaces/createUserBody";
-import { UpdateUser } from "../interfaces/updateUser";
+import { CreateUserBody } from "../interfaces/createUserBody.interface";
+import { UpdateUser } from "../interfaces/updateUser.interface";
 import { User } from "../models/user.model";
 
 

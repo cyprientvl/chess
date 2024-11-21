@@ -1,11 +1,10 @@
 import { checkKingStatus, movePiece } from "../algorithm/algorithm";
-import { Case } from "../algorithm/case";
 import { createGameStorage, deleteGameStorage, getGameStorage } from "../algorithm/chessStorage";
-import { Piece } from "../algorithm/Piece/piece";
-import { GameDTO } from "../dto/game.dto";
 import { Color } from "../enums/color.enum";
-import { CreateGameBody } from "../interfaces/createGameBody";
+import { PieceType } from "../enums/piece.enum";
+import { CreateGameBody } from "../interfaces/createGameBody.interface";
 import { MovePiece } from "../interfaces/movePiece.interface";
+import { ReturnAction } from "../interfaces/returnAction.interface";
 import { Game } from "../models/game.model";
 import { GameAction } from "../models/gameAction.model";
 
@@ -14,16 +13,14 @@ export class GameService {
  
     async createGame(game: CreateGameBody, userId: number){
 
-        const g = createGameStorage(userId);
+        const gameStorage = createGameStorage(userId);
 
-        if(!g){
-            return undefined;
-        }
-
+        if(!gameStorage) return undefined;
+        
         const createdGame = await Game.create({owner_id: userId, creation_date: Date.now(), owner_color: game.ownerColor, public: game.isPublic})
         
-        g.setOwnerColor(game.ownerColor);
-        g.setIdInBd(createdGame.id);
+        gameStorage.setOwnerColor(game.ownerColor);
+        gameStorage.setIdInBd(createdGame.id);
         
         return createdGame;
     }
@@ -31,7 +28,7 @@ export class GameService {
     async getGame(userId: number){
         const game = getGameStorage(userId);
         if(!game) return undefined;
-        return game.get();
+        return game.getFormatedGame();
     } 
 
     async getMove(gameId: number, idMove: number) {
@@ -59,27 +56,24 @@ export class GameService {
       }
       
 
-    async move(userId: number, movePieceBody: MovePiece){
+    async movePiece(userId: number, movePieceBody: MovePiece){
         let game = getGameStorage(userId);
-        console.log("game")
         if(game){
-            let returnAction: ReturnAction = { success: true, result: [], listCase: game.listCase, turn: game.turn, pieceKilled: game.pieceKilled }
+            let returnAction: ReturnAction = { success: true, result: [], listCase: game.getListCase(), turn: game.getUserTurn(), pieceKilled: game.getPieceKilled() }
 
             const result = movePiece(game, movePieceBody.i, movePieceBody.j, movePieceBody.toI, movePieceBody.toJ);
 
             if(!result.success){
                 returnAction.success = false;
-                console.log("impossible de deplacer la piece")
                 return returnAction;
             }
-            console.log("success")
 
             returnAction.result.push(result.result)
 
-            game.listCase.forEach(element=>{
+            game.getListCase().forEach(element=>{
                 element.forEach(c =>{
                     if(c.piece && c.piece.pieceType == 'KING'){
-                        const r = checkKingStatus(game.listCase, c.piece);
+                        const r = checkKingStatus(game.getListCase(), c.piece);
                         returnAction.result.push(r.status+":"+r.king.color);
                         if(r.status == 'KINGLOSE'){
                             deleteGameStorage(userId);
@@ -87,9 +81,8 @@ export class GameService {
                     }
                 })
             })
-            console.log("insert")
 
-            await GameAction.create({game_id: userId, 
+            await GameAction.create({game_id: game.getIdInDB(), 
                 from: movePieceBody.i+":"+movePieceBody.j, 
                 piece: "", 
                 to: movePieceBody.toI+":"+movePieceBody.toJ, 
@@ -107,53 +100,34 @@ export class GameService {
 
         return userId; 
     }
+
+    upgradePiece(userId: number, piece: PieceType){
+        
+        const game = getGameStorage(userId);
+
+        if(!game) return {success: false}
+        
+        if(game.isPieceToPromote() && piece != PieceType.PAWN){
+
+            let pieceToPromote = game.getPieceToPromote();
+            const index = game.getPieceKilled().findIndex(p => p.color == pieceToPromote.color && piece == p.pieceType);
+            
+            if(index == -1) return {success: false}
+            game.getPieceKilled().slice(index);
+
+            let p = game.getListCase()[pieceToPromote.i][pieceToPromote.j].piece;
+            if(!p) return {success: false}
+            p.pieceType = piece;
+
+            game.setPieceToPromote(-1, -1, Color.WHITE)
+            return {success: true}
+        }
+
+        return {success: false}
+
+    }
 }
 
 export const gameService = new GameService();
 
-interface ReturnAction{
-    success: boolean,
-    result: string[],
-    listCase: Case[][]
-    turn: Color,
-    pieceKilled: Piece[]
-}
-/*
 
-createGame(1);
-
-let game = getGame(1);
-
-if(game){
-    let returnAction: ReturnAction = { success: true, result: [], listCase: game.listCase, turn: game.turn, pieceKilled: game.pieceKilled }
-
-    const result = movePiece(game, 6, 0, 5, 0);
-
-    if(!result.success){
-        returnAction.success = false;
-        console.log("impossible de deplacer la piece")
-        // return returnAction;
-    }
-    returnAction.result.push(result.result)
-
-    game.listCase.forEach(element=>{
-        element.forEach(c =>{
-            if(c.piece && c.piece.pieceType == 'KING'){
-                const r = checkKingStatus(game.listCase, c.piece);
-                returnAction.result.push(r.status+":"+r.king.color);
-                if(r.status == 'KINGLOSE'){
-                    deleteGame(1);
-                }
-            }
-        })
-    })
-
-    //return returnAction;
-
-   
-}
-
-// 404 game not found
-
-
-    */
