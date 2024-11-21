@@ -18,13 +18,15 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import axios from 'axios';
-import type { GameModel } from '@/model/Game.model';
 import { PieceType, PIECES_SVG } from '@/assets/Pieces';
 
 import { useToast } from 'primevue/usetoast';
 const toast = useToast();
 
+import { useGameService } from '@/composables/game/gameService';
+import router from '@/router';
+import { AxiosError } from 'axios';
+const { move } = useGameService();
 
 const initialBoard = [
   [PieceType.BLACK_ROOK, PieceType.BLACK_KNIGHT, PieceType.BLACK_BISHOP, PieceType.BLACK_QUEEN, PieceType.BLACK_KING, PieceType.BLACK_BISHOP, PieceType.BLACK_KNIGHT, PieceType.BLACK_ROOK],
@@ -50,14 +52,14 @@ const handleCellClick = async (row: number, col: number) => {
   } else {
     // Envoyer le mouvement à l'API pour validation
     try {
-      const response = await axios.post<GameModel>('http://localhost:3000/game/move', {
+      const response = await move({
         i: selectedPiece.value.row,
         j: selectedPiece.value.col,
         toI: row - 1,
         toJ: col - 1
       });
 
-      if (response.data.success) {
+      if (response.success) {
         // Mettre à jour le plateau avec la nouvelle position
         const { row: fromRow, col: fromCol } = selectedPiece.value;
         board.value[row - 1][col - 1] = board.value[fromRow][fromCol];
@@ -69,6 +71,12 @@ const handleCellClick = async (row: number, col: number) => {
     } catch (error) {
       console.error(error);
       toast.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue' });
+
+      if (error instanceof AxiosError) {
+        if (error?.response?.status == 404) {
+          router.push('/');
+        }
+      }
     }
 
     selectedPiece.value = null;

@@ -1,44 +1,36 @@
+// views/AccountView.vue
 <template>
   <div class="flex justify-content-center align-items-center min-h-screen bg-gray-100">
-    <div v-if="isAuthenticated" class="w-full md:w-6 lg:w-4">
-      <Card>
-        <template #title>
-          <div class="text-center mb-4">
-            <h1>Votre compte</h1>
-          </div>
-        </template>
-        <template #content>
-          <div class="text-center">
-            <p class="mb-4">Connecté en tant que : {{ username }}</p>
-            <Button label="Se déconnecter" severity="danger" @click="handleLogout" :loading="loading" />
-          </div>
-        </template>
-      </Card>
-    </div>
-    <LoginForm v-else />
+    <Card class="w-full md:w-6 lg:w-4">
+      <template #title>
+        <div class="text-center mb-4">
+          <h1>Votre compte</h1>
+        </div>
+      </template>
+      <template #content>
+        <div class="text-center">
+          <p class="mb-4">Connecté en tant que : {{ username }}</p>
+          <Button label="Se déconnecter" severity="danger" @click="handleLogout" :loading="loading" />
+        </div>
+      </template>
+    </Card>
+    <Toast />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
+import { useAuthStore } from '@/stores/authStore';
+import { storeToRefs } from 'pinia';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
-import LoginForm from '@/components/LoginForm.vue';
+import Toast from 'primevue/toast';
 
 const router = useRouter();
 const toast = useToast();
-const isAuthenticated = ref(false);
-const username = ref('');
-const loading = ref(false);
-
-const checkAuthStatus = () => {
-  const token = localStorage.getItem('token');
-  const storedUsername = localStorage.getItem('username');
-  isAuthenticated.value = !!token;
-  username.value = storedUsername || '';
-};
+const authStore = useAuthStore();
+const { username, loading } = storeToRefs(authStore);
 
 const handleLogout = async () => {
   try {
@@ -46,10 +38,7 @@ const handleLogout = async () => {
     // Vous pouvez ajouter un appel API de déconnexion ici si nécessaire
     // await fetch('http://localhost:3000/logout', ...);
 
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    isAuthenticated.value = false;
-    username.value = '';
+    authStore.logout();
 
     toast.add({
       severity: 'success',
@@ -70,22 +59,6 @@ const handleLogout = async () => {
     loading.value = false;
   }
 };
-
-// Vérifier l'état de l'authentification au chargement de la page
-onMounted(() => {
-  checkAuthStatus();
-});
-
-// Écouter les changements d'authentification depuis le composant LoginForm
-const handleLoginSuccess = (newUsername: string) => {
-  isAuthenticated.value = true;
-  username.value = newUsername;
-};
-
-// Exposer la méthode pour le composant LoginForm
-defineExpose({
-  handleLoginSuccess
-});
 </script>
 
 <style scoped>
