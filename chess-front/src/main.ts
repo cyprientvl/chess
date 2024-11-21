@@ -10,9 +10,11 @@ import { createMemoryHistory, createRouter } from 'vue-router'
 import GameView from './views/GameView.vue'
 import StatsView from './views/StatsView.vue'
 import AccountView from './views/AccountView.vue'
+import HomeView from './views/HomeView.vue'
 
 const routes = [
-  { path: '/', component: GameView },
+  { path: '/', component: HomeView },
+  { path: '/game/:id', component: GameView },
   { path: '/stats', component: StatsView },
   { path: '/account', component: AccountView }
 ]
