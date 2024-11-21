@@ -8,7 +8,7 @@ import { authService } from "../services/auth.service";
 export class AuthController extends Controller {
 
   @Post("/")
-  public async auth(@Body() bodyAuth: AuthBody): Promise<String | null>{
+  public async auth(@Body() bodyAuth: AuthBody): Promise<{token: string} | null>{
     const token = await authService.auth(bodyAuth);
 
     if(bodyAuth.grant_type != 'password'){
@@ -22,6 +22,6 @@ export class AuthController extends Controller {
         return null;
     }
 
-    return token;
+    return {token: token};
   }
 }
