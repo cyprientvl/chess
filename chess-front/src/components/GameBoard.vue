@@ -240,7 +240,6 @@ const handleGameResult = (game: GameModel, row: number, col: number) => {
   if (game.result && game.result.length > 0) {
     for (const resultStr of game.result) {
       const [result, color] = resultStr.split(':') as [ResultPossible, Color];
-      console.log('Color:', color, 'Result:', result);
       switch (result) {
         case ResultPossible.KINGLOSE:
           gameOverMessage.value = `Les ${color === Color.BLACK ? 'Blancs' : 'Noirs'} ont gagné !`;
