@@ -3,7 +3,7 @@ export interface GameModel {
   turn: Color;
   pieceKilled: Piece[];
   success?: boolean;
-  result?: `${Color}:${Result}`;
+  result?: Result;
 }
 
 interface Case {
@@ -17,13 +17,13 @@ export enum Color {
 }
 
 interface Piece {
-  pieceType: PieceType;
+  pieceType: GlobalPieceType;
   color: Color;
   j: number;
   i: number;
 }
 
-enum PieceType {
+export enum GlobalPieceType {
   PAWN = 'PAWN',
   ROOK = 'ROOK',
   KNIGHT = 'KNIGHT',
@@ -32,7 +32,7 @@ enum PieceType {
   KING = 'KING'
 }
 
-enum Result {
+export enum ResultPossible {
   KINGSAFE = 'KINGSAFE',
   KINGLOSE = 'KINGLOSE',
   KINGMOVE = 'KINGMOVE',
@@ -40,3 +40,5 @@ enum Result {
   BLACKPROMOTION = 'BLACKPROMOTION',
   NOPROMOTION = 'NOPROMOTION'
 }
+
+export type Result = `${Color}:${ResultPossible}`[]
