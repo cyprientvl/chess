@@ -96,8 +96,14 @@ export async function upgradePiece(userId: number, piece: PieceType){
         let pieceToPromote = game.getPieceToPromote();
         const index = game.getPieceKilled().findIndex(p => p.color == pieceToPromote.color && piece == p.pieceType);
 
-        if(index == -1) return {success: false}
-        game.getPieceKilled().slice(index);
+        if(index == -1){
+            let returnAction = game.getFormatedGame();
+            return {...returnAction, success: false};
+        }
+
+        let pieceKilled = game.getPieceKilled();
+        pieceKilled.splice(index, 1);
+        game.setPieceKilled(pieceKilled);
 
         let p = game.getListCase()[pieceToPromote.i][pieceToPromote.j].piece;
         if(!p) return {success: false}
