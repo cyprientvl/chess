@@ -69,6 +69,10 @@ export function checkTowerUpgrade(game: Game, i: number, j: number): string {
     
     if (!piece || !(piece instanceof Pawn)) return Action['NOPROMOTION'];
     
+    let pieceKilled = game.getPieceKilledByColor(game.getUserTurn());
+    
+    if(pieceKilled.length == 0) return Action['NOPROMOTION']; 
+
     if (game.getUserTurn() == Color.WHITE && i == 0) {
         game.setPieceToPromote(i, j, Color.WHITE);
         return Action['WHITEPROMOTION']

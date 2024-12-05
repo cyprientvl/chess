@@ -130,6 +130,11 @@ export class Game{
         return this.pieceKilled;
     }
 
+
+    public getPieceKilledByColor(color: Color){
+        return this.pieceKilled.filter(f => f.color == color);
+    }
+
     public getUserTurn(){
         return this.userTurn;
     }
