@@ -3,7 +3,7 @@ export interface GameModel {
   turn: Color;
   pieceKilled: Piece[];
   success?: boolean;
-  result?: string[];
+  result?: `${Color}:${Result}`;
 }
 
 interface Case {
@@ -30,4 +30,13 @@ enum PieceType {
   BISHOP = 'BISHOP',
   QUEEN = 'QUEEN',
   KING = 'KING'
+}
+
+enum Result {
+  KINGSAFE = 'KINGSAFE',
+  KINGLOSE = 'KINGLOSE',
+  KINGMOVE = 'KINGMOVE',
+  WHITEPROMOTION = 'WHITEPROMOTION',
+  BLACKPROMOTION = 'BLACKPROMOTION',
+  NOPROMOTION = 'NOPROMOTION'
 }
