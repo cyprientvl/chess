@@ -1,6 +1,7 @@
 import { Action } from "../enums/action.enum";
 import { Color } from "../enums/color.enum";
 import { PieceType } from "../enums/piece.enum";
+import { ReturnAction } from "../interfaces/returnAction.interface";
 import { GameAction } from "../models/gameAction.model";
 import { deleteGameStorage, getGameStorage } from "./chessStorage";
 import { Game } from "./game";
@@ -109,10 +110,12 @@ export async function upgradePiece(userId: number, piece: PieceType){
         }
 
         game.setPieceToPromote(-1, -1, Color.WHITE)
-        return {success: true}
-    }
 
-    return {success: false}
+        let returnAction = game.getFormatedGame();
+        return {...returnAction, success: true};
+    }
+    let returnAction = game.getFormatedGame();
+    return {...returnAction, success: false};
 
 }
 
