@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Request, Route, Security, Tags } from "tsoa";
+import { Body, Controller, Delete, Get, Path, Post, Request, Route, Security, Tags } from "tsoa";
 import { CreateGameBody } from "../interfaces/createGameBody.interface";
 import { gameService } from "../services/game.service";
 import { Request as ExpressRequest } from 'express';
@@ -17,6 +17,19 @@ export class GameController extends Controller {
       if(!response){
         this.setStatus(404);
         return null;
+      }
+
+      return response;
+    }
+
+    @Get("/replay/{id}")
+    @Security("jwt", [])
+    public async getReplay(@Path() id: number){
+      const response = await gameService.getReplay(id);
+
+      if(!response){
+        this.setStatus(404);
+        return undefined;
       }
 
       return response;

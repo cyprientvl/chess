@@ -49,6 +49,11 @@ export class LeaderboardService {
         };
     }
 
+    public async getUserGames(userId: number){
+        const game = await Game.findAll({where: { owner_id: userId }});
+        return game;
+    }
+
 }
 
 export const leaderboardService = new LeaderboardService();

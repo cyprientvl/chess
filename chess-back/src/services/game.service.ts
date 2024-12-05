@@ -1,9 +1,11 @@
 import { checkKingStatus, isInBounds, movePiece, upgradePiece } from "../algorithm/algorithm";
 import { createGameStorage, deleteGameStorage, getGameStorage } from "../algorithm/chessStorage";
+import { GameActionDTO } from "../dto/gameAction.dto";
 import { PieceType } from "../enums/piece.enum";
 import { CreateGameBody } from "../interfaces/createGameBody.interface";
 import { MovePiece } from "../interfaces/movePiece.interface";
 import { ReturnAction } from "../interfaces/returnAction.interface";
+import { ReturnGameAction } from "../interfaces/returnGameAction.interface";
 import { Game } from "../models/game.model";
 import { GameAction } from "../models/gameAction.model";
 
@@ -30,28 +32,30 @@ export class GameService {
         return game.getFormatedGame();
     } 
 
-    async getMove(gameId: number, idMove: number) {
+    async getReplay(gameId: number) {
         const game = await Game.findByPk(gameId, {
           include: [{ model: GameAction, as: 'gameAction' }]
         });
       
         if (!game || !game.public) {
-          return null;
+          return undefined;
         }
       
         const gameActions = game.gameAction;
 
-        if(!gameActions) return null;
+        if(!gameActions) return undefined;
         
-        const moveAction = gameActions.find(action => action.id === idMove);
-      
-        if(!moveAction) return null;
+        let actionList: ReturnGameAction[] = [];
 
-        return {i: moveAction.from.split(":")[0],
-            j: moveAction.from.split(":")[1],
-            toI: moveAction.to.split(":")[0],
-            toJ: moveAction.to.split(":")[1]
-        }
+        gameActions.forEach(element =>{
+            let i = parseInt(element.from.split(":")[0])
+            let j = parseInt(element.from.split(":")[1])
+            let toI = parseInt(element.to.split(":")[0])
+            let toJ = parseInt(element.to.split(":")[1])
+
+            actionList.push({i: i, j: j, toI: toI, toJ: toJ})
+        })
+        return actionList;
       }
       
 
