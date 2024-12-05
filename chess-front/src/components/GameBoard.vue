@@ -11,11 +11,11 @@
         <h2>Pièces tuées</h2>
         <div class="flex">
           <div v-for="piece in blackKilledPieces" :key="piece" class="piece piece-black"
-            v-html="getPieceSVG(`BLACK_${piece}` as PieceType)">
+            v-html="getPieceSVG(`BLACK_${piece}` as FullPieceProperty)">
           </div>
 
-          <div v-for="piece in whiteKilledPieces" class="piece" v-html="getPieceSVG(`WHITE_${piece}` as PieceType)"
-            :key="piece">
+          <div v-for="piece in whiteKilledPieces" class="piece"
+            v-html="getPieceSVG(`WHITE_${piece}` as FullPieceProperty)" :key="piece">
           </div>
         </div>
       </div>
@@ -43,7 +43,7 @@
               </span>
               <div v-if="board[row - 1][col - 1]?.piece" class="piece"
                 :class="{ 'piece-black': board[row - 1][col - 1]?.piece?.color === 'BLACK' }"
-                v-html="getPieceSVG(getPieceType(board[row - 1][col - 1]?.piece!))">
+                v-html="getPieceSVG(getPieceFullProperty(board[row - 1][col - 1]?.piece!))">
               </div>
             </div>
           </div>
@@ -58,7 +58,7 @@
       <Dialog v-model:visible="showPromotionDialog" modal header="Choisissez une pièce" :closable="false">
         <div class="flex justify-content-center gap-4">
           <div v-for="piece in availablePromotionPieces" :key="piece" class="cursor-pointer piece promotion-piece"
-            @click="handlePromotion(piece)" v-html="getPieceSVG(`${promotionColor}_${piece}` as PieceType)">
+            @click="handlePromotion(removePieceColor(piece))" v-html="getPieceSVG(piece)">
           </div>
         </div>
       </Dialog>
@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { PIECES_SVG, type Case, type Piece, type PieceType } from '@/model/Pieces.model';
+import { Color, PIECES_SVG, PieceType, type FullPieceProperty, type Piece } from '@/model/Pieces.model';
 import ProgressSpinner from 'primevue/progressspinner';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
@@ -84,7 +84,7 @@ import { useToast } from 'primevue/usetoast';
 import { useGameService } from '@/composables/game/gameService';
 import router from '@/router';
 import { AxiosError } from 'axios';
-import { Color, ResultPossible, GlobalPieceType, type GameModel } from '@/model/Game.model';
+import { ResultPossible, type GameModel, type Case } from '@/model/Game.model';
 import type { PossibleMove } from '@/model/PossibleMove.model';
 
 const toast = useToast();
@@ -96,10 +96,10 @@ const initialBoard: Case[][] = Array(8).fill(null).map(() =>
 
 const board = ref<Case[][]>(initialBoard);
 const colorPlayer = ref<'Noirs' | 'Blancs'>();
-const blackKilledPieces = ref<GlobalPieceType[]>([]);
-const whiteKilledPieces = ref<GlobalPieceType[]>([]);
+const blackKilledPieces = ref<PieceType[]>([]);
+const whiteKilledPieces = ref<PieceType[]>([]);
 
-const availablePromotionPieces = ref<GlobalPieceType[]>([]);
+const availablePromotionPieces = ref<FullPieceProperty[]>([]);
 
 const selectedPiece = ref<{ row: number, col: number } | null>(null);
 const possibleMoves = ref<PossibleMove[]>([]);
@@ -110,11 +110,6 @@ const showPromotionDialog = ref(false);
 const showGameOverDialog = ref(false);
 const gameOverMessage = ref('');
 const promotionPosition = ref<{ i: number; j: number; } | null>(null);
-const promotionColor = ref<Color>(Color.WHITE);
-
-const getPieceType = (piece: Piece): PieceType => {
-  return `${piece.color}_${piece.pieceType}` as PieceType;
-};
 
 const isSelectedCell = (row: number, col: number): boolean => {
   return selectedPiece.value?.row === row && selectedPiece.value?.col === col;
@@ -217,7 +212,7 @@ const handleCellClick = async (row: number, col: number) => {
   }
 };
 
-const handlePromotion = async (pieceType: GlobalPieceType) => {
+const handlePromotion = async (pieceType: PieceType) => {
   if (!promotionPosition.value) return;
 
   try {
@@ -253,8 +248,7 @@ const handleGameResult = (game: GameModel, row: number, col: number) => {
         case ResultPossible.BLACKPROMOTION:
           if (row === -1 || col === -1) return;
           promotionPosition.value = { i: row - 1, j: col - 1 };
-          promotionColor.value = color;
-          availablePromotionPieces.value = color === Color.BLACK ? blackKilledPieces.value : whiteKilledPieces.value;
+          availablePromotionPieces.value = color === Color.BLACK ? blackKilledPieces.value.map(piece => `BLACK_${piece}` as FullPieceProperty) : whiteKilledPieces.value.map(piece => `WHITE_${piece}` as FullPieceProperty);
           showPromotionDialog.value = true;
           break;
 
@@ -274,8 +268,12 @@ const isPossibleMove = (row: number, col: number): boolean => {
   return possibleMoves.value.some(move => move.i === row && move.j === col);
 };
 
-const getPieceSVG = (pieceType: PieceType | null) => {
+const getPieceSVG = (pieceType: FullPieceProperty | null) => {
   return pieceType ? PIECES_SVG[pieceType] : '';
+};
+
+const getPieceFullProperty = (piece: Piece): FullPieceProperty => {
+  return `${piece.color}_${piece.pieceType}` as FullPieceProperty;
 };
 
 const goToHome = () => {
@@ -292,8 +290,12 @@ const quitGame = async () => {
   }
 };
 
-const parsePieceKilled = (piecesKilled: Piece[], color: Color): GlobalPieceType[] => {
+const parsePieceKilled = (piecesKilled: Piece[], color: Color): PieceType[] => {
   return piecesKilled.filter(piece => piece.color === color).map(piece => piece.pieceType);
+};
+
+const removePieceColor = (pieceType: FullPieceProperty): PieceType => {
+  return pieceType.split('_')[1] as PieceType;
 };
 </script>
 

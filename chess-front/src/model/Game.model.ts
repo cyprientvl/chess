@@ -1,3 +1,5 @@
+import type { Color, Piece } from "./Pieces.model";
+
 export interface GameModel {
   listCase: Case[][];
   turn: Color;
@@ -6,30 +8,9 @@ export interface GameModel {
   result?: Result;
 }
 
-interface Case {
+export interface Case {
   color: Color
   piece: Piece | undefined;
-}
-
-export enum Color {
-  BLACK = 'BLACK',
-  WHITE = 'WHITE'
-}
-
-interface Piece {
-  pieceType: GlobalPieceType;
-  color: Color;
-  j: number;
-  i: number;
-}
-
-export enum GlobalPieceType {
-  PAWN = 'PAWN',
-  ROOK = 'ROOK',
-  KNIGHT = 'KNIGHT',
-  BISHOP = 'BISHOP',
-  QUEEN = 'QUEEN',
-  KING = 'KING'
 }
 
 export enum ResultPossible {
