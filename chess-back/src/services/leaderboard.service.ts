@@ -1,3 +1,4 @@
+import { GameDTO } from "../dto/game.dto";
 import { LeaderboardDTO, } from "../dto/leaderboard.dto";
 import { Game, GameAttributes } from "../models/game.model";
 import { User } from "../models/user.model";
@@ -49,7 +50,7 @@ export class LeaderboardService {
         };
     }
 
-    public async getUserGames(userId: number){
+    public async getUserGames(userId: number): Promise<GameDTO[]>{
         const game = await Game.findAll({where: { owner_id: userId }});
         return game;
     }
