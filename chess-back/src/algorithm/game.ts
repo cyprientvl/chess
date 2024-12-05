@@ -11,7 +11,7 @@ import { Rook } from "./Piece/rook";
 
 
 let listPiece: PieceType[] = [
-    PieceType['ROOK'], PieceType['KNIGHT'], PieceType['BISHOP'], PieceType['QUEEN'], PieceType['KING'],  PieceType['BISHOP'], PieceType['KNIGHT'], PieceType['ROOK']]
+    PieceType['ROOK'], PieceType['KNIGHT'], PieceType['BISHOP'], PieceType['KING'],PieceType['QUEEN'], PieceType['BISHOP'], PieceType['KNIGHT'], PieceType['ROOK']]
 
 export class Game{
 

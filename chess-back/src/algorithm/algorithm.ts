@@ -11,18 +11,14 @@ import { King } from "./Piece/king";
 import { Pawn } from "./Piece/pawn";
 
 export function checkKingStatus(listCase: Case[][], king: King): { king: King, status: string } {
-    console.log("verify king")
     if (isKingThreatened(listCase, king)) {
-        console.log("isKingThreatened")
 
         if (canKingMove(listCase, king)) {
-            console.log("canKingMove")
             return { king: king, status: Action['KINGMOVE'] }; 
         } else {
             return { king: king, status: Action['KINGLOSE'] };
         }
     }
-    console.log("end")
     return { king: king, status: Action['KINGSAFE'] };
 }
 
@@ -82,40 +78,55 @@ function nextTurn(game: Game){
     if(game.getUserTurn() == 'BLACK') return game.setUserTurn(Color['WHITE']);
 }
 
-export function movePiece(game: Game, i: number, j: number, toI: number, toJ: number): { success: boolean, result: string }{
+export function movePiece(game: Game, i: number, j: number, toI: number, toJ: number): { success: boolean, result: string[] }{
 
-    if(!isInBounds(i, j) || !isInBounds(toI, toJ)) return {success: false, result: ''};
+    if(!isInBounds(i, j) || !isInBounds(toI, toJ)) return {success: false, result: []};
 
-    if(i == toI && j == toJ) return {success: false, result: ''};
+    if(i == toI && j == toJ) return {success: false, result: []};
     
     let listCase = game.getListCase();
     let piece = listCase[i][j].piece
 
-    if(!piece || piece.color != game.getUserTurn()) return {success: false, result: ''}
+    if(!piece || piece.color != game.getUserTurn()) return {success: false, result: []}
     
     console.log("=================")
-    if(!piece.move(toI, toJ, listCase)) return {success: false, result: ''}
+    if(!piece.move(toI, toJ, listCase)) return {success: false, result: []}
+
+    if(piece instanceof King){
+        let c = piece.color == Color.BLACK ? 0: 1;
+        let copyPiece = new King(piece.pieceType, c, piece.i, piece.j)        
+
+        copyPiece.i = toI
+        copyPiece.j = toJ
+
+        if(copyPiece instanceof King){
+            const checkKIngStatus = checkKingStatus(listCase, copyPiece);
+            if(checkKIngStatus.status != Action.KINGSAFE) return {success: false, result: []};
+        }
+    }else{
+        if(!verifyKingBeforeMove(game)) return {success: false, result: []};
+    }
 
     let p = listCase[toI][toJ].piece;
 
-    let resultAction = ""
+    let resultAction = [];
 
     if(p){
         if(p.color == piece.color){
-            return {success: false, result: ''}
+            return {success: false, result: []}
         }
         game.getPieceKilled().push(p);
-        resultAction = Action['KILLED']
+        resultAction.push(Action['KILLED'])
     }else{
-        resultAction = Action['MOVE']
+        resultAction.push(Action['MOVE'])
     }
 
-    console.log("passe ici")
     listCase[i][j].piece = undefined;
     listCase[toI][toJ].piece = piece;
     piece.i = toI;
     piece.j = toJ;
-    checkTowerUpgrade(game, toI, toJ);
+    const resultCheckTowerUpgrade = checkTowerUpgrade(game, toI, toJ);
+    resultAction.push(resultCheckTowerUpgrade)
     nextTurn(game);
 
     return {success: true, result: resultAction}
@@ -168,4 +179,18 @@ export async function upgradePiece(userId: number, piece: PieceType){
 
     return {success: false}
 
+}
+
+
+export function verifyKingBeforeMove(game: Game): boolean{
+    let result = false;
+    game.getListCase().forEach(element=>{
+        element.forEach(c =>{
+            if(c.piece && c.piece.pieceType == 'KING' && c.piece.color == game.getUserTurn()){
+                const r = checkKingStatus(game.getListCase(), c.piece);
+                result = r.status == Action.KINGSAFE
+            }
+        })
+    })
+    return result;
 }

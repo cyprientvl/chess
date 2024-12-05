@@ -71,12 +71,11 @@ export class GameService {
                 return returnAction;
             }
 
-            returnAction.result.push(result.result)
+            result.result.forEach(e => returnAction.result.push(e))
 
             game.getListCase().forEach(element=>{
                 element.forEach(c =>{
                     if(c.piece && c.piece.pieceType == 'KING'){
-                        console.log("king check");
                         const r = checkKingStatus(game.getListCase(), c.piece);
                         returnAction.result.push(r.status+":"+r.king.color);
                         if(r.status == 'KINGLOSE'){
