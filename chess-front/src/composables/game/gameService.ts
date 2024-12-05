@@ -23,7 +23,7 @@ export function useGameService() {
     async getPossibleMoves(position: PossibleMoveDTO): Promise<PossibleMove[]> {
       return gameApi.getPossibleMoves(position);
     },
-    async promote(piece: GlobalPieceType): Promise<{ success: boolean }> {
+    async promote(piece: GlobalPieceType): Promise<GameModel> {
       return gameApi.promote(piece);
     },
     async deleteGame(): Promise<{ success: boolean }> {
