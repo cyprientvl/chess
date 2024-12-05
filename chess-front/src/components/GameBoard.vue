@@ -228,6 +228,8 @@ const handlePromotion = async (pieceType: GlobalPieceType) => {
     if (response.success) {
       showPromotionDialog.value = false;
       promotionPosition.value = null;
+      board.value = response.listCase;
+      pieceKilled.value = response.pieceKilled;
     }
   } catch (error) {
     console.error('Error during promotion:', error);

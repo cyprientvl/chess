@@ -29,8 +29,8 @@ export function useGameApi() {
       const res = await axiosInstance.post<PossibleMove[]>(`${ApiUrlGame}${ApiUrlPossibleMove}`, move);
       return res.data;
     },
-    async promote(piece: GlobalPieceType): Promise<{ success: boolean }> {
-      const res = await axiosInstance.post<{ success: boolean }>(`${ApiUrlGame}${ApiUrlPromote}`, { piece });
+    async promote(piece: GlobalPieceType): Promise<GameModel> {
+      const res = await axiosInstance.post<GameModel>(`${ApiUrlGame}${ApiUrlPromote}`, { piece });
       return res.data;
     },
     async deleteGame(): Promise<{ success: boolean }> {
