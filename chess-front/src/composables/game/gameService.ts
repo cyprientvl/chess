@@ -25,6 +25,9 @@ export function useGameService() {
     },
     async promote(piece: GlobalPieceType): Promise<{ success: boolean }> {
       return gameApi.promote(piece);
+    },
+    async deleteGame(): Promise<{ success: boolean }> {
+      return gameApi.deleteGame();
     }
   };
 }

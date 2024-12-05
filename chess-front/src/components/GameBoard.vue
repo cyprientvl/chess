@@ -46,6 +46,10 @@
         </div>
       </div>
 
+      <div class="text-center mt-4">
+        <Button label="Quitter la partie" @click="quitGame" />
+      </div>
+
       <!-- Modale de promotion -->
       <Dialog v-model:visible="showPromotionDialog" modal header="Choisissez une pièce" :closable="false">
         <div class="flex justify-content-center gap-4">
@@ -80,7 +84,7 @@ import { Color, ResultPossible, GlobalPieceType, type GameModel } from '@/model/
 import type { PossibleMove } from '@/model/PossibleMove.model';
 
 const toast = useToast();
-const { move, getCurrentGame, getPossibleMoves, promote } = useGameService();
+const { move, getCurrentGame, getPossibleMoves, promote, deleteGame } = useGameService();
 
 const initialBoard: Case[][] = Array(8).fill(null).map(() =>
   Array(8).fill(null).map(() => ({ color: Color.WHITE, piece: undefined }))
@@ -138,6 +142,8 @@ onMounted(async () => {
     colorPlayer.value = response.turn === Color.BLACK ? 'Noirs' : 'Blancs';
     pieceKilled.value = response.pieceKilled;
 
+
+    handleGameResult(response, -1, -1);
   } catch (error) {
     console.error(error);
     toast.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue', life: 5000 });
@@ -230,7 +236,6 @@ const handlePromotion = async (pieceType: GlobalPieceType) => {
 };
 
 const handleGameResult = (game: GameModel, row: number, col: number) => {
-
   // Gestion des résultats multiples
   if (game.result && game.result.length > 0) {
     console.log('Results:', game.result);
@@ -245,6 +250,7 @@ const handleGameResult = (game: GameModel, row: number, col: number) => {
 
         case ResultPossible.WHITEPROMOTION:
         case ResultPossible.BLACKPROMOTION:
+          if (row === -1 || col === -1) return;
           promotionPosition.value = { i: row - 1, j: col - 1 };
           promotionColor.value = color;
           showPromotionDialog.value = true;
@@ -273,6 +279,16 @@ const getPieceSVG = (pieceType: PieceType | null) => {
 
 const goToHome = () => {
   router.push('/');
+};
+
+const quitGame = async () => {
+  try {
+    await deleteGame();
+    goToHome();
+  } catch (error) {
+    console.error('Error during game deletion:', error);
+    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur lors de la suppression de la partie', life: 5000 });
+  }
 };
 </script>
 

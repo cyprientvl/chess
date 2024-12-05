@@ -32,6 +32,10 @@ export function useGameApi() {
     async promote(piece: GlobalPieceType): Promise<{ success: boolean }> {
       const res = await axiosInstance.post<{ success: boolean }>(`${ApiUrlGame}${ApiUrlPromote}`, { piece });
       return res.data;
+    },
+    async deleteGame(): Promise<{ success: boolean }> {
+      const res = await axiosInstance.delete<{ success: boolean }>(`${ApiUrlGame}`);
+      return res.data;
     }
   };
 }
