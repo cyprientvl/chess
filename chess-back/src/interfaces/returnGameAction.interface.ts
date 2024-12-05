@@ -1,6 +1,11 @@
+import { Color } from "../enums/color.enum";
+import { PieceType } from "../enums/piece.enum";
+
 export interface ReturnGameAction{
     i: number,
-    j: number
-    toI: number
-    toJ: number
+    j: number,
+    toI: number,
+    toJ: number,
+    piece: string | undefined
+    color: string | undefined
 }

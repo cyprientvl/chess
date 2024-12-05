@@ -50,11 +50,11 @@ export class LeaderboardService {
         return game;
     }
 
-    public async getLeaderboardUser(userId: number){
-        const game = await Game.findAll({where: { owner_id: userId, public: true }, 
+    public async getLeaderboardUser(userId: number): Promise<GameDTO[]>{
+        const games = await Game.findAll({where: { owner_id: userId, public: true }, 
             include: [{ model: User, as: 'user' }]}
         );
-        return game;
+        return games;
     }
 
 }

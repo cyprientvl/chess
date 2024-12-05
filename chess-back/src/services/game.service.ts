@@ -49,12 +49,20 @@ export class GameService {
         let actionList: ReturnGameAction[] = [];
 
         gameActions.forEach(element =>{
+
             let i = parseInt(element.from.split(":")[0])
             let j = parseInt(element.from.split(":")[1])
             let toI = parseInt(element.to.split(":")[0])
             let toJ = parseInt(element.to.split(":")[1])
 
-            actionList.push({i: i, j: j, toI: toI, toJ: toJ})
+            if(element.piece){
+                let piece = element.piece.split(":")[0];
+                let color = element.piece.split(":")[1];
+                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: piece, color: color})
+            }else{
+                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: undefined, color: undefined})
+            }
+
         })
         return actionList;
       }
