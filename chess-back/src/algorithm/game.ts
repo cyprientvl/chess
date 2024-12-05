@@ -1,5 +1,6 @@
 import { Color } from "../enums/color.enum";
 import { PieceType } from "../enums/piece.enum";
+import { checkKingStatus } from "./algorithm";
 import { Case } from "./case";
 import { Bishop } from "./Piece/bishop";
 import { King } from "./Piece/king";
@@ -77,7 +78,22 @@ export class Game{
     }
 
     public getFormatedGame(){
-        return { listCase: this.listCase, turn: this.userTurn, pieceKilled: this.pieceKilled}
+        let result: string[] = [];
+
+        this.getListCase().forEach(element=>{
+            element.forEach(c =>{
+                if(c.piece && c.piece.pieceType == 'KING'){
+                    const r = checkKingStatus(this.getListCase(), c.piece);
+                    result.push(r.status+":"+r.king.color);
+                }
+            })
+        })
+
+        return { listCase: this.listCase, 
+            turn: this.userTurn, 
+            pieceKilled: this.pieceKilled,
+            result: result
+        }
     }
 
     public isPieceToPromote(){

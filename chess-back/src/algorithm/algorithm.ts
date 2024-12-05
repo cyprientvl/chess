@@ -89,7 +89,6 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
 
     if(!piece || piece.color != game.getUserTurn()) return {success: false, result: []}
     
-    console.log("=================")
     if(!piece.move(toI, toJ, listCase)) return {success: false, result: []}
 
     if(piece instanceof King){
@@ -123,10 +122,13 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
 
     listCase[i][j].piece = undefined;
     listCase[toI][toJ].piece = piece;
+    
     piece.i = toI;
     piece.j = toJ;
+
     const resultCheckTowerUpgrade = checkTowerUpgrade(game, toI, toJ);
     resultAction.push(resultCheckTowerUpgrade)
+    
     nextTurn(game);
 
     return {success: true, result: resultAction}

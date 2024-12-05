@@ -70,11 +70,6 @@ export class GameService {
                 turn: game.getUserTurn(), 
                 pieceKilled: game.getPieceKilled() }
 
-            if(!result.success){
-                returnAction.success = false;
-                return returnAction;
-            }
-
             result.result.forEach(e => returnAction.result.push(e))
 
             game.getListCase().forEach(element=>{
@@ -88,6 +83,11 @@ export class GameService {
                     }
                 })
             })
+
+            if(!result.success){
+                returnAction.success = false;
+                return returnAction;
+            }
 
             await GameAction.create({game_id: game.getIdInDB(), 
                 from: movePieceBody.i+":"+movePieceBody.j, 

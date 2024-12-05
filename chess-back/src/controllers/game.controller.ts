@@ -76,11 +76,13 @@ export class GameController extends Controller {
     }
 
     @Post("/piece/upgrade")
+    @Security("jwt", [])
     public async upgradePiece(@Request() req: ExpressRequest, @Body() body: {piece: PieceType}){
       return await gameService.upgradePiece(req.user.id, body.piece);
     }
 
     @Delete("/")
+    @Security("jwt", [])
     public delete(@Request() req: ExpressRequest){
       return gameService.delete(req.user.id);
     }
