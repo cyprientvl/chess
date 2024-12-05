@@ -11,7 +11,7 @@ interface Case {
   piece: Piece | undefined;
 }
 
-enum Color {
+export enum Color {
   BLACK = 'BLACK',
   WHITE = 'WHITE'
 }

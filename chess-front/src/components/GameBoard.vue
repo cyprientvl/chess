@@ -16,7 +16,7 @@
         </div>
       </div>
       <div id="damier" class="p-4">
-        <h1>C'est au {{ colorPlayer }} de jouer !</h1>
+        <h1>C'est aux {{ colorPlayer }} de jouer !</h1>
 
         <div class="chess-board">
           <div v-for="row in 8" :key="'row-' + row" class="flex">
@@ -24,6 +24,13 @@
               'chess-cell cursor-pointer',
               ((row + col) % 2 === 0) ? 'bg-white' : 'noir'
             ]" @click="handleCellClick(row, col)">
+              <span v-if="col === 1" :class="['topleft', ((row + col) % 2 === 0) ? 'text-noir' : 'text-white']">{{ 9 -
+                row
+                }}</span>
+
+              <span v-if="row === 8" :class="['bottomleft', ((row + col) % 2 === 0) ? 'text-noir' : 'text-white']">{{
+                String.fromCharCode(96 + col)
+                }}</span>
               <div v-if="board[row - 1][col - 1]?.piece" class="piece"
                 :class="{ 'piece-black': board[row - 1][col - 1]?.piece?.color === 'BLACK' }"
                 v-html="getPieceSVG(getPieceType(board[row - 1][col - 1]?.piece!))">
@@ -45,28 +52,29 @@ import { useToast } from 'primevue/usetoast';
 import { useGameService } from '@/composables/game/gameService';
 import router from '@/router';
 import { AxiosError } from 'axios';
+import { Color } from '@/model/Game.model';
 
 interface Piece {
   pieceType: string;
-  color: 'BLACK' | 'WHITE';
+  color: Color;
   i: number;
   j: number;
 }
 
 interface Case {
   piece?: Piece;
-  color: 'BLACK' | 'WHITE';
+  color: Color;
 }
 
 const toast = useToast();
 const { move, getCurrentGame } = useGameService();
 
 const initialBoard: Case[][] = Array(8).fill(null).map(() =>
-  Array(8).fill(null).map(() => ({ color: 'WHITE', piece: undefined }))
+  Array(8).fill(null).map(() => ({ color: Color.WHITE, piece: undefined }))
 );
 
 const board = ref<Case[][]>(initialBoard);
-const colorPlayer = ref<'BLACK' | 'WHITE'>();
+const colorPlayer = ref<'Noirs' | 'Blancs'>();
 const pieceKilled = ref<Piece[]>([]);
 
 const selectedPiece = ref<{ row: number, col: number } | null>(null);
@@ -79,7 +87,7 @@ onMounted(async () => {
   try {
     const response = await getCurrentGame();
     board.value = response.listCase;
-    colorPlayer.value = response.turn;
+    colorPlayer.value = response.turn === Color.BLACK ? 'Noirs' : 'Blancs';
     pieceKilled.value = response.pieceKilled;
   } catch (error) {
     console.error(error);
@@ -108,7 +116,7 @@ const handleCellClick = async (row: number, col: number) => {
 
       if (response.success) {
         board.value = response.listCase;
-        colorPlayer.value = response.turn;
+        colorPlayer.value = response.turn === Color.BLACK ? 'Noirs' : 'Blancs';
         pieceKilled.value = response.pieceKilled;
       } else {
         toast.add({ severity: 'error', summary: 'Mouvement invalide', detail: 'Veuillez réessayer', life: 5000 });
@@ -143,6 +151,7 @@ const getPieceSVG = (pieceType: PieceType | null) => {
   justify-content: center;
   align-items: center;
   transition: background-color 0.2s;
+  position: relative;
 }
 
 .chess-cell:hover {
@@ -173,6 +182,28 @@ const getPieceSVG = (pieceType: PieceType | null) => {
   justify-content: space-around;
   gap: 50px;
   vertical-align: top;
+}
+
+.topleft {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 12px;
+}
+
+.bottomleft {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  font-size: 12px;
+}
+
+.text-white {
+  color: white;
+}
+
+.text-noir {
+  color: black;
 }
 
 @media screen and (max-width: 768px) {
