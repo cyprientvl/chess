@@ -2,10 +2,11 @@ import { PieceType } from "../../enums/piece.enum";
 import { Piece } from "./piece";
 import { Case } from "../case";
 import { Color } from "../../enums/color.enum";
+import { ChessLocation } from "../../interfaces/location.interface";
 
 export class Pawn extends Piece{
-    possibleMove(listCase: Case[][]): { i: number; j: number; }[] {
-        const moves: { i: number, j: number }[] = [];
+    possibleMove(listCase: Case[][]): ChessLocation[] {
+        const moves: ChessLocation[] = [];
         const direction = this.color === Color.WHITE ? -1 : 1;
         
         if (listCase[this.i + direction] && !listCase[this.i + direction][this.j].piece) {

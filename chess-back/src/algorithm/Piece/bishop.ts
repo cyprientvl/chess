@@ -1,11 +1,12 @@
 import { Piece } from "./piece";
 import { Case } from "../case";
 import { PieceType } from "../../enums/piece.enum";
+import { ChessLocation } from "../../interfaces/location.interface";
 
 export class Bishop extends Piece{
-    
-    possibleMove(listCase: Case[][]): { i: number; j: number; }[] {
-        const moves: { i: number, j: number }[] = [];
+
+    possibleMove(listCase: Case[][]): ChessLocation[] {
+        const moves: ChessLocation[] = [];
         const directions = [
             [-1, -1], [-1, 1], [1, -1], [1, 1] 
         ];

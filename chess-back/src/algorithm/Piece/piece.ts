@@ -1,5 +1,6 @@
 import { Color } from "../../enums/color.enum";
 import { PieceType } from "../../enums/piece.enum";
+import { ChessLocation } from "../../interfaces/location.interface";
 import { Case } from "../case";
 
 export abstract class Piece{
@@ -21,6 +22,6 @@ export abstract class Piece{
     }
 
     abstract move(toI: number, toJ: number, listCase: Case[][]): boolean;
-    abstract possibleMove(listCase: Case[][]): {i: number, j: number}[]
+    abstract possibleMove(listCase: Case[][]): ChessLocation[]
     
 }

@@ -1,10 +1,11 @@
 import { PieceType } from "../../enums/piece.enum";
 import { Piece } from "./piece";
 import { Case } from "../case";
+import { ChessLocation } from "../../interfaces/location.interface";
 
 export class King extends Piece{
-    possibleMove(listCase: Case[][]): { i: number; j: number; }[] {
-        const moves: { i: number, j: number }[] = [];
+    possibleMove(listCase: Case[][]): ChessLocation[] {
+        const moves: ChessLocation[] = [];
         const directions = [
             [-1, -1], [-1, 0], [-1, 1], 
             [0, -1], [0, 1],            
@@ -25,7 +26,7 @@ export class King extends Piece{
 
         return moves;    
     }
-    
+
     move(toI: number, toJ: number, listCase: Case[][]): boolean {
         const diffI = Math.abs(toI - this.i);
         const diffJ = Math.abs(toJ - this.j);

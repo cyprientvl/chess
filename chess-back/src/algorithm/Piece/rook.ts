@@ -1,11 +1,12 @@
 import { PieceType } from "../../enums/piece.enum";
 import { Piece } from "./piece";
 import { Case } from "../case";
+import { ChessLocation } from "../../interfaces/location.interface";
 
 export class Rook extends Piece{
 
-    possibleMove(listCase: Case[][]): { i: number; j: number; }[] {
-        const moves: { i: number, j: number }[] = [];
+    possibleMove(listCase: Case[][]): ChessLocation[] {
+        const moves: ChessLocation[] = [];
         
         for (let i = this.i - 1; i >= 0; i--) {
             const currentCase = listCase[i][this.j];
