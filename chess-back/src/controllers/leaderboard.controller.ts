@@ -1,14 +1,14 @@
 import { Body, Controller, Delete, Get, Patch, Path, Post, Request, Route, Security, Tags } from "tsoa";
-import { LeaderboardDTO } from "../dto/leaderboard.dto";
 import { leaderboardService } from "../services/leaderboard.service";
 import { Request as ExpressRequest } from 'express';
+import { LeaderboardEntryDTO } from "../dto/leaderboard.dto";
 
 @Route("leaderboard")
 @Tags("Leaderboard")
 export class LeaderboardController extends Controller {
 
     @Get("/")
-    public async getLeaderboard(): Promise<LeaderboardDTO | null> {
+    public async getLeaderboard(): Promise<LeaderboardEntryDTO[]> {
         const leaderboard = await leaderboardService.getLeaderboard();
         return leaderboard;
     }

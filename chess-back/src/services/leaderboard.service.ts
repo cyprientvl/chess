@@ -1,11 +1,11 @@
 import { GameDTO } from "../dto/game.dto";
-import { LeaderboardDTO, } from "../dto/leaderboard.dto";
+import { LeaderboardEntryDTO } from "../dto/leaderboard.dto";
 import { Game, GameAttributes } from "../models/game.model";
 import { User } from "../models/user.model";
 import { Op, WhereOptions } from "sequelize";
 
 export class LeaderboardService {
-    public async getLeaderboard(): Promise<LeaderboardDTO | null> {
+    public async getLeaderboard(): Promise<LeaderboardEntryDTO[]> {
         const users = await User.findAll();
 
         const whereClause: WhereOptions<GameAttributes> = {
@@ -33,18 +33,16 @@ export class LeaderboardService {
             }
         });
 
-        // Créer la liste triée
-        const sortedEntries = Array.from(userVictories.entries())
+        const sortedEntries: LeaderboardEntryDTO[]  = Array.from(userVictories.entries())
             .sort(([, a], [, b]) => b - a)
             .map(([username, score], index) => ({
                 username,
                 score,
-                rank: index + 1
+                rank: index + 1,
+                userId: users[index].id
             }));
 
-        return {
-            list: sortedEntries
-        };
+        return sortedEntries
     }
 
     public async getUserGames(userId: number): Promise<GameDTO[]>{
@@ -53,7 +51,9 @@ export class LeaderboardService {
     }
 
     public async getLeaderboardUser(userId: number){
-        const game = await Game.findAll({where: { owner_id: userId, public: true }});
+        const game = await Game.findAll({where: { owner_id: userId, public: true }, 
+            include: [{ model: User, as: 'user' }]}
+        );
         return game;
     }
 
