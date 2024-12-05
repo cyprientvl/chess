@@ -10,8 +10,12 @@
       <div id="pieceKilled">
         <h2>Pièces tuées</h2>
         <div class="flex">
-          <div v-for="piece in pieceKilled" :key="piece.i + '-' + piece.j" class="piece"
-            :class="{ 'piece-black': piece.color === 'BLACK' }" v-html="getPieceSVG(getPieceType(piece))">
+          <div v-for="piece in blackKilledPieces" :key="piece" class="piece piece-black"
+            v-html="getPieceSVG(`BLACK_${piece}` as PieceType)">
+          </div>
+
+          <div v-for="piece in whiteKilledPieces" class="piece" v-html="getPieceSVG(`WHITE_${piece}` as PieceType)"
+            :key="piece">
           </div>
         </div>
       </div>
@@ -92,7 +96,10 @@ const initialBoard: Case[][] = Array(8).fill(null).map(() =>
 
 const board = ref<Case[][]>(initialBoard);
 const colorPlayer = ref<'Noirs' | 'Blancs'>();
-const pieceKilled = ref<Piece[]>([]);
+const blackKilledPieces = ref<GlobalPieceType[]>([]);
+const whiteKilledPieces = ref<GlobalPieceType[]>([]);
+
+const availablePromotionPieces = ref<GlobalPieceType[]>([]);
 
 const selectedPiece = ref<{ row: number, col: number } | null>(null);
 const possibleMoves = ref<PossibleMove[]>([]);
@@ -104,14 +111,6 @@ const showGameOverDialog = ref(false);
 const gameOverMessage = ref('');
 const promotionPosition = ref<{ i: number; j: number; } | null>(null);
 const promotionColor = ref<Color>(Color.WHITE);
-
-// Pièces disponibles pour la promotion
-const availablePromotionPieces = [
-  GlobalPieceType.QUEEN,
-  GlobalPieceType.ROOK,
-  GlobalPieceType.BISHOP,
-  GlobalPieceType.KNIGHT
-];
 
 const getPieceType = (piece: Piece): PieceType => {
   return `${piece.color}_${piece.pieceType}` as PieceType;
@@ -140,8 +139,8 @@ onMounted(async () => {
 
     board.value = response.listCase;
     colorPlayer.value = response.turn === Color.BLACK ? 'Noirs' : 'Blancs';
-    pieceKilled.value = response.pieceKilled;
-
+    blackKilledPieces.value = parsePieceKilled(response.pieceKilled, Color.BLACK);
+    whiteKilledPieces.value = parsePieceKilled(response.pieceKilled, Color.WHITE);
 
     handleGameResult(response, -1, -1);
   } catch (error) {
@@ -199,7 +198,8 @@ const handleCellClick = async (row: number, col: number) => {
 
         board.value = response.listCase;
         colorPlayer.value = response.turn === Color.BLACK ? 'Noirs' : 'Blancs';
-        pieceKilled.value = response.pieceKilled;
+        blackKilledPieces.value = parsePieceKilled(response.pieceKilled, Color.BLACK);
+        whiteKilledPieces.value = parsePieceKilled(response.pieceKilled, Color.WHITE);
         possibleMoves.value = [];
 
         handleGameResult(response, row, col);
@@ -229,7 +229,8 @@ const handlePromotion = async (pieceType: GlobalPieceType) => {
       showPromotionDialog.value = false;
       promotionPosition.value = null;
       board.value = response.listCase;
-      pieceKilled.value = response.pieceKilled;
+      blackKilledPieces.value = parsePieceKilled(response.pieceKilled, Color.BLACK);
+      whiteKilledPieces.value = parsePieceKilled(response.pieceKilled, Color.WHITE);
     }
   } catch (error) {
     console.error('Error during promotion:', error);
@@ -253,6 +254,7 @@ const handleGameResult = (game: GameModel, row: number, col: number) => {
           if (row === -1 || col === -1) return;
           promotionPosition.value = { i: row - 1, j: col - 1 };
           promotionColor.value = color;
+          availablePromotionPieces.value = color === Color.BLACK ? blackKilledPieces.value : whiteKilledPieces.value;
           showPromotionDialog.value = true;
           break;
 
@@ -288,6 +290,10 @@ const quitGame = async () => {
     console.error('Error during game deletion:', error);
     toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur lors de la suppression de la partie', life: 5000 });
   }
+};
+
+const parsePieceKilled = (piecesKilled: Piece[], color: Color): GlobalPieceType[] => {
+  return piecesKilled.filter(piece => piece.color === color).map(piece => piece.pieceType);
 };
 </script>
 

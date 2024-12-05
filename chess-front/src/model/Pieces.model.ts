@@ -1,4 +1,4 @@
-import { Color } from '@/model/Game.model';
+import { Color, GlobalPieceType } from '@/model/Game.model';
 
 export enum PieceType {
   WHITE_KING = 'WHITE_KING',
@@ -32,7 +32,7 @@ export const PIECES_SVG = {
 
 
 export interface Piece {
-  pieceType: string;
+  pieceType: GlobalPieceType;
   color: Color;
   i: number;
   j: number;
