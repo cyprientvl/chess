@@ -3,7 +3,7 @@
     <Card class="w-full md:w-6 lg:w-4">
       <template #title>
         <div class="text-center mb-4">
-          <h1>Échecs en local</h1>
+          <h1>Historique des parties</h1>
         </div>
       </template>
       <template #content>

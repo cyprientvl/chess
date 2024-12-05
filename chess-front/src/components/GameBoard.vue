@@ -72,7 +72,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { PIECES_SVG, type Case, type Piece, type PieceType } from '@/assets/Pieces';
+import { PIECES_SVG, type Case, type Piece, type PieceType } from '@/model/Pieces.model';
 import ProgressSpinner from 'primevue/progressspinner';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';

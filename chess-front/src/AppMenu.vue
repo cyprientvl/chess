@@ -24,9 +24,9 @@ const items = ref([
     route: '/',
   },
   {
-    label: 'Statistiques',
-    icon: 'pi pi-chart-bar',
-    route: '/stats'
+    label: 'Leaderboard',
+    icon: 'pi pi-trophy',
+    route: '/leaderboard'
   },
   {
     label: 'Compte',
