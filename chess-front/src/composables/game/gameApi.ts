@@ -1,5 +1,5 @@
 import axiosInstance from '@/config/AxiosConfig';
-import { ApiUrlCreateGame, ApiUrlGameIDUser, ApiUrlPieceMove, ApiUrlGame } from '@/constants/ApiUrl';
+import { ApiUrlCreateGame, ApiUrlGameIDUser, ApiUrlPieceMove, ApiUrlGame, ApiUrlPossibleMove } from '@/constants/ApiUrl';
 import type { GameMoveDTO } from '@/modelDTO/GameMove.dto';
 import type { GameModel } from '@/model/Game.model';
 import type { CreateGameDTO } from '@/modelDTO/CreateGame.dto';
@@ -25,7 +25,7 @@ export function useGameApi() {
       return res.data;
     },
     async getPossibleMoves(move: PossibleMoveDTO): Promise<PossibleMove[]> {
-      const res = await axiosInstance.post<PossibleMove[]>(`${ApiUrlGame}${ApiUrlPieceMove}`, move);
+      const res = await axiosInstance.post<PossibleMove[]>(`${ApiUrlGame}${ApiUrlPossibleMove}`, move);
       return res.data;
     }
   };
