@@ -83,7 +83,7 @@ onMounted(async () => {
     pieceKilled.value = response.pieceKilled;
   } catch (error) {
     console.error(error);
-    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue' });
+    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue', life: 5000 });
     if (error instanceof AxiosError) {
       router.push('/');
     }
@@ -111,11 +111,11 @@ const handleCellClick = async (row: number, col: number) => {
         colorPlayer.value = response.turn;
         pieceKilled.value = response.pieceKilled;
       } else {
-        toast.add({ severity: 'error', summary: 'Mouvement invalide', detail: 'Veuillez réessayer' });
+        toast.add({ severity: 'error', summary: 'Mouvement invalide', detail: 'Veuillez réessayer', life: 5000 });
       }
     } catch (error) {
       console.error(error);
-      toast.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue' });
+      toast.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue', life: 5000 });
       if (error instanceof AxiosError && error?.response?.status === 404) {
         router.push('/');
       }
