@@ -7,5 +7,6 @@ export const ApiUrlRegister = `/auth/register`;
 // game
 export const ApiUrlGame = '/game';
 export const ApiUrlPieceMove = `/piece/move`;
+export const ApiUrlPossibleMove = `/piece/possible-move`;
 export const ApiUrlGameIDUser = '/current-game';
 export const ApiUrlCreateGame = '/create';

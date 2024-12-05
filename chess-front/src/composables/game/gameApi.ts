@@ -3,6 +3,8 @@ import { ApiUrlCreateGame, ApiUrlGameIDUser, ApiUrlPieceMove, ApiUrlGame } from 
 import type { GameMoveDTO } from '@/modelDTO/GameMove.dto';
 import type { GameModel } from '@/model/Game.model';
 import type { CreateGameDTO } from '@/modelDTO/CreateGame.dto';
+import type { PossibleMoveDTO } from '@/modelDTO/PossibleMove.dto';
+import type { PossibleMove } from '@/model/PossibleMove.model';
 
 export function useGameApi() {
   return {
@@ -20,6 +22,10 @@ export function useGameApi() {
     },
     async getCurrentGame(): Promise<GameModel> {
       const res = await axiosInstance.get<GameModel>(`${ApiUrlGame}`);
+      return res.data;
+    },
+    async getPossibleMoves(move: PossibleMoveDTO): Promise<PossibleMove[]> {
+      const res = await axiosInstance.post<PossibleMove[]>(`${ApiUrlGame}${ApiUrlPieceMove}`, move);
       return res.data;
     }
   };
