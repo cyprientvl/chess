@@ -1,6 +1,7 @@
-import { checkKingStatus, isInBounds, movePiece, upgradePiece } from "../algorithm/algorithm";
+import { checkTowerUpgrade, isInBounds, movePiece, upgradePiece, verifyKingStatus, verifyPieceToPromote } from "../algorithm/algorithm";
 import { createGameStorage, deleteGameStorage, getGameStorage } from "../algorithm/chessStorage";
 import { GameActionDTO } from "../dto/gameAction.dto";
+import { Action } from "../enums/action.enum";
 import { PieceType } from "../enums/piece.enum";
 import { CreateGameBody } from "../interfaces/createGameBody.interface";
 import { MovePiece } from "../interfaces/movePiece.interface";
@@ -61,53 +62,50 @@ export class GameService {
 
     async movePiece(userId: number, movePieceBody: MovePiece){
         let game = getGameStorage(userId);
-        if(game){
+        if(!game) return undefined
 
-            if(game.isPieceToPromote()){
-                let action = "PROMOTION" + game.getPieceToPromote().color;
-                
-                return { success: true, result: [action], 
-                    listCase: game.getListCase(), 
-                    turn: game.getUserTurn(), 
-                    pieceKilled: game.getPieceKilled() }
-            }
+        let actionResult: string[] = []
 
-            const result = movePiece(game, movePieceBody.i, movePieceBody.j, movePieceBody.toI, movePieceBody.toJ);
+        const verifyPromote = verifyPieceToPromote(game); 
+        actionResult.push(verifyPromote);
 
-            let returnAction: ReturnAction = { success: true, result: [], 
+        if(verifyPromote != Action.NOPROMOTION){
+            return { success: true, result: actionResult, 
                 listCase: game.getListCase(), 
                 turn: game.getUserTurn(), 
                 pieceKilled: game.getPieceKilled() }
+        }
 
-            result.result.forEach(e => returnAction.result.push(e))
+        const resultMovePiece = movePiece(game, movePieceBody.i, movePieceBody.j, movePieceBody.toI, movePieceBody.toJ);
+        resultMovePiece.result.forEach(e => actionResult.push(e))
 
-            game.getListCase().forEach(element=>{
-                element.forEach(c =>{
-                    if(c.piece && c.piece.pieceType == 'KING'){
-                        const r = checkKingStatus(game.getListCase(), c.piece);
-                        returnAction.result.push(r.status+":"+r.king.color);
-                        if(r.status == 'KINGLOSE'){
-                            deleteGameStorage(userId);
-                        }
-                    }
-                })
-            })
+        const resultCheckTowerUpgrade = checkTowerUpgrade(game, movePieceBody.toI, movePieceBody.toJ);
+        actionResult.push(resultCheckTowerUpgrade)
 
-            if(!result.success){
-                returnAction.success = false;
-                return returnAction;
-            }
+        game.nextTurn();
 
-            await GameAction.create({game_id: game.getIdInDB(), 
-                from: movePieceBody.i+":"+movePieceBody.j, 
-                piece: "", 
-                to: movePieceBody.toI+":"+movePieceBody.toJ, 
-                result: returnAction.result.join(",")}); 
+        const kingStatus = verifyKingStatus(game, userId);
+        kingStatus.forEach(e => actionResult.push(e))
 
+        let returnAction: ReturnAction = { success: true, result: actionResult, 
+            listCase: game.getListCase(), 
+            turn: game.getUserTurn(), 
+            pieceKilled: game.getPieceKilled() }
+
+
+        if(!resultMovePiece.success){
+            returnAction.success = false;
             return returnAction;
         }
 
-        return undefined;
+        await GameAction.create({game_id: game.getIdInDB(), 
+            from: movePieceBody.i+":"+movePieceBody.j, 
+            piece: "", 
+            to: movePieceBody.toI+":"+movePieceBody.toJ, 
+            result: returnAction.result.join(",")}); 
+
+        return returnAction;
+
     }
 
     getUserGameId(userId: number){

@@ -1,81 +1,15 @@
 import { Action } from "../enums/action.enum";
 import { Color } from "../enums/color.enum";
 import { PieceType } from "../enums/piece.enum";
-import { MovePiece } from "../interfaces/movePiece.interface";
-import { ReturnAction } from "../interfaces/returnAction.interface";
 import { GameAction } from "../models/gameAction.model";
-import { Case } from "./case";
 import { deleteGameStorage, getGameStorage } from "./chessStorage";
 import { Game } from "./game";
 import { King } from "./Piece/king";
 import { Pawn } from "./Piece/pawn";
 
-export function checkKingStatus(listCase: Case[][], king: King): { king: King, status: string } {
-    if (isKingThreatened(listCase, king)) {
-
-        if (canKingMove(listCase, king)) {
-            return { king: king, status: Action['KINGMOVE'] }; 
-        } else {
-            return { king: king, status: Action['KINGLOSE'] };
-        }
-    }
-    return { king: king, status: Action['KINGSAFE'] };
-}
-
-function isKingThreatened(listCase: Case[][], king: King): boolean {
-    for (let row of listCase) {
-        for (let c of row) {
-            if (c.piece && c.piece.color !== king.color) { 
-                if (c.piece.move(king.i, king.j, listCase)) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
-}
-
-function canKingMove(listCase: Case[][], king: King): boolean {
-    const directions = [
-        { di: -1, dj: -1 }, { di: -1, dj: 0 }, { di: -1, dj: 1 },
-        { di: 0, dj: -1 },                  { di: 0, dj: 1 },
-        { di: 1, dj: -1 }, { di: 1, dj: 0 }, { di: 1, dj: 1 }
-    ];
-
-    for (let { di, dj } of directions) {
-        const newI = king.i + di;
-        const newJ = king.j + dj;
-
-        if (isInBounds(newI, newJ) && !isOccupiedByOwnPiece(listCase, king, newI, newJ)) {
-            let isSafe = true;
-
-            for (let row of listCase) {
-                for (let c of row) {
-                    if (c.piece && c.piece.color !== king.color && c.piece.move(newI, newJ, listCase)) {
-                        isSafe = false;
-                        break;
-                    }
-                }
-                if (!isSafe) break;
-            }
-            if (isSafe) return true; 
-        }
-    }
-    return false; 
-}
 
 export function isInBounds(i: number, j: number): boolean {
     return i >= 0 && i < 8 && j >= 0 && j < 8;
-}
-
-function isOccupiedByOwnPiece(listCase: Case[][], king: King, i: number, j: number): boolean {
-    const piece = listCase[i][j].piece;
-    return piece != undefined && piece.color === king.color;
-}
-
-function nextTurn(game: Game){
-    if(game.getUserTurn() == 'WHITE') return game.setUserTurn(Color['BLACK']);
-    if(game.getUserTurn() == 'BLACK') return game.setUserTurn(Color['WHITE']);
 }
 
 export function movePiece(game: Game, i: number, j: number, toI: number, toJ: number): { success: boolean, result: string[] }{
@@ -99,7 +33,7 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
         copyPiece.j = toJ
 
         if(copyPiece instanceof King){
-            const checkKIngStatus = checkKingStatus(listCase, copyPiece);
+            const checkKIngStatus = King.checkKingStatus(listCase, copyPiece);
             if(checkKIngStatus.status != Action.KINGSAFE) return {success: false, result: []};
         }
     }else{
@@ -126,15 +60,11 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
     piece.i = toI;
     piece.j = toJ;
 
-    const resultCheckTowerUpgrade = checkTowerUpgrade(game, toI, toJ);
-    resultAction.push(resultCheckTowerUpgrade)
-    
-    nextTurn(game);
 
     return {success: true, result: resultAction}
 }
 
-function checkTowerUpgrade(game: Game, i: number, j: number): string {
+export function checkTowerUpgrade(game: Game, i: number, j: number): string {
     const piece = game.getListCase()[i][j].piece;
     
     if (!piece || !(piece instanceof Pawn)) return Action['NOPROMOTION'];
@@ -152,16 +82,15 @@ function checkTowerUpgrade(game: Game, i: number, j: number): string {
 }
 
 export async function upgradePiece(userId: number, piece: PieceType){
-        
     const game = getGameStorage(userId);
 
     if(!game) return {success: false}
-    
+
     if(game.isPieceToPromote() && piece != PieceType.PAWN){
 
         let pieceToPromote = game.getPieceToPromote();
         const index = game.getPieceKilled().findIndex(p => p.color == pieceToPromote.color && piece == p.pieceType);
-        
+
         if(index == -1) return {success: false}
         game.getPieceKilled().slice(index);
 
@@ -174,7 +103,7 @@ export async function upgradePiece(userId: number, piece: PieceType){
             gameAction.piece = piece + ":" + pieceToPromote.color;
             await gameAction.save();
         }
-        
+
         game.setPieceToPromote(-1, -1, Color.WHITE)
         return {success: true}
     }
@@ -189,10 +118,35 @@ export function verifyKingBeforeMove(game: Game): boolean{
     game.getListCase().forEach(element=>{
         element.forEach(c =>{
             if(c.piece && c.piece.pieceType == 'KING' && c.piece.color == game.getUserTurn()){
-                const r = checkKingStatus(game.getListCase(), c.piece);
+                const r = King.checkKingStatus(game.getListCase(), c.piece);
                 result = r.status == Action.KINGSAFE
             }
         })
     })
     return result;
+}
+
+export function verifyPieceToPromote(game: Game): string{
+    if(game.isPieceToPromote()){
+        let action = "PROMOTION" + game.getPieceToPromote().color;
+        return action
+    }
+    return "NOPROMOTION"
+}
+
+export function verifyKingStatus(game: Game, userId: number){
+    let returnAction: string[] = [];
+
+    game.getListCase().forEach(element=>{
+        element.forEach(c =>{
+            if(c.piece && c.piece.pieceType == 'KING'){
+                const r = King.checkKingStatus(game.getListCase(), c.piece);
+                returnAction.push(r.status+":"+r.king.color);
+                if(r.status == 'KINGLOSE'){
+                    deleteGameStorage(userId);
+                }
+            }
+        })
+    })
+    return returnAction;
 }
