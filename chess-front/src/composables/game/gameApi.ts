@@ -1,10 +1,11 @@
 import axiosInstance from '@/config/AxiosConfig';
-import { ApiUrlCreateGame, ApiUrlGameIDUser, ApiUrlPieceMove, ApiUrlGame, ApiUrlPossibleMove } from '@/constants/ApiUrl';
+import { ApiUrlCreateGame, ApiUrlGameIDUser, ApiUrlPieceMove, ApiUrlGame, ApiUrlPossibleMove, ApiUrlPromote } from '@/constants/ApiUrl';
 import type { GameMoveDTO } from '@/modelDTO/GameMove.dto';
 import type { GameModel } from '@/model/Game.model';
 import type { CreateGameDTO } from '@/modelDTO/CreateGame.dto';
 import type { PossibleMoveDTO } from '@/modelDTO/PossibleMove.dto';
 import type { PossibleMove } from '@/model/PossibleMove.model';
+import type { GlobalPieceType } from '@/model/Game.model';
 
 export function useGameApi() {
   return {
@@ -26,6 +27,14 @@ export function useGameApi() {
     },
     async getPossibleMoves(move: PossibleMoveDTO): Promise<PossibleMove[]> {
       const res = await axiosInstance.post<PossibleMove[]>(`${ApiUrlGame}${ApiUrlPossibleMove}`, move);
+      return res.data;
+    },
+    async promote(piece: GlobalPieceType): Promise<{ success: boolean }> {
+      const res = await axiosInstance.post<{ success: boolean }>(`${ApiUrlGame}${ApiUrlPromote}`, { piece });
+      return res.data;
+    },
+    async deleteGame(): Promise<{ success: boolean }> {
+      const res = await axiosInstance.delete<{ success: boolean }>(`${ApiUrlGame}`);
       return res.data;
     }
   };
