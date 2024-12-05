@@ -41,4 +41,4 @@ export enum ResultPossible {
   NOPROMOTION = 'NOPROMOTION'
 }
 
-export type Result = `${Color}:${ResultPossible}`[]
+export type Result = `${ResultPossible}:${Color}:`[]

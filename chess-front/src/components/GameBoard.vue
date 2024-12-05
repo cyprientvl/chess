@@ -238,10 +238,9 @@ const handlePromotion = async (pieceType: GlobalPieceType) => {
 const handleGameResult = (game: GameModel, row: number, col: number) => {
   // Gestion des résultats multiples
   if (game.result && game.result.length > 0) {
-    console.log('Results:', game.result);
     for (const resultStr of game.result) {
-      const [color, result] = resultStr.split(':') as [Color, ResultPossible];
-
+      const [result, color] = resultStr.split(':') as [ResultPossible, Color];
+      console.log('Color:', color, 'Result:', result);
       switch (result) {
         case ResultPossible.KINGLOSE:
           gameOverMessage.value = `Les ${color === Color.BLACK ? 'Blancs' : 'Noirs'} ont gagné !`;
@@ -260,8 +259,7 @@ const handleGameResult = (game: GameModel, row: number, col: number) => {
           toast.add({
             severity: 'warn',
             summary: 'Attention',
-            detail: 'Votre roi est en danger ! Vous devez le déplacer.',
-            life: 5000
+            detail: 'Votre roi est en danger ! Vous devez le déplacer.'
           });
           break;
       }
