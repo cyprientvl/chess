@@ -54,6 +54,14 @@ export class GameController extends Controller {
       return {gameId: gameService.getUserGameId(req.user.id)};
     }
 
+    @Post("/piece/possible-move")
+    @Security("jwt", [])
+    public async getPossibleMove(@Body() body: {i: number, j: number}, @Request() req: ExpressRequest){
+      const move = await gameService.getPossibleMove(req.user.id, body.i, body.j);
+      if(!move) this.setStatus(401);
+      return move;
+    }
+
     @Post("/piece/upgrade")
     public async upgradePiece(@Request() req: ExpressRequest, @Body() body: {piece: PieceType}){
       return await gameService.upgradePiece(req.user.id, body.piece);

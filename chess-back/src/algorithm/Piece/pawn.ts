@@ -4,6 +4,39 @@ import { Case } from "../case";
 import { Color } from "../../enums/color.enum";
 
 export class Pawn extends Piece{
+    possibleMove(listCase: Case[][]): { i: number; j: number; }[] {
+        const moves: { i: number, j: number }[] = [];
+        const direction = this.color === Color.WHITE ? -1 : 1;
+        
+        if (listCase[this.i + direction] && !listCase[this.i + direction][this.j].piece) {
+            moves.push({ i: this.i + direction, j: this.j });
+        }
+
+        if (
+            (this.color === Color.WHITE && this.i === 6) || 
+            (this.color === Color.BLACK && this.i === 1)
+        ) {
+            if (
+                !listCase[this.i + direction][this.j].piece && 
+                !listCase[this.i + 2 * direction][this.j].piece
+            ) {
+                moves.push({ i: this.i + 2 * direction, j: this.j });
+            }
+        }
+
+        if (this.j - 1 >= 0 && listCase[this.i + direction][this.j - 1].piece && 
+            listCase[this.i + direction][this.j - 1].piece?.color !== this.color) {
+            moves.push({ i: this.i + direction, j: this.j - 1 });
+        }
+
+        if (this.j + 1 < listCase[this.i].length && listCase[this.i + direction][this.j + 1].piece && 
+            listCase[this.i + direction][this.j + 1].piece?.color !== this.color) {
+            moves.push({ i: this.i + direction, j: this.j + 1 });
+        }
+
+        return moves;
+    }
+
     movePawn(toI: number, toJ: number): boolean {
         const direction = this.color === Color.WHITE ? -1 : 1; 
         const startRow = this.color === Color.WHITE ? 6 : 1; 

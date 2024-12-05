@@ -64,7 +64,7 @@ function canKingMove(listCase: Case[][], king: King): boolean {
     return false; 
 }
 
-function isInBounds(i: number, j: number): boolean {
+export function isInBounds(i: number, j: number): boolean {
     return i >= 0 && i < 8 && j >= 0 && j < 8;
 }
 

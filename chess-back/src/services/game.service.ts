@@ -1,4 +1,4 @@
-import { checkKingStatus, movePiece, upgradePiece } from "../algorithm/algorithm";
+import { checkKingStatus, isInBounds, movePiece, upgradePiece } from "../algorithm/algorithm";
 import { createGameStorage, deleteGameStorage, getGameStorage } from "../algorithm/chessStorage";
 import { PieceType } from "../enums/piece.enum";
 import { CreateGameBody } from "../interfaces/createGameBody.interface";
@@ -111,6 +111,22 @@ export class GameService {
     async delete(userId: number){
         deleteGameStorage(userId);
         return {success: true};
+    }
+
+
+    getPossibleMove(userId: number, i: number, j: number){
+        let game = getGameStorage(userId);
+        if(!game) return;
+
+        if(!isInBounds(i, j)) return;
+        
+        let listCase = game.getListCase();
+        let piece = listCase[i][j].piece
+
+        if(!piece) return;
+
+        return piece.possibleMove(game.getListCase());
+        
     }
 }
 

@@ -3,6 +3,100 @@ import { Piece } from "./piece";
 import { Case } from "../case";
 
 export class Queen extends Piece{
+    possibleMove(listCase: Case[][]): { i: number; j: number; }[] {
+        const moves: { i: number, j: number }[] = [];
+
+        for (let i = this.i - 1; i >= 0; i--) {
+            const currentCase = listCase[i][this.j];
+            if (currentCase.piece) {
+                if (currentCase.piece.color !== this.color) {
+                    moves.push({ i, j: this.j }); 
+                }
+                break; 
+            }
+            moves.push({ i, j: this.j });
+        }
+
+        for (let i = this.i + 1; i < listCase.length; i++) {
+            const currentCase = listCase[i][this.j];
+            if (currentCase.piece) {
+                if (currentCase.piece.color !== this.color) {
+                    moves.push({ i, j: this.j }); 
+                }
+                break; 
+            }
+            moves.push({ i, j: this.j });
+        }
+
+        for (let j = this.j - 1; j >= 0; j--) {
+            const currentCase = listCase[this.i][j];
+            if (currentCase.piece) {
+                if (currentCase.piece.color !== this.color) {
+                    moves.push({ i: this.i, j }); 
+                }
+                break; 
+            }
+            moves.push({ i: this.i, j });
+        }
+
+        for (let j = this.j + 1; j < listCase[this.i].length; j++) {
+            const currentCase = listCase[this.i][j];
+            if (currentCase.piece) {
+                if (currentCase.piece.color !== this.color) {
+                    moves.push({ i: this.i, j }); 
+                }
+                break;
+            }
+            moves.push({ i: this.i, j });
+        }
+
+        for (let i = this.i - 1, j = this.j - 1; i >= 0 && j >= 0; i--, j--) {
+            const currentCase = listCase[i][j];
+            if (currentCase.piece) {
+                if (currentCase.piece.color !== this.color) {
+                    moves.push({ i, j }); 
+                }
+                break;
+            }
+            moves.push({ i, j });
+        }
+
+        for (let i = this.i - 1, j = this.j + 1; i >= 0 && j < listCase[this.i].length; i--, j++) {
+            const currentCase = listCase[i][j];
+            if (currentCase.piece) {
+                if (currentCase.piece.color !== this.color) {
+                    moves.push({ i, j }); 
+                }
+                break; 
+            }
+            moves.push({ i, j });
+        }
+
+        for (let i = this.i + 1, j = this.j - 1; i < listCase.length && j >= 0; i++, j--) {
+            const currentCase = listCase[i][j];
+            if (currentCase.piece) {
+                if (currentCase.piece.color !== this.color) {
+                    moves.push({ i, j });
+                }
+                break; 
+            }
+            moves.push({ i, j });
+        }
+
+        for (let i = this.i + 1, j = this.j + 1; i < listCase.length && j < listCase[this.i].length; i++, j++) {
+            const currentCase = listCase[i][j];
+            if (currentCase.piece) {
+                if (currentCase.piece.color !== this.color) {
+                    moves.push({ i, j }); 
+                }
+                break; 
+            }
+            moves.push({ i, j });
+        }
+
+        return moves;
+    }
+
     move(toI: number, toJ: number, listCase: Case[][]): boolean {
         const diffI = toI - this.i;
         const diffJ = toJ - this.j;
