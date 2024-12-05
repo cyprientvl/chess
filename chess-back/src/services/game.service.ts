@@ -63,6 +63,15 @@ export class GameService {
         let game = getGameStorage(userId);
         if(game){
 
+            if(game.isPieceToPromote()){
+                let action = "PROMOTION" + game.getPieceToPromote().color;
+                
+                return { success: true, result: [action], 
+                    listCase: game.getListCase(), 
+                    turn: game.getUserTurn(), 
+                    pieceKilled: game.getPieceKilled() }
+            }
+
             const result = movePiece(game, movePieceBody.i, movePieceBody.j, movePieceBody.toI, movePieceBody.toJ);
 
             let returnAction: ReturnAction = { success: true, result: [], 
