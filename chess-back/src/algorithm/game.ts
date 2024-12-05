@@ -135,6 +135,10 @@ export class Game{
         return this.pieceKilled.filter(f => f.color == color);
     }
 
+    public setPieceKilled(pieces: Piece[]){
+        this.pieceKilled = pieces;
+    }
+
     public getUserTurn(){
         return this.userTurn;
     }
