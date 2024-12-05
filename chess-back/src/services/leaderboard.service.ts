@@ -9,24 +9,21 @@ export class LeaderboardService {
         const users = await User.findAll();
 
         const whereClause: WhereOptions<GameAttributes> = {
-            owner_win: true,
+            owner_win: {
+                [Op.ne]: undefined,
+            },
         };
 
-
-        // Obtenir tous les jeux avec leurs gagnants
         const games = await Game.findAll({
             where: whereClause
         });
 
-        // Calculer le nombre de victoires par utilisateur
         const userVictories = new Map<string, number>();
 
-        // Initialiser tous les utilisateurs avec 0 victoires
         users.forEach(user => {
             userVictories.set(user.username, 0);
         });
 
-        // Compter les victoires
         games.forEach(game => {
             if (game.owner_win) {
                 const winner = game.owner;
@@ -52,6 +49,11 @@ export class LeaderboardService {
 
     public async getUserGames(userId: number): Promise<GameDTO[]>{
         const game = await Game.findAll({where: { owner_id: userId }});
+        return game;
+    }
+
+    public async getLeaderboardUser(userId: number){
+        const game = await Game.findAll({where: { owner_id: userId, public: true }});
         return game;
     }
 

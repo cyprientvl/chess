@@ -10,16 +10,20 @@ export class LeaderboardController extends Controller {
     @Get("/")
     public async getLeaderboard(): Promise<LeaderboardDTO | null> {
         const leaderboard = await leaderboardService.getLeaderboard();
-
         return leaderboard;
     }
 
-    @Get("/games")
+    @Get("/history")
     @Security("jwt", [])
     public async getUserGame(@Request() req: ExpressRequest){
         const games = await leaderboardService.getUserGames(req.user.id);
         return games;
     }
 
+    @Get("/history/{userId}")
+    public async getLeaderboardUser(@Request() req: ExpressRequest, @Path() userId: number){
+        const games = await leaderboardService.getLeaderboardUser(userId);
+        return games;
+    }
 
 }

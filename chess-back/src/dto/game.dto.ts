@@ -7,7 +7,7 @@ export interface GameDTO {
   id: number;
   owner: UserDTO;
   public: boolean;
-  owner_win: boolean;
+  owner_win: number;
   creation_date: number;
   date_end?: number;
   owner_color: Color;

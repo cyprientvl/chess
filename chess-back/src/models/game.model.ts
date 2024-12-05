@@ -9,7 +9,7 @@ export interface GameAttributes {
   owner?: User;
   public: boolean;
   owner_id: number;
-  owner_win?: boolean;
+  owner_win?: number;
   creation_date: number;
   date_end?: number;
   owner_color: Color;
@@ -26,7 +26,7 @@ export class Game
   public creation_date!: number;
   public date_end!: number;
   public owner_color!: Color
-  public owner_win!: boolean;
+  public owner_win!: number;
   public gameAction?: GameAction[];
 }
 
