@@ -6,7 +6,7 @@ import type { CreateGameDTO } from '@/modelDTO/CreateGame.dto';
 import type { PossibleMoveDTO } from '@/modelDTO/PossibleMove.dto';
 import type { PossibleMove } from '@/model/PossibleMove.model';
 import type { PieceType } from '@/model/Pieces.model';
-import type { ReplayStep } from '@/model/Replay.model';
+import type { ChessReplay } from '@/model/Replay.model';
 
 export function useGameApi() {
   return {
@@ -38,8 +38,8 @@ export function useGameApi() {
       const res = await axiosInstance.delete<{ success: boolean }>(`${ApiUrlGame}`);
       return res.data;
     },
-    async getReplay(gameId: number): Promise<ReplayStep[]> {
-      const res = await axiosInstance.get<ReplayStep[]>(`${ApiUrlGame}${ApiUrlReplay}/${gameId}`);
+    async getReplay(gameId: number): Promise<ChessReplay> {
+      const res = await axiosInstance.get<ChessReplay>(`${ApiUrlGame}${ApiUrlReplay}/${gameId}`);
       return res.data;
     }
   };

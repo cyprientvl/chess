@@ -5,7 +5,7 @@ import type { PossibleMoveDTO } from '@/modelDTO/PossibleMove.dto';
 import type { CreateGameDTO } from '@/modelDTO/CreateGame.dto';
 import type { PossibleMove } from '@/model/PossibleMove.model';
 import type { PieceType } from '@/model/Pieces.model';
-import type { ReplayStep } from '@/model/Replay.model';
+import type { ChessReplay } from '@/model/Replay.model';
 
 const gameApi = useGameApi();
 export function useGameService() {
@@ -31,7 +31,7 @@ export function useGameService() {
     async deleteGame(): Promise<{ success: boolean }> {
       return gameApi.deleteGame();
     },
-    async getReplay(gameId: number): Promise<ReplayStep[]> {
+    async getReplay(gameId: number): Promise<ChessReplay> {
       return gameApi.getReplay(gameId);
     }
   };
