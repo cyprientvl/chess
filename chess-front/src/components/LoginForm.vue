@@ -102,6 +102,7 @@ import Password from 'primevue/password';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import { useUserService } from '@/composables/user/userService';
+import { AxiosError } from 'axios';
 const { authenticate } = useUserService();
 
 const router = useRouter();
@@ -130,12 +131,21 @@ const login = async () => {
     router.push('/');
 
   } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: error instanceof Error ? error.message : 'Login failed',
-      life: 3000
-    });
+    if (error instanceof AxiosError && error?.response?.status === 404) {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'User not found',
+        life: 3000
+      });
+    } else {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Login failed',
+        life: 3000
+      });
+    }
   } finally {
     loading.value = false;
   }

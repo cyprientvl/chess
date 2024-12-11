@@ -62,6 +62,7 @@ import Password from 'primevue/password';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import { useUserService } from '@/composables/user/userService';
+import { AxiosError } from 'axios';
 const { register } = useUserService();
 
 const router = useRouter();
@@ -96,12 +97,22 @@ const registerForm = async () => {
     router.push('/');
 
   } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: error instanceof Error ? error.message : 'Register failed',
-      life: 3000
-    });
+    if (error instanceof AxiosError && error?.response?.status === 401) {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'User already exists',
+        life: 3000
+      });
+    }
+    else {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: error instanceof Error ? error.message : 'Register failed',
+        life: 3000
+      });
+    }
   } finally {
     loading.value = false;
   }

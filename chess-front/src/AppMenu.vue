@@ -1,31 +1,46 @@
 <template>
   <aside class="sidebar">
-    <!-- Logo Section -->
     <div class="logo">
-      <img src="/assets/img/logo.png" alt="Logo" />
+      <router-link to="/">
+        <img src="/assets/img/logo.png" alt="Logo" />
+      </router-link>
     </div>
 
-    <!-- Navigation Section -->
     <nav>
       <ul>
-        <li v-for="(item, index) in items" :key="index">
-          <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+        <li>
+          <router-link v-slot="{ href, navigate }" to="/" custom>
             <a :href="href" @click="navigate">
-              <img v-if="item.icon" :src="'/assets/img/' + item.icon" alt="nav-icon" />
-              <p>{{ item.label }}</p>
+              <img src="/assets/img/nav-item-1.png" alt="nav-icon" />
+              <p>Accueil</p>
             </a>
           </router-link>
-          <a v-else>
-            <img v-if="item.icon" :src="'/assets/img/' + item.icon" alt="nav-icon" />
-            <p>{{ item.label }}</p>
-          </a>
         </li>
+
         <li>
+          <router-link v-slot="{ href, navigate }" to="/leaderboard" custom>
+            <a :href="href" @click="navigate">
+              <img src="/assets/img/nav-item-1.png" alt="nav-icon" />
+              <p>Leaderboard</p>
+            </a>
+          </router-link>
+        </li>
+
+        <li v-if="isAuthenticated">
+          <router-link v-slot="{ href, navigate }" to="/account" custom>
+            <a :href="href" @click="navigate">
+              <img src="/assets/img/nav-item-1.png" alt="nav-icon" />
+              <p>Compte</p>
+            </a>
+          </router-link>
+        </li>
+
+        <li v-if="!isAuthenticated">
           <a class="create-account" href="/register">
             Créer un compte
           </a>
         </li>
-        <li>
+        <li v-if="!isAuthenticated">
           <a class="login-btn" href="/login">
             Se connecter
           </a>
@@ -36,23 +51,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { useAuthStore } from '@/stores/authStore';
+import { storeToRefs } from 'pinia';
 
-const items = ref([
-  {
-    label: 'Accueil',
-    icon: 'nav-item-1.png',
-    route: '/',
-  },
-  {
-    label: 'Leaderboard',
-    icon: 'nav-item-1.png',
-    route: '/leaderboard'
-  },
-  {
-    label: 'Compte',
-    icon: 'nav-item-1.png',
-    route: '/account'
-  }
-]);
+const authStore = useAuthStore();
+const { isAuthenticated } = storeToRefs(authStore);
+
 </script>
