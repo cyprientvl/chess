@@ -281,6 +281,14 @@ nav li{
 	font-size: 15px;
 }
 
+.guest{
+	color: white;
+	font-weight: 500;
+}
+.colot-turn{
+	color: white;
+}
+
 .users-seconde .user-color{
 	text-align: right;
 

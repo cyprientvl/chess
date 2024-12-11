@@ -7,6 +7,27 @@
     </template>
 
     <div>
+    <div class="list-users">
+      <div class="users">
+        <img src="https://www.chess.com/bundles/web/images/user-image.svg">  
+        <div>
+          <p class="guest">Guest</p>
+          <p class="user-color">Blanc</p>     
+        </div>
+      </div>
+
+      <h1 class="colot-turn">C'est aux {{ colorPlayer }} de jouer !</h1>
+
+      <div class="users users-seconde">
+        <img src="https://www.chess.com/bundles/web/images/user-image.svg">  
+        <div>
+          <p class="guest">Guest</p>
+          <p class="user-color">Noir</p>     
+        </div>
+
+      </div>
+    </div>
+
       <div id="main">
       <div id="pieceKilled">
         <h2>Pièces tuées</h2>
@@ -74,28 +95,9 @@
       
     </div>
 
-    <div class="list-users">
-      <div class="users">
-        <img src="https://www.chess.com/bundles/web/images/user-image.svg">  
-        <div>
-          <p>Guest</p>
-          <p class="user-color">Blanc</p>     
-        </div>
-      </div>
-
-      <h1>C'est aux {{ colorPlayer }} de jouer !</h1>
-
-      <div class="users users-seconde">
-        <img src="https://www.chess.com/bundles/web/images/user-image.svg">  
-        <div>
-          <p>Guest</p>
-          <p class="user-color">Noir</p>     
-        </div>
-
-      </div>
-    </div>
+    
       
-    </div>
+  </div>
    
 
     
@@ -350,7 +352,19 @@ const removePieceColor = (pieceType: FullPieceProperty): PieceType => {
 }
 
 .possible-move {
-  background-color: rgba(255, 255, 0, 0.5) !important;
+  position: relative
+}
+
+.possible-move::after{
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  background-color: #606060;
+  transform: translateX(-50%) translateY(-50%);
 }
 
 .selected-cell {
@@ -380,6 +394,8 @@ const removePieceColor = (pieceType: FullPieceProperty): PieceType => {
   width: 60px;
   height: 60px;
   cursor: pointer;
+  position: relative;
+  z-index: 1;
 }
 
 .piece svg {
