@@ -69,7 +69,7 @@ export class GameService {
             if(killedAction){
                 let pieceType = killedAction.split(":")[1]
                 let color = killedAction.split(":")[2]
-                listKilledPiece.push({color, pieceType, i: toI, j: toJ, step: index+1})
+                listKilledPiece.push({color, pieceType, i: toI, j: toJ})
             }
 
             
@@ -81,9 +81,14 @@ export class GameService {
                 if(index != -1){
                     listKilledPiece.splice(index, 1);
                 }
-                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: piece, color: color, pieceKilled: [...listKilledPiece]})
+                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: piece, color: color, pieceKilled: [...listKilledPiece],
+                    step: index+1
+                })
             }else{
-                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: undefined, color: undefined, pieceKilled: [...listKilledPiece]})
+                actionList.push({i: i, j: j, toI: toI, toJ: toJ, 
+                    piece: undefined, color: undefined, pieceKilled: [...listKilledPiece],
+                    step: index+1
+                })
             }
 
         })
