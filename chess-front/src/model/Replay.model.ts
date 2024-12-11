@@ -14,4 +14,5 @@ export interface ReplayStep {
   piece: PieceType | undefined;
   color: Color | undefined;
   pieceKilled: Piece | undefined;
+  step: number;
 }
