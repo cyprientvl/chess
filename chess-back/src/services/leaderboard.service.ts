@@ -52,7 +52,7 @@ export class LeaderboardService {
 
     public async getLeaderboardUser(userId: number): Promise<GameDTO[]>{
         const games = await Game.findAll({where: { owner_id: userId, public: true }, 
-            include: [{ model: User, as: 'user' }]}
+            include: [{ model: User, as: 'owner' }]}
         );
         return games;
     }
