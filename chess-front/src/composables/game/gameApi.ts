@@ -1,11 +1,12 @@
 import axiosInstance from '@/config/AxiosConfig';
-import { ApiUrlCreateGame, ApiUrlGameIDUser, ApiUrlPieceMove, ApiUrlGame, ApiUrlPossibleMove, ApiUrlPromote } from '@/constants/ApiUrl';
+import { ApiUrlCreateGame, ApiUrlGameIDUser, ApiUrlPieceMove, ApiUrlGame, ApiUrlPossibleMove, ApiUrlPromote, ApiUrlReplay } from '@/constants/ApiUrl';
 import type { GameMoveDTO } from '@/modelDTO/GameMove.dto';
 import type { GameModel } from '@/model/Game.model';
 import type { CreateGameDTO } from '@/modelDTO/CreateGame.dto';
 import type { PossibleMoveDTO } from '@/modelDTO/PossibleMove.dto';
 import type { PossibleMove } from '@/model/PossibleMove.model';
 import type { PieceType } from '@/model/Pieces.model';
+import type { ReplayStep } from '@/model/Replay.model';
 
 export function useGameApi() {
   return {
@@ -35,6 +36,10 @@ export function useGameApi() {
     },
     async deleteGame(): Promise<{ success: boolean }> {
       const res = await axiosInstance.delete<{ success: boolean }>(`${ApiUrlGame}`);
+      return res.data;
+    },
+    async getReplay(gameId: number): Promise<ReplayStep[]> {
+      const res = await axiosInstance.get<ReplayStep[]>(`${ApiUrlGame}${ApiUrlReplay}/${gameId}`);
       return res.data;
     }
   };

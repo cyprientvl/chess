@@ -14,7 +14,7 @@
           </div>
           <div v-else>
             <DataTable :value="history" tableStyle="min-width: 50rem" selectionMode="single" paginator :rows="10"
-              :rowsPerPageOptions="[5, 10, 20]">
+              @rowSelect="goToReplay" :rowsPerPageOptions="[5, 10, 20]">
               <Column field="id" header="ID" :sortable="true" />
               <Column field="owner.username" header="Joueur" :sortable="true" />
               <Column field="public" header="Visibilité" :sortable="true">
@@ -30,7 +30,7 @@
                   <div class="flex align-items-center">
                     <span :class="data.owner_color === 'WHITE' ? 'text-gray-800' : 'text-gray-900'">
                       {{ data.owner_color === 'WHITE' ? '⚪' : '⚫' }}
-                      {{ data.owner_color }}
+                      {{ data.owner_color === 'WHITE' ? 'Blanc' : 'Noir' }}
                     </span>
                   </div>
                 </template>
@@ -63,7 +63,6 @@ import Toast from 'primevue/toast';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import router from '@/router';
-
 import type { HistoryModel } from '@/model/History.model';
 import { useLeaderboardService } from '@/composables/leaderboard/leaderboardService';
 
@@ -104,6 +103,10 @@ const loadHistory = async () => {
       life: 3000
     });
   }
+};
+
+const goToReplay = (event: { data: HistoryModel }) => {
+  router.push('/replay/' + event.data.id);
 };
 
 onMounted(() => {

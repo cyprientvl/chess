@@ -11,6 +11,7 @@ export const ApiUrlPossibleMove = `/piece/possible-move`;
 export const ApiUrlGameIDUser = '/current-game';
 export const ApiUrlCreateGame = '/create';
 export const ApiUrlPromote = '/piece/upgrade';
+export const ApiUrlReplay = '/replay';
 
 // leaderboard
 export const ApiUrlLeaderboard = '/leaderboards';
