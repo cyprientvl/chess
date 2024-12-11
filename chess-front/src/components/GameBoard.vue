@@ -9,7 +9,7 @@
     <div>
     <div class="list-users">
       <div class="users">
-        <img src="https://www.chess.com/bundles/web/images/user-image.svg">  
+        <img src="/assets/img/user-image.svg">  
         <div>
           <p class="guest">Guest</p>
           <p class="user-color">Blanc</p>     
@@ -19,7 +19,7 @@
       <h1 class="colot-turn">C'est aux {{ colorPlayer }} de jouer !</h1>
 
       <div class="users users-seconde">
-        <img src="https://www.chess.com/bundles/web/images/user-image.svg">  
+        <img src="/assets/img/user-image.svg">  
         <div>
           <p class="guest">Guest</p>
           <p class="user-color">Noir</p>     
@@ -30,15 +30,19 @@
 
       <div id="main">
       <div id="pieceKilled">
-        <h2>Pièces tuées</h2>
-        <div class="flex">
-          <div v-for="piece in blackKilledPieces" :key="piece" class="piece piece-black"
-            v-html="getPieceSVG(`BLACK_${piece}` as FullPieceProperty)">
+        <h2 style="color: white">Pièces tuées</h2>
+        <div class="flex all-piece-killed">
+          <div class="list-piece-killed">
+            <div v-for="piece in blackKilledPieces" :key="piece" class="piece piece-black " 
+              v-html="getPieceSVG(`BLACK_${piece}` as FullPieceProperty)">
+            </div>
           </div>
-
-          <div v-for="piece in whiteKilledPieces" class="piece"
-            v-html="getPieceSVG(`WHITE_${piece}` as FullPieceProperty)" :key="piece">
+          <div class="list-piece-killed">
+            <div v-for="piece in whiteKilledPieces" class="piece list-piece-killed"
+              v-html="getPieceSVG(`WHITE_${piece}` as FullPieceProperty)" :key="piece">
+            </div>
           </div>
+          
         </div>
       </div>
       <div id="damier" class="p-4">
@@ -72,7 +76,7 @@
       </div>
 
       <div class="text-center mt-4">
-        <Button label="Quitter la partie" @click="quitGame" />
+        <Button class="leave-game" label="Quitter la partie" @click="quitGame" />
       </div>
 
       <!-- Modale de promotion -->
@@ -414,6 +418,7 @@ const removePieceColor = (pieceType: FullPieceProperty): PieceType => {
   justify-content: space-around;
   gap: 50px;
   vertical-align: top;
+  margin-top: 50px;
 }
 
 .topleft {

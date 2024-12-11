@@ -301,3 +301,21 @@ nav li{
 .piece img{
 	width: 100%
 }
+
+.all-piece-killed{
+	background-color: rgb(38, 37, 34);
+	border-radius: 5px;
+	justify-content: center;
+	padding: 3px;
+	margin-top: 5px;
+}
+
+.list-piece-killed{
+	display: flex;
+	flex-direction: column;
+}
+
+.leave-game{
+	background-color: #81B64C !important;
+	border: none !important;
+}
