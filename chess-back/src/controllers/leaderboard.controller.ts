@@ -13,7 +13,7 @@ export class LeaderboardController extends Controller {
         return leaderboard;
     }
 
-    @Get("/history")
+    @Get("/history/me")
     @Security("jwt", [])
     public async getUserGame(@Request() req: ExpressRequest){
         const games = await leaderboardService.getUserGames(req.user.id);
