@@ -45,6 +45,7 @@
             
           </div>
         </div>  
+        
         <div id="damier" class="p-4">
 
           <div class="chess-board">
