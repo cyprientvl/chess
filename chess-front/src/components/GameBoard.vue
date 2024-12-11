@@ -7,62 +7,44 @@
     </template>
 
     <div>
-<<<<<<< HEAD
-    <div class="list-users">
-      <div class="users">
-        <img src="/assets/img/user-image.svg">  
-        <div>
-          <p class="guest">Guest</p>
-          <p class="user-color">Blanc</p>     
-        </div>
-      </div>
-
-      <h1 class="colot-turn">C'est aux {{ colorPlayer }} de jouer !</h1>
-
-      <div class="users users-seconde">
-        <img src="/assets/img/user-image.svg">  
-        <div>
-          <p class="guest">Guest</p>
-          <p class="user-color">Noir</p>     
-=======
       <div class="list-users">
         <div class="users">
-          <img src="https://www.chess.com/bundles/web/images/user-image.svg">
+          <img src="/assets/img/user-image.svg">  
           <div>
             <p class="guest">Guest</p>
-            <p class="user-color">Blanc</p>
+            <p class="user-color">Blanc</p>     
           </div>
->>>>>>> a3a6475ab37e52025fae93f31b771261199ce5b7
         </div>
 
         <h1 class="colot-turn">C'est aux {{ colorPlayer }} de jouer !</h1>
 
         <div class="users users-seconde">
-          <img src="https://www.chess.com/bundles/web/images/user-image.svg">
+          <img src="/assets/img/user-image.svg">  
           <div>
             <p class="guest">Guest</p>
-            <p class="user-color">Noir</p>
+            <p class="user-color">Noir</p>     
           </div>
-
         </div>
+          
       </div>
 
       <div id="main">
-      <div id="pieceKilled">
-        <h2 style="color: white">Pièces prises</h2>
-        <div class="flex all-piece-killed">
-          <div class="list-piece-killed">
-            <div v-for="piece in blackKilledPieces" :key="piece" class="piece piece-black " 
-              v-html="getPieceSVG(`BLACK_${piece}` as FullPieceProperty)">
+        <div id="pieceKilled">
+          <h2 style="color: white">Pièces prises</h2>
+          <div class="flex all-piece-killed">
+            <div class="list-piece-killed">
+              <div v-for="piece in blackKilledPieces" :key="piece" class="piece piece-black " 
+                v-html="getPieceSVG(`BLACK_${piece}` as FullPieceProperty)">
+              </div>
             </div>
-          </div>
-          <div class="list-piece-killed">
-            <div v-for="piece in whiteKilledPieces" class="piece list-piece-killed"
-              v-html="getPieceSVG(`WHITE_${piece}` as FullPieceProperty)" :key="piece">
+            <div class="list-piece-killed">
+              <div v-for="piece in whiteKilledPieces" class="piece list-piece-killed"
+                v-html="getPieceSVG(`WHITE_${piece}` as FullPieceProperty)" :key="piece">
+              </div>
             </div>
+            
           </div>
-          
-        </div>
+        </div>  
         <div id="damier" class="p-4">
 
           <div class="chess-board">
