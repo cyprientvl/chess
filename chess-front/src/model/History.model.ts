@@ -1,4 +1,4 @@
-import type { Color } from "./Game.model";
+import type { Color } from "./Pieces.model";
 import type { User } from "./User.model";
 
 export interface HistoryModel {

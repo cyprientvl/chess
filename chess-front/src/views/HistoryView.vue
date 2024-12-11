@@ -1,26 +1,20 @@
 <template>
   <div class="flex justify-content-center align-items-center min-h-screen bg-gray-100">
-    <Card class="w-full md:w-6 lg:w-4">
+    <Card class="w-8">
       <template #title>
         <div class="text-center mb-4">
           <h1>Historique des parties</h1>
         </div>
       </template>
       <template #content>
-        <div class="flex justify-content-center">
+        <div class="flex-col flex justify-content-center">
           <div v-if="loading" class="text-center">
             <ProgressSpinner style="width: 50px; height: 50px" />
           </div>
-          <div v-else class="text-center">
-            <template v-if="gameId === -1">
-              <Button label="Créer une nouvelle partie" icon="pi pi-plus" @click="createGameButton" :loading="creating"
-                class="w-full mb-3" />
-            </template>
-            <template v-else>
-              <Button label="Rejoindre la partie" icon="pi pi-sign-in" @click="joinGame" severity="success"
-                class="w-full mb-3" />
-              <small class="block text-gray-600">Partie en cours : #{{ gameId }}</small>
-            </template>
+          <div v-else>
+            <DataTable :value="history" tableStyle="min-width: 50rem" selectionMode="single">
+              <Column field="creation_date" header="creation_date" :sortable="true" />
+            </DataTable>
           </div>
         </div>
       </template>
@@ -31,82 +25,43 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
 import Card from 'primevue/card';
-import Button from 'primevue/button';
 import ProgressSpinner from 'primevue/progressspinner';
 import Toast from 'primevue/toast';
+import DataTable from 'primevue/datatable';
+import router from '@/router';
 
-import { useGameService } from '@/composables/game/gameService';
-const { getCurrentGameID, createGame } = useGameService();
+import type { HistoryModel } from '@/model/History.model';
 
-const router = useRouter();
+import { useLeaderboardService } from '@/composables/leaderboard/leaderboardService';
+const { getUserHistory } = useLeaderboardService();
+
 const toast = useToast();
-const gameId = ref<number>(-1);
 const loading = ref(true);
-const creating = ref(false);
+const history = ref<HistoryModel[]>([]);
 
-// Vérifier si l'utilisateur a une partie en cours
-const checkUserGame = async () => {
+
+const loadHistory = async () => {
   try {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/login');
-      return;
-    }
-
-    const response = await getCurrentGameID();
-
-    gameId.value = response.gameId;
-  } catch {
-    toast.add({
-      severity: 'error',
-      summary: 'Erreur',
-      detail: 'Impossible de récupérer les informations de la partie',
-      life: 3000
-    });
-  } finally {
+    loading.value = true;
+    const response = await getUserHistory(Number(router.currentRoute.value.params.userId));
+    history.value = response;
     loading.value = false;
-  }
-};
-
-// Créer une nouvelle partie
-const createGameButton = async () => {
-  try {
-    creating.value = true;
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/login');
-      return;
-    }
-
-    await createGame({ isPublic: false, ownerColor: "BLACK" });
-
-    // Rediriger vers la page de jeu avec l'ID reçu
-    router.push(`/game`);
   } catch {
+    loading.value = false;
     toast.add({
       severity: 'error',
       summary: 'Erreur',
-      detail: 'Impossible de créer une nouvelle partie',
+      detail: 'Impossible de récupérer l\'historique des parties',
       life: 3000
     });
-  } finally {
-    creating.value = false;
-  }
-};
-
-// Rejoindre une partie existante
-const joinGame = () => {
-  if (gameId.value > -1) {
-    router.push(`/game`);
   }
 };
 
 // Vérifier la partie au chargement du composant
 onMounted(() => {
-  checkUserGame();
+  loadHistory();
 });
 </script>
 
