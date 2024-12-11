@@ -10,4 +10,5 @@ export interface ReturnGameAction{
     piece: string | undefined
     color: string | undefined
     pieceKilled: Piece[];
+    step: number
 }

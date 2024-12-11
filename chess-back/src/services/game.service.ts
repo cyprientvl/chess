@@ -56,21 +56,23 @@ export class GameService {
         
         let listKilledPiece: any[] = []
 
-        gameActions.forEach(element =>{
+        gameActions.forEach((element, index) =>{
 
             let result = element.result;
             let killedAction = result.split(",").find(e => e.startsWith("KILLED"))
-
-            if(killedAction){
-                let pieceType = killedAction.split(":")[1]
-                let color = killedAction.split(":")[2]
-                listKilledPiece.push({color, pieceType})
-            }
 
             let i = parseInt(element.from.split(":")[0])
             let j = parseInt(element.from.split(":")[1])
             let toI = parseInt(element.to.split(":")[0])
             let toJ = parseInt(element.to.split(":")[1])
+
+            if(killedAction){
+                let pieceType = killedAction.split(":")[1]
+                let color = killedAction.split(":")[2]
+                listKilledPiece.push({color, pieceType, i: toI, j: toJ})
+            }
+
+            
 
             if(element.piece){
                 let piece = element.piece.split(":")[0];
@@ -79,9 +81,14 @@ export class GameService {
                 if(index != -1){
                     listKilledPiece.splice(index, 1);
                 }
-                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: piece, color: color, pieceKilled: [...listKilledPiece]})
+                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: piece, color: color, pieceKilled: [...listKilledPiece],
+                    step: index+1
+                })
             }else{
-                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: undefined, color: undefined, pieceKilled: [...listKilledPiece]})
+                actionList.push({i: i, j: j, toI: toI, toJ: toJ, 
+                    piece: undefined, color: undefined, pieceKilled: [...listKilledPiece],
+                    step: index+1
+                })
             }
 
         })
