@@ -13,7 +13,7 @@ export function useUserService() {
     async register(user: UserDTO) {
       await userApi.register(user);
     },
-    getUsername(){
+    getUsername() {
       const authStore = useAuthStore();
       return authStore.username;
     }
