@@ -1,11 +1,11 @@
 <template>
   <aside class="sidebar">
-    <!-- Logo Section -->
     <div class="logo">
-      <img src="/assets/img/logo.png" alt="Logo" />
+      <router-link to="/">
+        <img src="/assets/img/logo.png" alt="Logo" />
+      </router-link>
     </div>
 
-    <!-- Navigation Section -->
     <nav>
       <ul>
         <li>
