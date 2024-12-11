@@ -14,14 +14,14 @@ export class UserService {
         return await User.findOne({where: {username: username}})
     }
 
-    public async createUser(requestBody: CreateUserBody): Promise<UserDTO>{
+    public async createUser(requestBody: CreateUserBody): Promise<UserDTO | null>{
 
         const {username, password} = requestBody;
 
         const user = await this.getUserByUsername(username);
 
         if(user){
-            throw new Error("user already exist");
+            return null;
         }
 
         const passwordBase64 = Buffer.from(password).toString('base64');

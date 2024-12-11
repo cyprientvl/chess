@@ -20,8 +20,13 @@ export class UserController extends Controller {
   }
 
   @Post("/")
-  public async createUser(@Body() requestBody: CreateUserBody): Promise<UserDTO> {
-    return await userService.createUser(requestBody);
+  public async createUser(@Body() requestBody: CreateUserBody): Promise<UserDTO | null> {
+    const user = await userService.createUser(requestBody);
+    if(!user){
+      this.setStatus(401);
+      return null;
+    }
+    return user;
   }
 
   @Security("jwt", ['user:delete'])
