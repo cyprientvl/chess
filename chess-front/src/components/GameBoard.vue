@@ -48,7 +48,7 @@
 
         <div id="damier" class="p-4">
 
-          <div class="chess-board">
+          <div class="chess-board" :class="[colorPlayer == 'Noirs' ? 'chess-board-rotate' : '']">
             <div v-for="row in 8" :key="'row-' + row" class="flex">
               <div v-for="col in 8" :key="'cell-' + row + '-' + col" :class="[
                 'chess-cell cursor-pointer',
@@ -60,11 +60,13 @@
                   'last-move-to': isLastMoveTo(row - 1, col - 1)
                 }
               ]" @click="handleCellClick(row, col)">
-                <span v-if="col === 1" :class="['topleft', ((row + col) % 2 === 0) ? 'text-noir' : 'text-white']">
+                <span v-if="col === (colorPlayer == 'Noirs' ? 8 : 1)"
+                  :class="['topleft', ((row + col) % 2 === 0) ? 'text-noir' : 'text-white']">
                   {{ 9 - row }}
                 </span>
 
-                <span v-if="row === 8" :class="['bottomleft', ((row + col) % 2 === 0) ? 'text-noir' : 'text-white']">
+                <span v-if="row === (colorPlayer == 'Noirs' ? 1 : 8)"
+                  :class="['bottomleft', ((row + col) % 2 === 0) ? 'text-noir' : 'text-white']">
                   {{ String.fromCharCode(96 + col) }}
                 </span>
                 <div v-if="board[row - 1][col - 1]?.piece" class="piece"
@@ -406,6 +408,15 @@ const removePieceColor = (pieceType: FullPieceProperty): PieceType => {
   cursor: pointer;
   position: relative;
   z-index: 1;
+}
+
+.chess-board-rotate {
+  transform: rotate(180deg);
+}
+
+.chess-board-rotate .chess-cell {
+  transform: rotate(180deg);
+
 }
 
 .noir {
