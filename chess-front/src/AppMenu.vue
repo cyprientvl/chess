@@ -9,29 +9,24 @@
     <nav>
       <ul>
         <li v-for="(item, index) in items" :key="index">
-          <router-link
-            v-if="item.route"
-            v-slot="{ href, navigate }"
-            :to="item.route"
-            custom
-          >
+          <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
             <a :href="href" @click="navigate">
-              <img v-if="item.icon" :src="'/assets/img/'+item.icon" alt="nav-icon" />
+              <img v-if="item.icon" :src="'/assets/img/' + item.icon" alt="nav-icon" />
               <p>{{ item.label }}</p>
             </a>
           </router-link>
           <a v-else>
-            <img v-if="item.icon" :src="'/assets/img/'+item.icon" alt="nav-icon" />
+            <img v-if="item.icon" :src="'/assets/img/' + item.icon" alt="nav-icon" />
             <p>{{ item.label }}</p>
           </a>
         </li>
         <li>
-          <a class="create-account">
+          <a class="create-account" href="/register">
             Créer un compte
           </a>
         </li>
         <li>
-          <a class="login-btn">
+          <a class="login-btn" href="/login">
             Se connecter
           </a>
         </li>
@@ -42,7 +37,6 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Menubar from "primevue/menubar";
 
 const items = ref([
   {

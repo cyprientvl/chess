@@ -1,5 +1,4 @@
 <template>
-
   <div id="login-page">
 
     <img class="login-logo" src="/assets/img/logo.png">
@@ -8,7 +7,7 @@
 
     <div style="width: 400px;">
       <div class="base-container">
-        <form @submit.prevent="login">
+        <form @submit.prevent="registerForm">
 
           <small id="username-error" class="p-error" v-if="submitted && !username">
             Username is required.
@@ -29,7 +28,7 @@
 
           </div>
 
-          <Button type="submit" label="Se connecter" class="w-6" :loading="loading" />
+          <Button type="submit" label="S'inscrire" class="w-6" :loading="loading" />
 
         </form>
 
@@ -39,57 +38,18 @@
           <div class="ligne"></div>
         </div>
 
-        <Button type="button" label="S'inscrire" severity="secondary" @click="register" class="w-6 register"
+        <Button type="button" label="Se connecter" severity="secondary" @click="login" class="w-6 login"
           :disabled="loading" />
 
       </div>
       <div class="new">
-        <p>Nouveau ?</p>
-        <p>Inscrivez-vous et commencez à jouer aux échecs !</p>
+        <p>Déjà un compte ?</p>
+        <p>Connectez-vous pour jouer aux échecs !</p>
       </div>
 
     </div>
   </div>
   <Toast />
-
-  <!--<div class="flex justify-content-center align-items-center min-h-screen bg-gray-100" style="width: 75em;">
-    <Card class="w-full md:w-6 lg:w-4">
-      <template #title>
-        <div class="text-center mb-4">
-          <h2>Login</h2>
-        </div>
-      </template>
-<template #content>
-        <form @submit.prevent="login" class="p-fluid">
-          <div class="field mb-4">
-            <label for="username" class="block mb-2">Username</label>
-            <InputText id="username" v-model="username" :class="{ 'p-invalid': submitted && !username }" fluid
-              aria-describedby="username-error" />
-            <small id="username-error" class="p-error" v-if="submitted && !username">
-              Username is required.
-            </small>
-          </div>
-
-          <div class="field mb-4">
-            <label for="password" class="block mb-2">Password</label>
-            <Password id="password" v-model="password" :feedback="false" toggleMask
-              :class="{ 'p-invalid': submitted && !password }" aria-describedby="password-error" fluid />
-            <small id="password-error" class="p-error" v-if="submitted && !password">
-              Password is required.
-            </small>
-          </div>
-
-          <div class="flex gap-2 justify-content-between">
-            <Button type="submit" label="Login" class="w-6" :loading="loading" />
-            <Button type="button" label="Register" severity="secondary" @click="register" class="w-6"
-              :disabled="loading" />
-          </div>
-        </form>
-      </template>
-</Card>
-
-</div>
--->
 </template>
 
 <script lang="ts" setup>
@@ -102,7 +62,7 @@ import Password from 'primevue/password';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import { useUserService } from '@/composables/user/userService';
-const { authenticate } = useUserService();
+const { register } = useUserService();
 
 const router = useRouter();
 const toast = useToast();
@@ -112,10 +72,10 @@ const loading = ref(false);
 const submitted = ref(false);
 
 const emit = defineEmits<{
-  (e: 'loginSuccess', username: string): void
+  (e: 'registerSuccess', username: string): void
 }>();
 
-const login = async () => {
+const registerForm = async () => {
   submitted.value = true;
 
   if (!username.value || !password.value) {
@@ -124,16 +84,22 @@ const login = async () => {
 
   try {
     loading.value = true;
-    await authenticate({ username: username.value, password: password.value });
+    await register({ username: username.value, password: password.value });
 
-    emit('loginSuccess', username.value);
+    emit('registerSuccess', username.value);
+    toast.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Inscription réussie',
+      life: 3000
+    });
     router.push('/');
 
   } catch (error) {
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: error instanceof Error ? error.message : 'Login failed',
+      detail: error instanceof Error ? error.message : 'Register failed',
       life: 3000
     });
   } finally {
@@ -141,8 +107,8 @@ const login = async () => {
   }
 };
 
-const register = () => {
-  router.push('/register');
+const login = () => {
+  router.push('/login');
 };
 </script>
 
@@ -152,7 +118,7 @@ const register = () => {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
-.register {
+.login {
   width: 100% !important;
   margin-top: 20px;
 }

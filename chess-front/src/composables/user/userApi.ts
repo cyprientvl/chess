@@ -1,5 +1,5 @@
 import axiosInstance from '@/config/AxiosConfig';
-import { ApiUrlConnection } from '@/constants/ApiUrl';
+import { ApiUrlConnection, ApiUrlRegister } from '@/constants/ApiUrl';
 import type { UserDTO } from '@/modelDTO/User.dto';
 
 export function useUserApi() {
@@ -11,6 +11,9 @@ export function useUserApi() {
         password: user.password
       });
       return res.data.token;
+    },
+    async register(user: UserDTO): Promise<void> {
+      await axiosInstance.post(`${ApiUrlRegister}`, user);
     }
   }
 }

@@ -3,33 +3,33 @@
     <ProgressSpinner style="width: 50px; height: 50px" />
   </div>
   <div id="home-page">
-      <div>
-          <img class="playboard" src="/assets/img/standardboard.png">
-      </div>
-      <div class="">
-          <h1>Jouez aux échecs en ligne sur le site n°1 !</h1>
-
-          <template v-if="gameId === -1">
-                <div class="start-game" @click="createGameButton">
-                  <img src="/assets/img/play.png">
-                  <div>
-                      <p class="start-game-title">Commencer une partie</p>
-                      <p>Jouez avec un amie en local</p>
-                  </div>
-                </div>
-          </template>
-          <template v-else>
-            <div class="start-game" @click="joinGame">
-                <img src="/assets/img/play.png">
-                <div>
-                    <p class="start-game-title">Partie en cours : #{{ gameId }}</p>
-                    <p>Jouez avec un amie en local</p>
-                </div>
-              </div>
-          </template>
-      </div>
+    <div>
+      <img class="playboard" src="/assets/img/standardboard.png">
     </div>
-    <Toast />
+    <div class="">
+      <h1>Jouez aux échecs en ligne sur le site n°1 !</h1>
+
+      <template v-if="gameId === -1">
+        <div class="start-game" @click="createGameButton">
+          <img src="/assets/img/play.png">
+          <div>
+            <p class="start-game-title">Commencer une partie</p>
+            <p>Jouez avec un ami en local</p>
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="start-game" @click="joinGame">
+          <img src="/assets/img/play.png">
+          <div>
+            <p class="start-game-title">Partie en cours : #{{ gameId }}</p>
+            <p>Jouez avec un en local</p>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+  <Toast />
 </template>
 
 <script setup lang="ts">
