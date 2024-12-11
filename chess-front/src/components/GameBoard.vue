@@ -6,7 +6,8 @@
       </div>
     </template>
 
-    <div id="main">
+    <div>
+      <div id="main">
       <div id="pieceKilled">
         <h2>Pièces tuées</h2>
         <div class="flex">
@@ -20,7 +21,6 @@
         </div>
       </div>
       <div id="damier" class="p-4">
-        <h1>C'est aux {{ colorPlayer }} de jouer !</h1>
 
         <div class="chess-board">
           <div v-for="row in 8" :key="'row-' + row" class="flex">
@@ -70,7 +70,36 @@
           <Button label="Retour à l'accueil" @click="goToHome" />
         </div>
       </Dialog>
+
+      
     </div>
+
+    <div class="list-users">
+      <div class="users">
+        <img src="https://www.chess.com/bundles/web/images/user-image.svg">  
+        <div>
+          <p>Guest</p>
+          <p class="user-color">Blanc</p>     
+        </div>
+      </div>
+
+      <h1>C'est aux {{ colorPlayer }} de jouer !</h1>
+
+      <div class="users users-seconde">
+        <img src="https://www.chess.com/bundles/web/images/user-image.svg">  
+        <div>
+          <p>Guest</p>
+          <p class="user-color">Noir</p>     
+        </div>
+
+      </div>
+    </div>
+      
+    </div>
+   
+
+    
+
   </Suspense>
 </template>
 
@@ -348,8 +377,8 @@ const removePieceColor = (pieceType: FullPieceProperty): PieceType => {
 }
 
 .piece {
-  width: 45px;
-  height: 45px;
+  width: 60px;
+  height: 60px;
   cursor: pointer;
 }
 
@@ -358,12 +387,10 @@ const removePieceColor = (pieceType: FullPieceProperty): PieceType => {
   height: 100%;
 }
 
-.piece-black svg {
-  fill: #000;
-}
+
 
 .noir {
-  background-color: var(--p-green-900);
+  background-color: #739552;
 }
 
 #main {
@@ -403,6 +430,10 @@ const removePieceColor = (pieceType: FullPieceProperty): PieceType => {
 
 .promotion-piece:hover {
   background-color: rgba(0, 0, 0, 0.1);
+}
+
+.bg-white{
+  background-color: #EBECD0 !important;
 }
 
 @media screen and (max-width: 768px) {

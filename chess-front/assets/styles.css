@@ -1,0 +1,295 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	list-style-type: none;
+	font-family: "Poppins", sans-serif;
+}
+
+a{
+	text-decoration: none;
+    color: white;
+}
+
+main{
+    width: calc(100% - 180px);
+}
+
+body{
+	background-color: #302E2B;
+}
+
+.layout{
+	display: flex;
+}
+
+aside{
+	background-color: #262522;
+	height: 100vh;
+	position: fixed;
+	width: 180px;
+	padding: 11px;
+}
+
+aside nav ul {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+aside nav ul li a{
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+aside nav ul li a img{
+	width: 30px;
+	height: 30px;
+	object-fit: cover;
+}
+
+aside nav{
+	margin-top: 8px;
+}
+
+aside .logo{
+	width: 120px;
+}
+
+nav li{
+	font-size: 16px;
+	color: white;
+}
+
+.create-account{
+	font-size: 14px;
+	background-color: #302E2B;
+	display: flex;
+	justify-content: center;
+	padding: 9px 0px;
+	border-radius: 5px;
+	color: hsla(0, 0%, 100%, .72);
+	font-weight: 400;
+	margin-top: 15px;
+}
+
+.login-btn{
+	font-size: 14px;
+	background-color: #81B64C;
+	display: flex;
+	justify-content: center;
+	padding: 9px 0px;
+	border-radius: 5px;
+	color: hsla(0, 0%, 100%, .72);
+	font-weight: 400;
+	margin-top: 10px;
+}
+
+#home-page{
+	padding: 20px 15px;
+	gap: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1200px;
+	margin: auto;
+    height: 100vh;
+}
+
+#home-page .playboard{
+	width: 496px;
+	height: 496px;
+}
+
+#home-page h1{
+	color: white;
+	text-align: center;
+	font-size: 44px;
+	margin-bottom: 30px;
+}
+
+#home-page .start-game{
+	background-color: #81B64C;
+	border-radius: 10px;
+	padding: 20px 40px;
+	color: white;
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	width: max-content;
+	margin: auto;
+	cursor: pointer;
+}
+
+#home-page .start-game-title{
+	font-size: 28px;
+	font-weight: 500;
+}
+
+#login-page{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: 100vh;
+	gap: 30px;
+	position: relative;
+    width: 100%;
+}
+
+.background-logo-image{
+	position: absolute;
+	z-index: -1;
+	width: 100%;
+	bottom: 0;
+}
+
+
+#login-page .login-logo{
+	width: 158px;
+}
+
+#login-page .base-container{
+	padding: 40px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	background-color: #262421;
+}
+
+#login-page .base-container form{
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+
+#login-page .base-container .form-container{
+	display: flex;
+	gap: 20px;
+	align-items: center;
+	background-color: #3C3A38;
+	border: 1px solid #4F4D4B;
+	border-radius: 5px;
+	padding: 10px 15px;
+}
+
+#login-page .base-container .form-container img{
+	height: 15px;
+	width: 15px;
+	flex-shrink: 0;
+}
+
+#login-page .base-container .form-container input{
+	color: #868584;
+	border: none;
+	background-color: none;
+	outline: none;
+	width: 100%;
+    padding: 0;
+	background-color: transparent;
+    font-size: 13px !important;
+}
+
+#login-page .base-container form button{
+	margin-top: 10px;
+	width: 100% !important;
+	background-color: #81B64C;
+	color: white;
+	text-align: center;
+	padding: 15px 24px;
+	font-size: 22px;
+	font-weight: 500;
+	border-radius: 10px;
+	border: none;
+	cursor: pointer;
+
+}
+
+#login-page .separator{
+	display: flex;
+	align-items: center;
+	width: 100%;
+	margin-top: 35px;
+}
+
+#login-page .separator p{
+	font-size: 14px;
+	padding: 0px 25px;
+	flex-shrink: 0;
+	color: #868584;
+}
+
+#login-page .separator .ligne{
+	width: 100%;
+	height: 1px;
+	background-color: #868584;
+}
+
+#login-page .new{
+	padding: 20px 30px;
+	background-color: #211F1C;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+#login-page .new p{
+	font-size: 14px;
+	color: #D3D2D2;
+	text-align: center;
+}
+
+
+.users{
+	display: flex;
+	gap: 10px;
+	background-color: #211F1C;
+	border-radius: 5px;
+	width: 200px;
+	padding: 5px;
+}
+
+.users-seconde{
+	flex-direction: row-reverse;
+}
+
+.users img{
+	height: 50px;
+	width: 50px;
+	border-radius: 5px;
+}
+
+.list-users{
+	margin-top: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 90px;
+}
+
+.user-color{
+	color: #908c88;
+	text-align: left;
+	font-size: 15px;
+}
+
+.users-seconde .user-color{
+	text-align: right;
+
+}
+
+.piece-black svg {
+	fill: #5C5957;
+  }
+
+.piece img{
+	width: 100%
+}

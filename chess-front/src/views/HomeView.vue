@@ -1,32 +1,35 @@
 <template>
-  <div class="flex justify-content-center align-items-center min-h-screen bg-gray-100">
-    <Card class="w-full md:w-6 lg:w-4">
-      <template #title>
-        <div class="text-center mb-4">
-          <h1>Échecs en local</h1>
-        </div>
-      </template>
-      <template #content>
-        <div class="flex justify-content-center">
-          <div v-if="loading" class="text-center">
-            <ProgressSpinner style="width: 50px; height: 50px" />
-          </div>
-          <div v-else class="text-center">
-            <template v-if="gameId === -1">
-              <Button label="Créer une nouvelle partie" icon="pi pi-plus" @click="createGameButton" :loading="creating"
-                class="w-full mb-3" />
-            </template>
-            <template v-else>
-              <Button label="Rejoindre la partie" icon="pi pi-sign-in" @click="joinGame" severity="success"
-                class="w-full mb-3" />
-              <small class="block text-gray-600">Partie en cours : #{{ gameId }}</small>
-            </template>
-          </div>
-        </div>
-      </template>
-    </Card>
-    <Toast />
+  <div v-if="loading" class="text-center">
+    <ProgressSpinner style="width: 50px; height: 50px" />
   </div>
+  <div id="home-page">
+      <div>
+          <img class="playboard" src="/assets/img/standardboard.png">
+      </div>
+      <div class="">
+          <h1>Jouez aux échecs en ligne sur le site n°1 !</h1>
+
+          <template v-if="gameId === -1">
+                <div class="start-game" @click="createGameButton">
+                  <img src="/assets/img/play.png">
+                  <div>
+                      <p class="start-game-title">Commencer une partie</p>
+                      <p>Jouez avec un amie en local</p>
+                  </div>
+                </div>
+          </template>
+          <template v-else>
+            <div class="start-game" @click="joinGame">
+                <img src="/assets/img/play.png">
+                <div>
+                    <p class="start-game-title">Partie en cours : #{{ gameId }}</p>
+                    <p>Jouez avec un amie en local</p>
+                </div>
+              </div>
+          </template>
+      </div>
+    </div>
+    <Toast />
 </template>
 
 <script setup lang="ts">
