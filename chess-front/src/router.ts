@@ -57,6 +57,12 @@ const router = createRouter({
       name: 'Leaderboard',
       component: () => import('./views/LeaderboardView.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/replay/:gameId',
+      name: 'Replay',
+      component: () => import('./views/ReplayView.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 });
