@@ -92,8 +92,6 @@ export class GameService {
         const resultCheckTowerUpgrade = checkTowerUpgrade(game, movePieceBody.toI, movePieceBody.toJ);
         actionResult.push(resultCheckTowerUpgrade)
 
-        game.nextTurn();
-
         const kingStatus = verifyKingStatus(game, userId);
         kingStatus.forEach(e => actionResult.push(e))
 
@@ -102,11 +100,13 @@ export class GameService {
             turn: game.getUserTurn(), 
             pieceKilled: game.getPieceKilled() }
 
-
         if(!resultMovePiece.success){
             returnAction.success = false;
             return returnAction;
         }
+
+        game.nextTurn();
+        returnAction.turn = game.getUserTurn();
 
         await GameAction.create({game_id: game.getIdInDB(), 
             from: movePieceBody.i+":"+movePieceBody.j, 
