@@ -12,6 +12,7 @@ export class LeaderboardService {
             owner_win: {
                 [Op.ne]: undefined,
             },
+            
         };
 
         const games = await Game.findAll({
@@ -46,13 +47,13 @@ export class LeaderboardService {
     }
 
     public async getUserGames(userId: number): Promise<GameDTO[]>{
-        const game = await Game.findAll({where: { owner_id: userId }});
+        const game = await Game.findAll({where: { owner_id: userId }, order: [['id', 'DESC']]});
         return game;
     }
 
     public async getLeaderboardUser(userId: number): Promise<GameDTO[]>{
         const games = await Game.findAll({where: { owner_id: userId, public: true }, 
-            include: [{ model: User, as: 'owner' }]}
+            include: [{ model: User, as: 'owner' }], order: [['id', 'DESC']]}
         );
         return games;
     }
