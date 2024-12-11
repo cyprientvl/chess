@@ -9,23 +9,23 @@
     <div>
       <div class="list-users">
         <div class="users">
-          <img src="/assets/img/user-image.svg">  
+          <img src="/assets/img/user-image.svg">
           <div>
-            <p class="guest">{{ownerUsername}}</p>
-            <p class="user-color">{{ownerColor}}</p>     
+            <p class="guest">{{ ownerUsername }}</p>
+            <p class="user-color">{{ ownerColor }}</p>
           </div>
         </div>
 
         <h1 class="colot-turn">C'est aux {{ colorPlayer }} de jouer !</h1>
 
         <div class="users users-seconde">
-          <img src="/assets/img/user-image.svg">  
+          <img src="/assets/img/user-image.svg">
           <div>
             <p class="guest">Guest</p>
-            <p class="user-color">{{guestColor}}</p>     
+            <p class="user-color">{{ guestColor }}</p>
           </div>
         </div>
-          
+
       </div>
 
       <div id="main">
@@ -33,7 +33,7 @@
           <h2 style="color: white">Pièces prises</h2>
           <div class="flex all-piece-killed">
             <div class="list-piece-killed">
-              <div v-for="piece in blackKilledPieces" :key="piece" class="piece piece-black " 
+              <div v-for="piece in blackKilledPieces" :key="piece" class="piece piece-black "
                 v-html="getPieceSVG(`BLACK_${piece}` as FullPieceProperty)">
               </div>
             </div>
@@ -42,9 +42,9 @@
                 v-html="getPieceSVG(`WHITE_${piece}` as FullPieceProperty)" :key="piece">
               </div>
             </div>
-            
+
           </div>
-        </div>  
+        </div>
 
         <div id="damier" class="p-4">
 
@@ -76,9 +76,9 @@
           </div>
         </div>
 
-      <div class="text-center mt-4">
-        <Button class="leave-game" label="Quitter la partie" @click="quitGame" />
-      </div>
+        <div class="text-center mt-4">
+          <Button class="leave-game" label="Quitter la partie" @click="quitGame" />
+        </div>
 
         <!-- Modale de promotion -->
         <Dialog v-model:visible="showPromotionDialog" modal header="Choisissez une pièce" :closable="false">
@@ -103,7 +103,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { Color, PIECES_SVG, PieceType, type FullPieceProperty, type Piece } from '@/model/Pieces.model';
+import { Color, PIECES_IMG, PieceType, type FullPieceProperty, type Piece } from '@/model/Pieces.model';
 import ProgressSpinner from 'primevue/progressspinner';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
@@ -114,9 +114,14 @@ import { AxiosError } from 'axios';
 import { ResultPossible, type GameModel, type Case } from '@/model/Game.model';
 import type { PossibleMove } from '@/model/PossibleMove.model';
 import { useUserService } from '@/composables/user/userService';
+import type { ReplayStep } from '@/model/Replay.model';
 
 const toast = useToast();
 const { move, getCurrentGame, getPossibleMoves, promote, deleteGame } = useGameService();
+
+const props = defineProps<{
+  replaySteps?: ReplayStep[];
+}>();
 
 const initialBoard: Case[][] = Array(8).fill(null).map(() =>
   Array(8).fill(null).map(() => ({ color: Color.WHITE, piece: undefined }))
@@ -129,7 +134,7 @@ const whiteKilledPieces = ref<PieceType[]>([]);
 const ownerUsername = ref<string>(useUserService().getUsername());
 const ownerColor = ref<'Noirs' | 'Blancs'>();
 const guestColor = ref<'Noirs' | 'Blancs'>();
- 
+
 
 const availablePromotionPieces = ref<FullPieceProperty[]>([]);
 
@@ -305,7 +310,7 @@ const isPossibleMove = (row: number, col: number): boolean => {
 };
 
 const getPieceSVG = (pieceType: FullPieceProperty | null) => {
-  return pieceType ? PIECES_SVG[pieceType] : '';
+  return pieceType ? PIECES_IMG[pieceType] : '';
 };
 
 const getPieceFullProperty = (piece: Piece): FullPieceProperty => {
@@ -402,13 +407,6 @@ const removePieceColor = (pieceType: FullPieceProperty): PieceType => {
   position: relative;
   z-index: 1;
 }
-
-.piece svg {
-  width: 100%;
-  height: 100%;
-}
-
-
 
 .noir {
   background-color: #739552;

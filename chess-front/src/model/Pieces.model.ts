@@ -13,7 +13,7 @@ export enum PieceType {
 
 export type FullPieceProperty = `${Color}_${PieceType}`;
 
-export const PIECES_SVG = {
+export const PIECES_IMG = {
   [`${Color.WHITE}_${PieceType.QUEEN}`]: `<img src="/assets/img/wq.png">`,
   [`${Color.WHITE}_${PieceType.KING}`]: `<img src="/assets/img/wk.png">`,
   [`${Color.WHITE}_${PieceType.ROOK}`]: `<img src="/assets/img/wr.png">`,
