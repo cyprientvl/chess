@@ -36,7 +36,13 @@
 </template>
 
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/authStore';
+import { storeToRefs } from 'pinia';
 import { ref } from "vue";
+import { onMounted } from 'vue';
+
+const authStore = useAuthStore();
+const { isAuthenticated } = storeToRefs(authStore);
 
 const items = ref([
   {
@@ -48,11 +54,16 @@ const items = ref([
     label: 'Leaderboard',
     icon: 'nav-item-1.png',
     route: '/leaderboard'
-  },
-  {
-    label: 'Compte',
-    icon: 'nav-item-1.png',
-    route: '/account'
   }
 ]);
+
+onMounted(() => {
+  if (isAuthenticated.value) {
+    items.value.push({
+      label: 'Compte',
+      icon: 'nav-item-1.png',
+      route: '/account'
+    });
+  }
+});
 </script>
