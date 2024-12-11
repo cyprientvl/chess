@@ -9,8 +9,8 @@ export function useLeaderboardApi() {
       const res = await axiosInstance.get<LeaderboardModel[]>(`${ApiUrlLeaderboard}`);
       return res.data;
     },
-    async history(): Promise<HistoryModel[]> {
-      const res = await axiosInstance.get<HistoryModel[]>(`${ApiUrlLeaderboard}${ApiUrlLeaderboardHistory}`);
+    async connectedUserHistory(): Promise<HistoryModel[]> {
+      const res = await axiosInstance.get<HistoryModel[]>(`${ApiUrlLeaderboard}${ApiUrlLeaderboardHistory}/me`);
       return res.data;
     },
     async historyUser(userId: number): Promise<HistoryModel[]> {

@@ -8,8 +8,8 @@ export function useLeaderboardService() {
     async getLeaderboard(): Promise<LeaderboardModel[]> {
       return leaderboardApi.leaderboard();
     },
-    async getHistory(): Promise<HistoryModel[]> {
-      return leaderboardApi.history();
+    async getConnectedUserHistory(): Promise<HistoryModel[]> {
+      return leaderboardApi.connectedUserHistory();
     },
     async getUserHistory(userId: number): Promise<HistoryModel[]> {
       return leaderboardApi.historyUser(userId);

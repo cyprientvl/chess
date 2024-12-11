@@ -10,6 +10,7 @@
       <template #content>
         <div class="text-center">
           <p class="mb-4">Connecté en tant que : {{ username }}</p>
+          <Button label="Voir mon historique" @click="() => router.push('/history/me')" />
           <Button label="Se déconnecter" severity="danger" @click="handleLogout" :loading="loading" />
         </div>
       </template>
@@ -35,8 +36,6 @@ const { username, loading } = storeToRefs(authStore);
 const handleLogout = async () => {
   try {
     loading.value = true;
-    // Vous pouvez ajouter un appel API de déconnexion ici si nécessaire
-    // await fetch('http://localhost:3000/logout', ...);
 
     authStore.logout();
 
