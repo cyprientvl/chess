@@ -111,6 +111,7 @@ export class Game{
     }
 
     public nextTurn(){
+        console.log("fd");
         if(this.getUserTurn() == 'WHITE') return this.setUserTurn(Color['BLACK']);
         if(this.getUserTurn() == 'BLACK') return this.setUserTurn(Color['WHITE']);
     }

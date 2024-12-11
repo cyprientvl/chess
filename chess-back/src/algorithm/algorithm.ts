@@ -26,6 +26,8 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
     
     if(!piece.move(toI, toJ, listCase)) return {success: false, result: []}
 
+    console.log("move");
+
     if(piece instanceof King){
         let c = piece.color == Color.BLACK ? 0: 1;
         let copyPiece = new King(piece.pieceType, c, piece.i, piece.j)        
@@ -38,8 +40,11 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
             if(checkKIngStatus.status != Action.KINGSAFE) return {success: false, result: []};
         }
     }else{
+        console.log("verify: " + verifyKingBeforeMove(game))
         if(!verifyKingBeforeMove(game)) return {success: false, result: []};
     }
+
+    console.log("next")
 
     let p = listCase[toI][toJ].piece;
 

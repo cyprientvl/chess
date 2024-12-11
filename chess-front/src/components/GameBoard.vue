@@ -173,6 +173,8 @@ onMounted(async () => {
     guestColor.value = response.ownerColor === Color.BLACK ? 'Blancs' : 'Noirs';
 
     handleGameResult(response, -1, -1);
+
+
   } catch (error) {
     console.error(error);
     toast.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue', life: 5000 });
