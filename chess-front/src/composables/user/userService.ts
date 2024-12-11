@@ -13,8 +13,11 @@ export function useUserService() {
     async register(user: UserDTO) {
       await userApi.register(user);
     },
-    getUsername() {
+    getUsername(): string {
       const authStore = useAuthStore();
+      if (!authStore.username) {
+        throw new Error('No user logged in');
+      }
       return authStore.username;
     }
   };
