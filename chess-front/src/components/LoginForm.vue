@@ -52,44 +52,6 @@
   </div>
   <Toast />
 
-  <!--<div class="flex justify-content-center align-items-center min-h-screen bg-gray-100" style="width: 75em;">
-    <Card class="w-full md:w-6 lg:w-4">
-      <template #title>
-        <div class="text-center mb-4">
-          <h2>Login</h2>
-        </div>
-      </template>
-<template #content>
-        <form @submit.prevent="login" class="p-fluid">
-          <div class="field mb-4">
-            <label for="username" class="block mb-2">Username</label>
-            <InputText id="username" v-model="username" :class="{ 'p-invalid': submitted && !username }" fluid
-              aria-describedby="username-error" />
-            <small id="username-error" class="p-error" v-if="submitted && !username">
-              Username is required.
-            </small>
-          </div>
-
-          <div class="field mb-4">
-            <label for="password" class="block mb-2">Password</label>
-            <Password id="password" v-model="password" :feedback="false" toggleMask
-              :class="{ 'p-invalid': submitted && !password }" aria-describedby="password-error" fluid />
-            <small id="password-error" class="p-error" v-if="submitted && !password">
-              Password is required.
-            </small>
-          </div>
-
-          <div class="flex gap-2 justify-content-between">
-            <Button type="submit" label="Login" class="w-6" :loading="loading" />
-            <Button type="button" label="Register" severity="secondary" @click="register" class="w-6"
-              :disabled="loading" />
-          </div>
-        </form>
-      </template>
-</Card>
-
-</div>
--->
 </template>
 
 <script lang="ts" setup>

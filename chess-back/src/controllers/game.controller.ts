@@ -41,7 +41,7 @@ export class GameController extends Controller {
       const game = await gameService.createGame(requestBody, req.user.id);
 
       if(!game){
-        this.setStatus(500);
+        this.setStatus(401);
         return {gameId: -1};
       }
 
@@ -54,7 +54,7 @@ export class GameController extends Controller {
       const game = gameService.getGame(req.user.id);
       
       if(!game){
-        this.setStatus(404);
+        this.setStatus(401);
         return null;
       }
       return game;

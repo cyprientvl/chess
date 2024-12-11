@@ -30,7 +30,7 @@ export class UserService {
 
     }
 
-    public async deleteUser(id: number){
+    public async deleteUser(id: number): Promise<void>{
 
         const user = await this.getUser(id);
 

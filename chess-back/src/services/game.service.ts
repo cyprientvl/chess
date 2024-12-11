@@ -13,11 +13,13 @@ import { ReturnGameAction } from "../interfaces/returnGameAction.interface";
 import { Game } from "../models/game.model";
 import { GameAction } from "../models/gameAction.model";
 import { User } from "../models/user.model";
+import { FormatedGame } from "../interfaces/formatedGame.interface";
+import { ChessLocation } from "../interfaces/location.interface";
 
 
 export class GameService {
  
-    async createGame(game: CreateGameBody, userId: number){
+    async createGame(game: CreateGameBody, userId: number): Promise<Game | undefined>{
 
         const gameStorage = createGameStorage(userId);
 
@@ -31,13 +33,13 @@ export class GameService {
         return createdGame;
     }
 
-    async getGame(userId: number){
+    async getGame(userId: number): Promise<FormatedGame | undefined>{
         const game = getGameStorage(userId);
         if(!game) return undefined;
         return game.getFormatedGame();
     } 
 
-    async getReplay(gameId: number) {
+    async getReplay(gameId: number): Promise<ChessReplay | undefined> {
         const game = await Game.findByPk(gameId, {
           include: [{ model: GameAction, as: 'gameAction', order: [['id', 'ASC']] }, {model: User, as: 'owner'}]
         });
@@ -65,8 +67,6 @@ export class GameService {
                 listKilledPiece.push({color, pieceType})
             }
 
-
-//            gameAction.piece = piece + ":" + pieceToPromote.color;
             let i = parseInt(element.from.split(":")[0])
             let j = parseInt(element.from.split(":")[1])
             let toI = parseInt(element.to.split(":")[0])
@@ -90,7 +90,7 @@ export class GameService {
       }
       
 
-    async movePiece(userId: number, movePieceBody: MovePiece){
+    async movePiece(userId: number, movePieceBody: MovePiece): Promise<ReturnAction | undefined>{
         let game = getGameStorage(userId);
         if(!game) return undefined
 
@@ -140,7 +140,7 @@ export class GameService {
 
     }
 
-    getUserGameId(userId: number){
+    getUserGameId(userId: number): number{
         const game = getGameStorage(userId);
         if(!game) return -1;
 
@@ -157,7 +157,7 @@ export class GameService {
     }
 
 
-    getPossibleMove(userId: number, i: number, j: number){
+    getPossibleMove(userId: number, i: number, j: number): ChessLocation[] | undefined{
         let game = getGameStorage(userId);
         if(!game) return;
 

@@ -1,7 +1,8 @@
 import { Action } from "../enums/action.enum";
 import { Color } from "../enums/color.enum";
 import { PieceType } from "../enums/piece.enum";
-import { ReturnAction } from "../interfaces/returnAction.interface";
+import { FormatedGame } from "../interfaces/formatedGame.interface";
+import { MovePieceResult } from "../interfaces/movePieceResult.interface";
 import { GameAction } from "../models/gameAction.model";
 import { deleteGameStorage, getGameStorage } from "./chessStorage";
 import { Game } from "./game";
@@ -13,7 +14,7 @@ export function isInBounds(i: number, j: number): boolean {
     return i >= 0 && i < 8 && j >= 0 && j < 8;
 }
 
-export function movePiece(game: Game, i: number, j: number, toI: number, toJ: number): { success: boolean, result: string[] }{
+export function movePiece(game: Game, i: number, j: number, toI: number, toJ: number): MovePieceResult{
 
     if(!isInBounds(i, j) || !isInBounds(toI, toJ)) return {success: false, result: []};
 
@@ -25,8 +26,6 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
     if(!piece || piece.color != game.getUserTurn()) return {success: false, result: []}
     
     if(!piece.move(toI, toJ, listCase)) return {success: false, result: []}
-
-    console.log("move");
 
     if(piece instanceof King){
         let c = piece.color == Color.BLACK ? 0: 1;
@@ -40,11 +39,9 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
             if(checkKIngStatus.status != Action.KINGSAFE) return {success: false, result: []};
         }
     }else{
-        console.log("verify: " + verifyKingBeforeMove(game))
         if(!verifyKingBeforeMove(game)) return {success: false, result: []};
     }
 
-    console.log("next")
 
     let p = listCase[toI][toJ].piece;
 
@@ -91,7 +88,7 @@ export function checkTowerUpgrade(game: Game, i: number, j: number): string {
     return Action['NOPROMOTION'];
 }
 
-export async function upgradePiece(userId: number, piece: PieceType){
+export async function upgradePiece(userId: number, piece: PieceType): Promise<FormatedGame>{
     const game = getGameStorage(userId);
 
     if(!game) return {success: false}
@@ -152,7 +149,7 @@ export function verifyPieceToPromote(game: Game): string{
     return "NOPROMOTION"
 }
 
-export function verifyKingStatus(game: Game, userId: number){
+export function verifyKingStatus(game: Game, userId: number): string[]{
     let returnAction: string[] = [];
 
     game.getListCase().forEach(element=>{
