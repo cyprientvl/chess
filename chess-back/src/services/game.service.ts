@@ -56,21 +56,23 @@ export class GameService {
         
         let listKilledPiece: any[] = []
 
-        gameActions.forEach(element =>{
+        gameActions.forEach((element, index) =>{
 
             let result = element.result;
             let killedAction = result.split(",").find(e => e.startsWith("KILLED"))
-
-            if(killedAction){
-                let pieceType = killedAction.split(":")[1]
-                let color = killedAction.split(":")[2]
-                listKilledPiece.push({color, pieceType})
-            }
 
             let i = parseInt(element.from.split(":")[0])
             let j = parseInt(element.from.split(":")[1])
             let toI = parseInt(element.to.split(":")[0])
             let toJ = parseInt(element.to.split(":")[1])
+
+            if(killedAction){
+                let pieceType = killedAction.split(":")[1]
+                let color = killedAction.split(":")[2]
+                listKilledPiece.push({color, pieceType, i: toI, j: toJ, step: index+1})
+            }
+
+            
 
             if(element.piece){
                 let piece = element.piece.split(":")[0];
