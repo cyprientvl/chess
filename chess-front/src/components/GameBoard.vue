@@ -279,8 +279,7 @@ const handleGameResult = (game: GameModel, row: number, col: number) => {
           showGameOverDialog.value = true;
           return; // On sort immédiatement car c'est la fin du jeu
 
-        case ResultPossible.WHITEPROMOTION:
-        case ResultPossible.BLACKPROMOTION:
+        case ResultPossible.PROMOTION:
           if (row === -1 || col === -1) return;
           promotionPosition.value = { i: row - 1, j: col - 1 };
           availablePromotionPieces.value = color === Color.BLACK ? blackKilledPieces.value.filter(piece => piece != PieceType.PAWN).map(piece => `BLACK_${piece}` as FullPieceProperty) : whiteKilledPieces.value.filter(piece => piece != PieceType.PAWN).map(piece => `WHITE_${piece}` as FullPieceProperty);

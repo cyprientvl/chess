@@ -70,7 +70,7 @@ export function checkTowerUpgrade(game: Game, i: number, j: number): string {
     
     if (!piece || !(piece instanceof Pawn)) return Action['NOPROMOTION'];
     
-    let pieceKilled = game.getPieceKilledByColor(game.getUserTurn());
+    let pieceKilled = game.getPieceKilledByColor(game.getUserTurn()).filter(e => e.pieceType != PieceType.PAWN);
     
     if(pieceKilled.length == 0) return Action['NOPROMOTION']; 
 
@@ -141,7 +141,7 @@ export function verifyKingBeforeMove(game: Game): boolean{
 
 export function verifyPieceToPromote(game: Game): string{
     if(game.isPieceToPromote()){
-        let action = "PROMOTION" + game.getPieceToPromote().color;
+        let action = "PROMOTION:" + game.getPieceToPromote().color;
         return action
     }
     return "NOPROMOTION"

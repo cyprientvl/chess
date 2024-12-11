@@ -82,6 +82,8 @@ export class GameService {
                 listCase: game.getListCase(), 
                 turn: game.getUserTurn(), 
                 pieceKilled: game.getPieceKilled() }
+        }else{
+            actionResult = [];
         }
 
         const resultMovePiece = movePiece(game, movePieceBody.i, movePieceBody.j, movePieceBody.toI, movePieceBody.toJ);
