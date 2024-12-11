@@ -6,6 +6,7 @@ export interface GameModel {
   pieceKilled: Piece[];
   success?: boolean;
   result?: Result;
+  ownerColor?: Color;
 }
 
 export interface Case {

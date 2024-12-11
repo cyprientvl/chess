@@ -91,7 +91,8 @@ export class Game{
         return { listCase: this.listCase, 
             turn: this.userTurn, 
             pieceKilled: this.pieceKilled,
-            result: result
+            result: result,
+            ownerColor: this.ownerColor
         }
     }
 

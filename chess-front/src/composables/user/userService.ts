@@ -12,6 +12,10 @@ export function useUserService() {
     },
     async register(user: UserDTO) {
       await userApi.register(user);
+    },
+    getUsername(){
+      const authStore = useAuthStore();
+      return authStore.username;
     }
   };
 }

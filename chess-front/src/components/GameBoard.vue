@@ -11,8 +11,8 @@
         <div class="users">
           <img src="/assets/img/user-image.svg">  
           <div>
-            <p class="guest">Guest</p>
-            <p class="user-color">Blanc</p>     
+            <p class="guest">{{ownerUsername}}</p>
+            <p class="user-color">{{ownerColor}}</p>     
           </div>
         </div>
 
@@ -22,7 +22,7 @@
           <img src="/assets/img/user-image.svg">  
           <div>
             <p class="guest">Guest</p>
-            <p class="user-color">Noir</p>     
+            <p class="user-color">{{guestColor}}</p>     
           </div>
         </div>
           
@@ -45,7 +45,7 @@
             
           </div>
         </div>  
-        
+
         <div id="damier" class="p-4">
 
           <div class="chess-board">
@@ -122,6 +122,7 @@ import router from '@/router';
 import { AxiosError } from 'axios';
 import { ResultPossible, type GameModel, type Case } from '@/model/Game.model';
 import type { PossibleMove } from '@/model/PossibleMove.model';
+import { useUserService } from '@/composables/user/userService';
 
 const toast = useToast();
 const { move, getCurrentGame, getPossibleMoves, promote, deleteGame } = useGameService();
@@ -134,6 +135,10 @@ const board = ref<Case[][]>(initialBoard);
 const colorPlayer = ref<'Noirs' | 'Blancs'>();
 const blackKilledPieces = ref<PieceType[]>([]);
 const whiteKilledPieces = ref<PieceType[]>([]);
+const ownerUsername = ref<string>(useUserService().getUsername());
+const ownerColor = ref<'Noirs' | 'Blancs'>();
+const guestColor = ref<'Noirs' | 'Blancs'>();
+ 
 
 const availablePromotionPieces = ref<FullPieceProperty[]>([]);
 
@@ -172,6 +177,9 @@ onMounted(async () => {
     colorPlayer.value = response.turn === Color.BLACK ? 'Noirs' : 'Blancs';
     blackKilledPieces.value = parsePieceKilled(response.pieceKilled, Color.BLACK);
     whiteKilledPieces.value = parsePieceKilled(response.pieceKilled, Color.WHITE);
+
+    ownerColor.value = response.ownerColor === Color.BLACK ? 'Noirs' : 'Blancs';
+    guestColor.value = response.ownerColor === Color.BLACK ? 'Blancs' : 'Noirs';
 
     handleGameResult(response, -1, -1);
   } catch (error) {
