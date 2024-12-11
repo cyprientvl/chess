@@ -5,7 +5,7 @@ import type { GameModel } from '@/model/Game.model';
 import type { CreateGameDTO } from '@/modelDTO/CreateGame.dto';
 import type { PossibleMoveDTO } from '@/modelDTO/PossibleMove.dto';
 import type { PossibleMove } from '@/model/PossibleMove.model';
-import type { GlobalPieceType } from '@/model/Game.model';
+import type { PieceType } from '@/model/Pieces.model';
 
 export function useGameApi() {
   return {
@@ -29,7 +29,7 @@ export function useGameApi() {
       const res = await axiosInstance.post<PossibleMove[]>(`${ApiUrlGame}${ApiUrlPossibleMove}`, move);
       return res.data;
     },
-    async promote(piece: GlobalPieceType): Promise<GameModel> {
+    async promote(piece: PieceType): Promise<GameModel> {
       const res = await axiosInstance.post<GameModel>(`${ApiUrlGame}${ApiUrlPromote}`, { piece });
       return res.data;
     },
