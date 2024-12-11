@@ -4,7 +4,7 @@ import { userService } from "../services/user.service";
 import { CreateUserBody } from "../interfaces/createUserBody.interface";
 import { UpdateUser } from "../interfaces/updateUser.interface";
 
-@Route("user")
+@Route("users")
 @Tags("Users")
 export class UserController extends Controller {
 

@@ -5,7 +5,7 @@ import { Request as ExpressRequest } from 'express';
 import { MovePiece } from "../interfaces/movePiece.interface";
 import { PieceType } from "../enums/piece.enum";
 
-@Route("game")
+@Route("games")
 @Tags("Games")
 export class GameController extends Controller {
 
@@ -23,7 +23,6 @@ export class GameController extends Controller {
     }
 
     @Get("/replay/{id}")
-    @Security("jwt", [])
     public async getReplay(@Path() id: number){
       const response = await gameService.getReplay(id);
 

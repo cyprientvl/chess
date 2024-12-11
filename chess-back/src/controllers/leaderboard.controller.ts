@@ -3,7 +3,7 @@ import { leaderboardService } from "../services/leaderboard.service";
 import { Request as ExpressRequest } from 'express';
 import { LeaderboardEntryDTO } from "../dto/leaderboard.dto";
 
-@Route("leaderboard")
+@Route("leaderboards")
 @Tags("Leaderboard")
 export class LeaderboardController extends Controller {
 
