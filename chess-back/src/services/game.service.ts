@@ -1,5 +1,7 @@
+import { KoaTemplateService } from "tsoa";
 import { checkTowerUpgrade, isInBounds, movePiece, upgradePiece, verifyKingStatus, verifyPieceToPromote } from "../algorithm/algorithm";
 import { createGameStorage, deleteGameStorage, getGameStorage } from "../algorithm/chessStorage";
+import { Piece } from "../algorithm/Piece/piece";
 import { GameActionDTO } from "../dto/gameAction.dto";
 import { Action } from "../enums/action.enum";
 import { PieceType } from "../enums/piece.enum";
@@ -10,6 +12,7 @@ import { ReturnAction } from "../interfaces/returnAction.interface";
 import { ReturnGameAction } from "../interfaces/returnGameAction.interface";
 import { Game } from "../models/game.model";
 import { GameAction } from "../models/gameAction.model";
+import { User } from "../models/user.model";
 
 
 export class GameService {
@@ -36,7 +39,7 @@ export class GameService {
 
     async getReplay(gameId: number) {
         const game = await Game.findByPk(gameId, {
-          include: [{ model: GameAction, as: 'gameAction', order: [['id', 'ASC']] }]
+          include: [{ model: GameAction, as: 'gameAction', order: [['id', 'ASC']] }, {model: User, as: 'owner'}]
         });
       
         if (!game || !game.public) {
@@ -48,9 +51,22 @@ export class GameService {
         if(!gameActions) return undefined;
         
         let actionList: ReturnGameAction[] = [];
+        
+        let listKilledPiece: any[] = []
 
         gameActions.forEach(element =>{
 
+            let result = element.result;
+            let killedAction = result.split(",").find(e => e.startsWith("KILLED"))
+
+            if(killedAction){
+                let pieceType = killedAction.split(":")[1]
+                let color = killedAction.split(":")[2]
+                listKilledPiece.push({color, pieceType})
+            }
+
+
+//            gameAction.piece = piece + ":" + pieceToPromote.color;
             let i = parseInt(element.from.split(":")[0])
             let j = parseInt(element.from.split(":")[1])
             let toI = parseInt(element.to.split(":")[0])
@@ -59,13 +75,16 @@ export class GameService {
             if(element.piece){
                 let piece = element.piece.split(":")[0];
                 let color = element.piece.split(":")[1];
-                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: piece, color: color})
+                const index = listKilledPiece.findIndex(e => e.color == color && e.pieceType == piece);
+                if(index != -1){
+                    listKilledPiece.splice(index, 1);
+                }
+                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: piece, color: color, pieceKilled: [...listKilledPiece]})
             }else{
-                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: undefined, color: undefined})
+                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: undefined, color: undefined, pieceKilled: [...listKilledPiece]})
             }
 
         })
-        
         let replay: ChessReplay = { actions: actionList, ownerColor: game.owner_color, ownerUsername: game.owner.username }
         return replay;
       }

@@ -1,3 +1,4 @@
+import { Piece } from "../algorithm/Piece/piece";
 import { Color } from "../enums/color.enum";
 import { PieceType } from "../enums/piece.enum";
 
@@ -8,4 +9,5 @@ export interface ReturnGameAction{
     toJ: number,
     piece: string | undefined
     color: string | undefined
+    pieceKilled: Piece[];
 }

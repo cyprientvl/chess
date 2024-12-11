@@ -55,7 +55,7 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
             return {success: false, result: []}
         }
         game.getPieceKilled().push(p);
-        resultAction.push(Action['KILLED'])
+        resultAction.push(Action['KILLED']+":"+p.pieceType+":"+p.color)
     }else{
         resultAction.push(Action['MOVE'])
     }
