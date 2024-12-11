@@ -3,6 +3,7 @@ import { createGameStorage, deleteGameStorage, getGameStorage } from "../algorit
 import { GameActionDTO } from "../dto/gameAction.dto";
 import { Action } from "../enums/action.enum";
 import { PieceType } from "../enums/piece.enum";
+import { ChessReplay } from "../interfaces/chessReplay.interface";
 import { CreateGameBody } from "../interfaces/createGameBody.interface";
 import { MovePiece } from "../interfaces/movePiece.interface";
 import { ReturnAction } from "../interfaces/returnAction.interface";
@@ -35,7 +36,7 @@ export class GameService {
 
     async getReplay(gameId: number) {
         const game = await Game.findByPk(gameId, {
-          include: [{ model: GameAction, as: 'gameAction' }]
+          include: [{ model: GameAction, as: 'gameAction', order: [['id', 'ASC']] }]
         });
       
         if (!game || !game.public) {
@@ -64,7 +65,9 @@ export class GameService {
             }
 
         })
-        return actionList;
+        
+        let replay: ChessReplay = { actions: actionList, ownerColor: game.owner_color, ownerUsername: game.owner.username }
+        return replay;
       }
       
 
