@@ -7,6 +7,7 @@
     </template>
 
     <div>
+<<<<<<< HEAD
     <div class="list-users">
       <div class="users">
         <img src="/assets/img/user-image.svg">  
@@ -23,14 +24,32 @@
         <div>
           <p class="guest">Guest</p>
           <p class="user-color">Noir</p>     
+=======
+      <div class="list-users">
+        <div class="users">
+          <img src="https://www.chess.com/bundles/web/images/user-image.svg">
+          <div>
+            <p class="guest">Guest</p>
+            <p class="user-color">Blanc</p>
+          </div>
+>>>>>>> a3a6475ab37e52025fae93f31b771261199ce5b7
         </div>
 
+        <h1 class="colot-turn">C'est aux {{ colorPlayer }} de jouer !</h1>
+
+        <div class="users users-seconde">
+          <img src="https://www.chess.com/bundles/web/images/user-image.svg">
+          <div>
+            <p class="guest">Guest</p>
+            <p class="user-color">Noir</p>
+          </div>
+
+        </div>
       </div>
-    </div>
 
       <div id="main">
       <div id="pieceKilled">
-        <h2 style="color: white">Pièces tuées</h2>
+        <h2 style="color: white">Pièces prises</h2>
         <div class="flex all-piece-killed">
           <div class="list-piece-killed">
             <div v-for="piece in blackKilledPieces" :key="piece" class="piece piece-black " 
@@ -44,67 +63,66 @@
           </div>
           
         </div>
-      </div>
-      <div id="damier" class="p-4">
+        <div id="damier" class="p-4">
 
-        <div class="chess-board">
-          <div v-for="row in 8" :key="'row-' + row" class="flex">
-            <div v-for="col in 8" :key="'cell-' + row + '-' + col" :class="[
-              'chess-cell cursor-pointer',
-              ((row + col) % 2 === 0) ? 'bg-white' : 'noir',
-              {
-                'possible-move': isPossibleMove(row - 1, col - 1),
-                'selected-cell': isSelectedCell(row - 1, col - 1),
-                'last-move-from': isLastMoveFrom(row - 1, col - 1),
-                'last-move-to': isLastMoveTo(row - 1, col - 1)
-              }
-            ]" @click="handleCellClick(row, col)">
-              <span v-if="col === 1" :class="['topleft', ((row + col) % 2 === 0) ? 'text-noir' : 'text-white']">
-                {{ 9 - row }}
-              </span>
+          <div class="chess-board">
+            <div v-for="row in 8" :key="'row-' + row" class="flex">
+              <div v-for="col in 8" :key="'cell-' + row + '-' + col" :class="[
+                'chess-cell cursor-pointer',
+                ((row + col) % 2 === 0) ? 'bg-white' : 'noir',
+                {
+                  'possible-move': isPossibleMove(row - 1, col - 1),
+                  'selected-cell': isSelectedCell(row - 1, col - 1),
+                  'last-move-from': isLastMoveFrom(row - 1, col - 1),
+                  'last-move-to': isLastMoveTo(row - 1, col - 1)
+                }
+              ]" @click="handleCellClick(row, col)">
+                <span v-if="col === 1" :class="['topleft', ((row + col) % 2 === 0) ? 'text-noir' : 'text-white']">
+                  {{ 9 - row }}
+                </span>
 
-              <span v-if="row === 8" :class="['bottomleft', ((row + col) % 2 === 0) ? 'text-noir' : 'text-white']">
-                {{ String.fromCharCode(96 + col) }}
-              </span>
-              <div v-if="board[row - 1][col - 1]?.piece" class="piece"
-                :class="{ 'piece-black': board[row - 1][col - 1]?.piece?.color === 'BLACK' }"
-                v-html="getPieceSVG(getPieceFullProperty(board[row - 1][col - 1]?.piece!))">
+                <span v-if="row === 8" :class="['bottomleft', ((row + col) % 2 === 0) ? 'text-noir' : 'text-white']">
+                  {{ String.fromCharCode(96 + col) }}
+                </span>
+                <div v-if="board[row - 1][col - 1]?.piece" class="piece"
+                  :class="{ 'piece-black': board[row - 1][col - 1]?.piece?.color === 'BLACK' }"
+                  v-html="getPieceSVG(getPieceFullProperty(board[row - 1][col - 1]?.piece!))">
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
       <div class="text-center mt-4">
         <Button class="leave-game" label="Quitter la partie" @click="quitGame" />
       </div>
 
-      <!-- Modale de promotion -->
-      <Dialog v-model:visible="showPromotionDialog" modal header="Choisissez une pièce" :closable="false">
-        <div class="flex justify-content-center gap-4">
-          <div v-for="piece in availablePromotionPieces" :key="piece" class="cursor-pointer piece promotion-piece"
-            @click="handlePromotion(removePieceColor(piece))" v-html="getPieceSVG(piece)">
+        <!-- Modale de promotion -->
+        <Dialog v-model:visible="showPromotionDialog" modal header="Choisissez une pièce" :closable="false">
+          <div class="flex justify-content-center gap-4">
+            <div v-for="piece in availablePromotionPieces" :key="piece" class="cursor-pointer piece promotion-piece"
+              @click="handlePromotion(removePieceColor(piece))" v-html="getPieceSVG(piece)">
+            </div>
           </div>
-        </div>
-      </Dialog>
+        </Dialog>
 
-      <!-- Modale de fin de partie -->
-      <Dialog v-model:visible="showGameOverDialog" modal header="Partie terminée" :closable="false">
-        <div class="text-center">
-          <h2 class="mb-4">{{ gameOverMessage }}</h2>
-          <Button label="Retour à l'accueil" @click="goToHome" />
-        </div>
-      </Dialog>
+        <!-- Modale de fin de partie -->
+        <Dialog v-model:visible="showGameOverDialog" modal header="Partie terminée" :closable="false">
+          <div class="text-center">
+            <h2 class="mb-4">{{ gameOverMessage }}</h2>
+            <Button label="Retour à l'accueil" @click="goToHome" />
+          </div>
+        </Dialog>
 
-      
+
+      </div>
+
+
+
     </div>
 
-    
-      
-  </div>
-   
 
-    
+
 
   </Suspense>
 </template>
@@ -359,7 +377,7 @@ const removePieceColor = (pieceType: FullPieceProperty): PieceType => {
   position: relative
 }
 
-.possible-move::after{
+.possible-move::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -453,7 +471,7 @@ const removePieceColor = (pieceType: FullPieceProperty): PieceType => {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.bg-white{
+.bg-white {
   background-color: #EBECD0 !important;
 }
 
