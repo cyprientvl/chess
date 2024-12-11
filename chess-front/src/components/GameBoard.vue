@@ -49,7 +49,7 @@
                 'chess-cell cursor-pointer',
                 ((row + col) % 2 === 0) ? 'bg-white' : 'noir',
                 {
-                  'possible-move': isPossibleMove(row - 1, col - 1),
+                  'possible-move': isPossibleMove(row - 1, col - 1) && selectedPiece,
                   'selected-cell': isSelectedCell(row - 1, col - 1),
                   'last-move-from': isLastMoveFrom(row - 1, col - 1),
                   'last-move-to': isLastMoveTo(row - 1, col - 1)
@@ -91,17 +91,8 @@
             <Button label="Retour à l'accueil" @click="goToHome" />
           </div>
         </Dialog>
-
-
       </div>
-
-
-
     </div>
-
-
-
-
   </Suspense>
 </template>
 
@@ -279,7 +270,7 @@ const handleGameResult = (game: GameModel, row: number, col: number) => {
         case ResultPossible.BLACKPROMOTION:
           if (row === -1 || col === -1) return;
           promotionPosition.value = { i: row - 1, j: col - 1 };
-          availablePromotionPieces.value = color === Color.BLACK ? blackKilledPieces.value.map(piece => `BLACK_${piece}` as FullPieceProperty) : whiteKilledPieces.value.map(piece => `WHITE_${piece}` as FullPieceProperty);
+          availablePromotionPieces.value = color === Color.BLACK ? blackKilledPieces.value.filter(piece => piece != PieceType.PAWN).map(piece => `BLACK_${piece}` as FullPieceProperty) : whiteKilledPieces.value.filter(piece => piece != PieceType.PAWN).map(piece => `WHITE_${piece}` as FullPieceProperty);
           showPromotionDialog.value = true;
           break;
 
