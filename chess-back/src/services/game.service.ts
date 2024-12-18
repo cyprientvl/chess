@@ -81,7 +81,8 @@ export class GameService {
                 if(index != -1){
                     listKilledPiece.splice(index, 1);
                 }
-                actionList.push({i: i, j: j, toI: toI, toJ: toJ, piece: piece, color: color, pieceKilled: [...listKilledPiece],
+                actionList.push({i: i, j: j, toI: toI, toJ: toJ, 
+                    piece: piece, color: color, pieceKilled: [...listKilledPiece],
                     step: index+1
                 })
             }else{
