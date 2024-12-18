@@ -64,6 +64,8 @@ export class UserService {
             if(updateUser.new_password && updateUser.new_password == updateUser.new_password_confirm){
                 const passwordBase64 = Buffer.from(updateUser.new_password).toString('base64');
                 user.password = passwordBase64;
+            }else{
+                return {success: false, error: "PASSWORD_NOT_MATCH"};
             }
 
             await user.save();

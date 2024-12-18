@@ -46,15 +46,15 @@ export class UserController extends Controller {
       return { success: true };
     } else {
       switch (response.error) {
-        case "UNKNOW_ERROR":
-            this.setStatus(400);
-            return { success: false };
         case "USERNAME_ALREADY_EXISTS":
             this.setStatus(409); 
             return { success: false };
         case "INCORRECT_PASSWORD":
             this.setStatus(401); 
             return { success: false };
+        case "PASSWORD_NOT_MATCH":
+            this.setStatus(400); 
+            return { success: false };    
         default:
             this.setStatus(500); 
             return { success: false};
