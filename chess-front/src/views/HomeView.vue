@@ -83,7 +83,6 @@ const gameSettings = reactive({
   ownerColor: "BLACK"
 });
 
-// Vérifier si l'utilisateur a une partie en cours
 const checkUserGame = async () => {
   try {
     const token = localStorage.getItem('token');
@@ -110,7 +109,6 @@ const showGameDialog = () => {
   displayGameDialog.value = true;
 };
 
-// Créer une nouvelle partie
 const createGameButton = async () => {
   try {
     creating.value = true;
@@ -135,14 +133,12 @@ const createGameButton = async () => {
   }
 };
 
-// Rejoindre une partie existante
 const joinGame = () => {
   if (gameId.value > -1) {
     router.push(`/game`);
   }
 };
 
-// Vérifier la partie au chargement du composant
 onMounted(() => {
   checkUserGame();
 });

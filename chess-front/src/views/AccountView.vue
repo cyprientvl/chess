@@ -1,4 +1,3 @@
-// views/AccountView.vue
 <template>
   <div class="flex justify-content-center align-items-center min-h-screen bg-gray-100">
     <Card class="w-full md:w-6 lg:w-4">

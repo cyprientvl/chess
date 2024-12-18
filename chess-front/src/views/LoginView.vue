@@ -1,4 +1,3 @@
-// views/LoginView.vue
 <template>
   <div class="flex justify-content-center align-items-center min-h-screen bg-gray-100">
     <LoginForm />

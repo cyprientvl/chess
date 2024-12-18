@@ -15,6 +15,7 @@ import { GameAction } from "../models/gameAction.model";
 import { User } from "../models/user.model";
 import { FormatedGame } from "../interfaces/formatedGame.interface";
 import { ChessLocation } from "../interfaces/location.interface";
+import { ReplayKilledPiece } from "../interfaces/replayKilledPiece.interface";
 
 
 export class GameService {
@@ -54,7 +55,6 @@ export class GameService {
         
         let actionList: ReturnGameAction[] = [];
         
-        let listKilledPiece: any[] = []
 
         gameActions.forEach((element, index) =>{
 
@@ -66,28 +66,25 @@ export class GameService {
             let toI = parseInt(element.to.split(":")[0])
             let toJ = parseInt(element.to.split(":")[1])
 
+            let currentKilledPiece: ReplayKilledPiece | undefined = undefined;
+
             if(killedAction){
                 let pieceType = killedAction.split(":")[1]
                 let color = killedAction.split(":")[2]
-                listKilledPiece.push({color, pieceType, i: toI, j: toJ})
+                currentKilledPiece = {color, pieceType, i: toI, j: toJ}
             }
-
-            
 
             if(element.piece){
                 let piece = element.piece.split(":")[0];
                 let color = element.piece.split(":")[1];
-                const index = listKilledPiece.findIndex(e => e.color == color && e.pieceType == piece);
-                if(index != -1){
-                    listKilledPiece.splice(index, 1);
-                }
+               
                 actionList.push({i: i, j: j, toI: toI, toJ: toJ, 
-                    piece: piece, color: color, pieceKilled: [...listKilledPiece],
+                    piece: piece, color: color, pieceKilled: currentKilledPiece,
                     step: index+1
                 })
             }else{
                 actionList.push({i: i, j: j, toI: toI, toJ: toJ, 
-                    piece: undefined, color: undefined, pieceKilled: [...listKilledPiece],
+                    piece: undefined, color: undefined, pieceKilled: currentKilledPiece,
                     step: index+1
                 })
             }

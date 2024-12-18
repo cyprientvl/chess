@@ -1,5 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import sequelize from "../config/database"; // Connexion à la base de données
+import sequelize from "../config/database"; 
 import { User } from "./user.model";
 import { Color } from "../enums/color.enum";
 import { GameAction } from "./gameAction.model";
@@ -11,7 +11,7 @@ export interface GameAttributes {
   owner_id: number;
   owner_win?: number;
   creation_date: number;
-  date_end?: number;
+  date_end?: number | null;
   owner_color: Color;
   gameAction?: GameAction[];
 }
@@ -46,7 +46,7 @@ Game.init(
       allowNull: false,
     },
     owner_win: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     creation_date: {

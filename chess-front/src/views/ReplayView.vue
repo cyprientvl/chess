@@ -65,7 +65,6 @@ const router = useRouter();
 const toast = useToast();
 const { getReplay } = useGameService();
 
-// État initial
 const initialBoard: Case[][] = Array(8).fill(null).map(() =>
   Array(8).fill(null).map(() => ({ color: Color.WHITE, piece: undefined }))
 );
@@ -82,21 +81,17 @@ const currentLastMove = ref<GameMoveDTO | null>(null);
 const capturedBlackPieces = ref<Piece[]>([]);
 const capturedWhitePieces = ref<Piece[]>([]);
 
-// Les tableaux pour l'affichage dans GameBoard
 const blackKilledPieces = ref<PieceType[]>([]);
 const whiteKilledPieces = ref<PieceType[]>([]);
 
 const setupInitialBoard = () => {
-  // Configuration initiale de l'échiquier
   const board = structuredClone(initialBoard);
 
-  // Placement des pions
   for (let i = 0; i < 8; i++) {
     board[1][i].piece = { pieceType: PieceType.PAWN, color: Color.BLACK, i: 1, j: i };
     board[6][i].piece = { pieceType: PieceType.PAWN, color: Color.WHITE, i: 6, j: i };
   }
 
-  // Placement des autres pièces
   const pieces: PieceType[] = [PieceType.ROOK, PieceType.KNIGHT, PieceType.BISHOP, PieceType.QUEEN, PieceType.KING, PieceType.BISHOP, PieceType.KNIGHT, PieceType.ROOK];
   for (let j = 0; j < 8; j++) {
     board[0][j].piece = { pieceType: pieces[j], color: Color.BLACK, i: 0, j };
@@ -132,10 +127,8 @@ const nextStep = () => {
       toJ: step.toJ
     };
 
-    // Gérer la capture de pièce
     const destinationPiece = currentBoard.value[step.toI][step.toJ].piece;
     if (destinationPiece && step.pieceKilled) {
-      // Stocker la pièce complète
       const capturedPieces = step.pieceKilled.color === Color.BLACK ? capturedBlackPieces : capturedWhitePieces;
       capturedPieces.value.push({
         pieceType: step.pieceKilled.pieceType,
@@ -144,12 +137,15 @@ const nextStep = () => {
         j: step.toJ
       });
 
-      // Mettre à jour la liste d'affichage
-      const killedPieces = step.pieceKilled.color === Color.BLACK ? blackKilledPieces : whiteKilledPieces;
-      killedPieces.value.push(step.pieceKilled.pieceType);
+      
+      if(step.pieceKilled.color === Color.BLACK){
+        blackKilledPieces.value.push(step.pieceKilled.pieceType)
+      }else{
+        whiteKilledPieces.value.push(step.pieceKilled.pieceType);
+      }
+      
     }
 
-    // Déplacer la pièce
     const movingPiece = currentBoard.value[step.i][step.j].piece;
     if (movingPiece) {
       currentBoard.value[step.toI][step.toJ].piece = {
@@ -159,7 +155,14 @@ const nextStep = () => {
         j: step.toJ
       };
       currentBoard.value[step.i][step.j].piece = undefined;
+
+      if(step.piece){
+        currentBoard.value[step.toI][step.toJ].piece.pieceType = step.piece;
+      }
+
     }
+
+    
   }
 };
 
@@ -167,10 +170,8 @@ const previousStep = () => {
   if (currentStepIndex.value > -1) {
     const step = replayData.value.actions[currentStepIndex.value];
 
-    // Récupérer la pièce qui a été déplacée
     const movedPiece = currentBoard.value[step.toI][step.toJ].piece;
     if (movedPiece) {
-      // Remettre la pièce à sa position initiale
       currentBoard.value[step.i][step.j].piece = {
         pieceType: movedPiece.pieceType,
         color: movedPiece.color,
@@ -178,12 +179,10 @@ const previousStep = () => {
         j: step.j
       };
 
-      // S'il y avait une pièce tuée, la restaurer
       if (step.pieceKilled) {
         const capturedPieces = step.pieceKilled.color === Color.BLACK ? capturedBlackPieces : capturedWhitePieces;
         const killedPieces = step.pieceKilled.color === Color.BLACK ? blackKilledPieces : whiteKilledPieces;
 
-        // Retirer la pièce des deux tableaux
         const capturedIndex = capturedPieces.value.findIndex(
           p => p.pieceType === step.pieceKilled?.pieceType &&
             p.i === step.toI &&
@@ -194,7 +193,6 @@ const previousStep = () => {
           const removedPiece = capturedPieces.value.splice(capturedIndex, 1)[0];
           killedPieces.value.splice(killedPieces.value.findIndex(p => p === removedPiece.pieceType), 1);
 
-          // Remet la pièce sur le plateau
           currentBoard.value[step.toI][step.toJ].piece = {
             pieceType: removedPiece.pieceType,
             color: removedPiece.color,
@@ -205,7 +203,13 @@ const previousStep = () => {
       } else {
         currentBoard.value[step.toI][step.toJ].piece = undefined;
       }
+
+      if(step.piece){
+        currentBoard.value[step.i][step.j].piece.pieceType = PieceType['PAWN'];
+      }
     }
+
+    
 
     currentLastMove.value = null;
     currentStepIndex.value--;
@@ -213,7 +217,6 @@ const previousStep = () => {
 };
 
 const getCurrentTurn = () => {
-  // On retourne toujours la couleur du propriétaire pour garder le plateau fixe
   return replayData.value.ownerColor === Color.WHITE ? 'Blancs' : 'Noirs';
 };
 

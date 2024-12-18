@@ -9,14 +9,15 @@ export class LeaderboardService {
         const users = await User.findAll();
 
         const whereClause: WhereOptions<GameAttributes> = {
-            owner_win: {
-                [Op.ne]: undefined,
+            date_end: {
+                [Op.ne]: null,
             },
             
         };
 
         const games = await Game.findAll({
-            where: whereClause
+            where: whereClause,
+            include: [{model: User, as: 'owner'}]
         });
 
         const userVictories = new Map<string, number>();
@@ -24,7 +25,6 @@ export class LeaderboardService {
         users.forEach(user => {
             userVictories.set(user.username, 0);
         });
-
         games.forEach(game => {
             if (game.owner_win) {
                 const winner = game.owner;
@@ -33,7 +33,6 @@ export class LeaderboardService {
                 }
             }
         });
-
         const sortedEntries: LeaderboardEntryDTO[]  = Array.from(userVictories.entries())
             .sort(([, a], [, b]) => b - a)
             .map(([username, score], index) => ({

@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
-import cors from "cors";  // Ajout de l'import cors
+import cors from "cors"; 
 
 import { RegisterRoutes } from "./routes/index";
 import errorHandler from "./middlewares/errorHandler";
@@ -20,9 +20,8 @@ declare global {
   }
 }
 
-// Configuration des CORS
 app.use(cors({
-  origin: 'http://localhost:5173', // L'origine de votre application Vue
+  origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true

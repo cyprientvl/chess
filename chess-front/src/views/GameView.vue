@@ -74,7 +74,6 @@ const guestColor = ref<'Noirs' | 'Blancs'>();
 const possibleMoves = ref<PossibleMove[]>([]);
 const lastMove = ref<GameMoveDTO | null>(null);
 
-// États pour les modales
 const showPromotionDialog = ref(false);
 const showGameOverDialog = ref(false);
 const gameOverMessage = ref('');
