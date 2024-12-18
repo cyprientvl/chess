@@ -1,5 +1,6 @@
 export interface UpdateUser{
-    id: number;
-    password?: string;
     username?: string;
+    old_password: string;
+    new_password?: string;
+    new_password_confirm?: string;
 }

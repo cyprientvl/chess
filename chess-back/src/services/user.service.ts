@@ -42,22 +42,37 @@ export class UserService {
 
     }
 
-    public async updateUser(updateUser: UpdateUser): Promise<UserDTO | null> {
+    public async updateUser(userId: number, updateUser: UpdateUser): Promise<{success: boolean, error: string}> {
 
-        const user = await this.getUser(updateUser.id);
+        const user = await this.getUser(userId);
 
         if(!user){
-            return null;
+            return {success: false, error: "UNKNOW_ERROR"};
         }
 
-        if(updateUser.username) user.username = updateUser.username;
-        if(updateUser.password){
-            const passwordBase64 = Buffer.from(updateUser.password).toString('base64');
-            user.password = passwordBase64;
+        if(user.password == Buffer.from(updateUser.old_password).toString('base64')){
+        
+            
+            if(updateUser.username){
+            
+                const verifyUsername = await this.getUserByUsername(updateUser.username);
+                if(verifyUsername != null) return {success: false, error: "USERNAME_ALREADY_EXISTS"};
+                user.username = updateUser.username;
+            
+            }
+            
+            if(updateUser.new_password && updateUser.new_password == updateUser.new_password_confirm){
+                const passwordBase64 = Buffer.from(updateUser.new_password).toString('base64');
+                user.password = passwordBase64;
+            }
+
+            await user.save();
+            return {success: true, error: ""};
+
+
         }
 
-        await user.save();
-        return await this.getUser(updateUser.id);
+        return {success: false, error: "INCORRECT_PASSWORD"};
     }
 
 }
