@@ -12,11 +12,14 @@
         </div>
         <div class="flex justify-content-center gap-4">
           <Button label="Voir mon historique" @click="() => router.push('/history/me')" />
+          <Button label="Modifier le profil" @click="showEditProfile = true" class="p-button-outlined" />
           <Button label="Se déconnecter" severity="danger" @click="handleLogout" :loading="loading" />
         </div>
       </template>
     </Card>
     <Toast />
+
+    <EditProfileDialog v-model:visible="showEditProfile" @profile-updated="handleProfileUpdated" />
   </div>
 </template>
 
@@ -25,14 +28,28 @@ import { useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
 import { useAuthStore } from '@/stores/authStore';
 import { storeToRefs } from 'pinia';
+import { ref } from 'vue';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
+import EditProfileDialog from '@/components/EditProfileDialog.vue';
+
 
 const router = useRouter();
 const toast = useToast();
 const authStore = useAuthStore();
 const { username, loading } = storeToRefs(authStore);
+
+const showEditProfile = ref(false);
+
+const handleProfileUpdated = () => {
+  toast.add({
+    severity: 'success',
+    summary: 'Succès',
+    detail: 'Votre profil a été mis à jour avec succès',
+    life: 3000
+  });
+};
 
 const handleLogout = async () => {
   try {

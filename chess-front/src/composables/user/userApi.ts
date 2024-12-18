@@ -1,5 +1,6 @@
 import axiosInstance from '@/config/AxiosConfig';
-import { API_URL_CONNECTION, API_URL_REGISTER } from '@/constants/ApiUrl';
+import { API_URL_CONNECTION, API_URL_USERS } from '@/constants/ApiUrl';
+import type { EditUserDTO } from '@/modelDTO/EditUser.dto';
 import type { UserDTO } from '@/modelDTO/User.dto';
 
 export function useUserApi() {
@@ -13,7 +14,10 @@ export function useUserApi() {
       return res.data.token;
     },
     async register(user: UserDTO): Promise<void> {
-      await axiosInstance.post(`${API_URL_REGISTER}`, user);
+      await axiosInstance.post(`${API_URL_USERS}`, user);
+    },
+    async editUser(user: EditUserDTO): Promise<void> {
+      await axiosInstance.patch(`${API_URL_USERS}`, user);
     }
   }
 }

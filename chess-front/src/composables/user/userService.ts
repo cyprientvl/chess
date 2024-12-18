@@ -1,3 +1,4 @@
+import type { EditUserDTO } from '@/modelDTO/EditUser.dto';
 import { useUserApi } from './userApi';
 import type { UserDTO } from '@/modelDTO/User.dto';
 import { useAuthStore } from '@/stores/authStore';
@@ -19,6 +20,9 @@ export function useUserService() {
         throw new Error('No user logged in');
       }
       return authStore.username;
+    },
+    async editUser(user: EditUserDTO) {
+      await userApi.editUser(user);
     }
   };
 }

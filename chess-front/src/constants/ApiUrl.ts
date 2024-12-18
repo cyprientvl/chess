@@ -2,7 +2,7 @@ import config from '@/config.json';
 export const ApiUrl = config.VUE_APP_API_BASE_URL;
 
 export const API_URL_CONNECTION = `/auth/login`;
-export const API_URL_REGISTER = `/users`;
+export const API_URL_USERS = `/users`;
 
 // game
 export const API_URL_GAME = '/games';
