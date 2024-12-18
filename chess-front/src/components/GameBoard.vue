@@ -1,7 +1,7 @@
 <template>
   <div id="main">
     <div id="pieceKilled">
-      <h2 style="color: white">Pièces prises</h2>
+      <h2>Pièces prises</h2>
       <div class="flex all-piece-killed">
         <div class="list-piece-killed">
           <div v-for="piece in blackKilledPieces" :key="piece" class="piece piece-black"
