@@ -16,7 +16,7 @@
           </div>
         </div>
 
-        <h1 class="colot-turn">C'est aux {{ colorPlayer }} de jouer !</h1>
+        <h1>C'est aux {{ colorPlayer }} de jouer !</h1>
 
         <div class="users users-seconde">
           <img src="/assets/img/user-image.svg">

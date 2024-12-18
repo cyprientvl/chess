@@ -17,10 +17,6 @@ main {
 	width: calc(100% - 180px);
 }
 
-body {
-	background-color: #302E2B;
-}
-
 .layout {
 	display: flex;
 }
@@ -107,7 +103,6 @@ nav li {
 }
 
 #home-page h1 {
-	color: white;
 	text-align: center;
 	font-size: 44px;
 	margin-bottom: 30px;
@@ -286,9 +281,6 @@ nav li {
 	font-weight: 500;
 }
 
-.colot-turn {
-	color: white;
-}
 
 .users-seconde .user-color {
 	text-align: right;

@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-content-center align-items-center min-h-screen bg-gray-100">
-    <Card class="w-full md:w-6 lg:w-4">
+    <Card class="w-full w-8">
       <template #title>
         <div class="text-center mb-4">
           <h1>Votre compte</h1>
@@ -9,6 +9,8 @@
       <template #content>
         <div class="text-center">
           <p class="mb-4">Connecté en tant que : {{ username }}</p>
+        </div>
+        <div class="flex justify-content-center gap-4">
           <Button label="Voir mon historique" @click="() => router.push('/history/me')" />
           <Button label="Se déconnecter" severity="danger" @click="handleLogout" :loading="loading" />
         </div>
