@@ -19,7 +19,7 @@
     </Card>
     <Toast />
 
-    <EditProfileDialog v-model:visible="showEditProfile" @profile-updated="handleProfileUpdated" />
+    <EditProfileDialog v-model:visible="showEditProfile" />
   </div>
 </template>
 
@@ -41,15 +41,6 @@ const authStore = useAuthStore();
 const { username, loading } = storeToRefs(authStore);
 
 const showEditProfile = ref(false);
-
-const handleProfileUpdated = () => {
-  toast.add({
-    severity: 'success',
-    summary: 'Succès',
-    detail: 'Votre profil a été mis à jour avec succès',
-    life: 3000
-  });
-};
 
 const handleLogout = async () => {
   try {

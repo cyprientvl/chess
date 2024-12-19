@@ -69,10 +69,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'update:visible', value: boolean): void
-  (e: 'profile-updated'): void
 }>();
 
-// Utiliser un computed pour la visibilité
 const isVisible = computed({
   get: () => props.visible,
   set: (value) => emit('update:visible', value)
@@ -134,13 +132,11 @@ const validatePasswordConfirm = () => {
 const validateForm = (): boolean => {
   let isValid = true;
 
-  // Validate required old password
   validateOldPassword();
   if (errors.old_password) {
     isValid = false;
   }
 
-  // Validate username if provided
   if (formData.username) {
     validateUsername();
     if (errors.username) {
@@ -148,7 +144,6 @@ const validateForm = (): boolean => {
     }
   }
 
-  // Validate new password if provided
   if (formData.new_password) {
     validateNewPassword();
     validatePasswordConfirm();
@@ -161,7 +156,6 @@ const validateForm = (): boolean => {
 };
 
 const resetForm = () => {
-  // Reset form data
   Object.assign(formData, {
     username: '',
     old_password: '',
@@ -169,7 +163,6 @@ const resetForm = () => {
     new_password_confirm: ''
   });
 
-  // Reset errors
   Object.assign(errors, {
     username: '',
     old_password: '',
@@ -200,14 +193,28 @@ const handleSubmit = async () => {
       dataToSubmit.new_password_confirm = formData.new_password_confirm;
     }
 
-    await userService.editUser(dataToSubmit);
+    const response = await userService.editUser(dataToSubmit);
 
     if (formData.username) {
       authStore.updateUsername(formData.username);
     }
 
-    emit('profile-updated');
-    handleVisibilityChange(false);
+    if (response.success) {
+      toast.add({
+        severity: 'success',
+        summary: 'Succès',
+        detail: 'Profil mis à jour avec succès',
+        life: 3000
+      });
+      handleVisibilityChange(false);
+    } else {
+      toast.add({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'Une erreur est survenue lors de la mise à jour du profil',
+        life: 3000
+      });
+    }
   } catch (error) {
     if (error instanceof AxiosError) {
       switch (error?.response?.status) {
@@ -273,6 +280,27 @@ const closeDialog = () => {
 }
 
 .p-password {
+  display: flex;
+  width: 100%;
+}
+
+.p-password-input {
+  flex: 1;
+  width: 100%;
+}
+
+:deep(.p-password-wrapper) {
+  width: 100%;
+  display: flex;
+}
+
+
+:deep(.p-password-toggle) {
+  position: absolute;
+  right: 0.5rem;
+}
+
+:deep(.p-inputtext) {
   width: 100%;
 }
 </style>

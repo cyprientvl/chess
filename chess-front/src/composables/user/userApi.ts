@@ -16,8 +16,8 @@ export function useUserApi() {
     async register(user: UserDTO): Promise<void> {
       await axiosInstance.post(`${API_URL_USERS}`, user);
     },
-    async editUser(user: EditUserDTO): Promise<void> {
-      await axiosInstance.patch(`${API_URL_USERS}`, user);
+    async editUser(user: EditUserDTO): Promise<{ success: boolean }> {
+      return await axiosInstance.patch(`${API_URL_USERS}`, user);
     }
   }
 }

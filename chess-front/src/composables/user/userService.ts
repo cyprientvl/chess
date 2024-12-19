@@ -21,8 +21,8 @@ export function useUserService() {
       }
       return authStore.username;
     },
-    async editUser(user: EditUserDTO) {
-      await userApi.editUser(user);
+    async editUser(user: EditUserDTO): Promise<{ success: boolean }> {
+      return await userApi.editUser(user);
     }
   };
 }

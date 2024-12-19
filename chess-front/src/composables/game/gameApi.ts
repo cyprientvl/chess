@@ -7,6 +7,7 @@ import type { PossibleMoveDTO } from '@/modelDTO/PossibleMove.dto';
 import type { PossibleMove } from '@/model/PossibleMove.model';
 import type { PieceType } from '@/model/Pieces.model';
 import type { ChessReplay } from '@/model/Replay.model';
+import type { UpdateGameDTO } from '@/modelDTO/UpdateGame.dto';
 
 export function useGameApi() {
   return {
@@ -40,6 +41,10 @@ export function useGameApi() {
     },
     async getReplay(gameId: number): Promise<ChessReplay> {
       const res = await axiosInstance.get<ChessReplay>(`${API_URL_GAME}${API_URL_REPLAY}/${gameId}`);
+      return res.data;
+    },
+    async updateGamePrivacy(update: UpdateGameDTO): Promise<{ success: boolean }> {
+      const res = await axiosInstance.put<{ success: boolean }>(`${API_URL_GAME}`, update);
       return res.data;
     }
   };
