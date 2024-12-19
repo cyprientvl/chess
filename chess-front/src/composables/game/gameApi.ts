@@ -44,7 +44,7 @@ export function useGameApi() {
       return res.data;
     },
     async updateGamePrivacy(update: UpdateGameDTO): Promise<{ success: boolean }> {
-      const res = await axiosInstance.put<{ success: boolean }>(`${API_URL_GAME}`, update);
+      const res = await axiosInstance.patch<{ success: boolean }>(`${API_URL_GAME}`, update);
       return res.data;
     }
   };

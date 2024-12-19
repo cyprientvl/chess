@@ -19,12 +19,18 @@
               <Column field="owner.username" header="Joueur" :sortable="true" />
               <Column field="public" header="Visibilité" :sortable="true">
                 <template #body="{ data }">
-                  <span :class="data.public ? 'text-green-500' : 'text-red-500'">
-                    {{ data.public ? 'Public' : 'Privé' }}
+                  <span :class="data.public === '1' ? 'text-green-500' : 'text-red-500'">
+                    {{ data.public === '1' ? 'Public' : 'Privé' }}
                   </span>
                 </template>
               </Column>
-              <Column field="owner_win" header="Victoires" :sortable="true" />
+              <Column field="owner_win" header="Victoire" :sortable="true">
+                <template #body="{ data }">
+                  <span :class="data.owner_win ? 'text-green-500' : 'text-red-500'">
+                    {{ data.owner_win ? 'Victoire' : 'Défaite' }}
+                  </span>
+                </template>
+              </Column>
               <Column field="owner_color" header="Couleur" :sortable="true">
                 <template #body="{ data }">
                   <div class="flex align-items-center">
@@ -45,6 +51,12 @@
                   {{ data.date_end ? formatDate(data.date_end) : 'En cours' }}
                 </template>
               </Column>
+              <Column v-if="!router.currentRoute.value.params.userId" header="Modifier visibilité">
+                <template #body="{ data }">
+                  <InputSwitch :modelValue="data.public === '1'"
+                    @update:modelValue="value => handlePrivacyChange(data, value)" :disabled="privacyLoading" />
+                </template>
+              </Column>
             </DataTable>
           </div>
         </div>
@@ -62,14 +74,18 @@ import ProgressSpinner from 'primevue/progressspinner';
 import Toast from 'primevue/toast';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import InputSwitch from 'primevue/inputswitch';
 import router from '@/router';
 import type { HistoryModel } from '@/model/History.model';
 import { useLeaderboardService } from '@/composables/leaderboard/leaderboardService';
+import { useGameService } from '@/composables/game/gameService';
 
 const { getUserHistory, getConnectedUserHistory } = useLeaderboardService();
+const { updateGamePrivacy } = useGameService();
 
 const toast = useToast();
 const loading = ref(true);
+const privacyLoading = ref(false);
 const history = ref<HistoryModel[]>([]);
 
 const formatDate = (timestamp: number): string => {
@@ -80,6 +96,39 @@ const formatDate = (timestamp: number): string => {
     hour: '2-digit',
     minute: '2-digit'
   });
+};
+
+const handlePrivacyChange = async (game: HistoryModel, value: boolean) => {
+  const newValue = value ? '1' : '0';
+  const oldValue = game.public;
+  game.public = newValue;
+
+  try {
+    privacyLoading.value = true;
+    const response = await updateGamePrivacy({
+      isPublic: value,
+      gameId: game.id
+    });
+
+    if (response.success) {
+      toast.add({
+        severity: 'success',
+        summary: 'Succès',
+        detail: 'La visibilité de la partie a été mise à jour',
+        life: 3000
+      });
+    }
+  } catch {
+    game.public = oldValue; // Restore the previous value if the update failed
+    toast.add({
+      severity: 'error',
+      summary: 'Erreur',
+      detail: 'Impossible de modifier la visibilité de la partie',
+      life: 3000
+    });
+  } finally {
+    privacyLoading.value = false;
+  }
 };
 
 const loadHistory = async () => {
