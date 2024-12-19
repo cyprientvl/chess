@@ -8,6 +8,12 @@ import { deleteGameStorage, getGameStorage } from "./chessStorage";
 import { Game } from "./game";
 import { King } from "./Piece/king";
 import { Pawn } from "./Piece/pawn";
+import { Game as GameModel } from "../models/game.model";
+import { Piece } from "./Piece/piece";
+import { Bishop } from "./Piece/bishop";
+import { Rook } from "./Piece/rook";
+import { Knight } from "./Piece/knight";
+import { Queen } from "./Piece/queen";
 
 
 export function isInBounds(i: number, j: number): boolean {
@@ -39,6 +45,26 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
             if(checkKIngStatus.status != Action.KINGSAFE) return {success: false, result: []};
         }
     }else{
+        let copyListCase = [...game.getListCase()];
+        let copyPiece = copyListCase[i][j].piece;
+        let copyPieceKilled = copyListCase[toI][toJ].piece;
+
+        console.log("copy puece");
+        if(!copyPiece) return {success: false, result: []}
+
+        console.log("verified killed");
+        if(copyPieceKilled){
+            if(copyPieceKilled.color == copyPiece.color){
+                return {success: false, result: []}
+            }
+        }
+
+        console.log("definied")
+        copyListCase[i][j].piece = undefined;
+        copyListCase[toI][toJ].piece = copyPiece;
+
+        copyPiece.i = toI;
+        copyPiece.j = toJ;
         if(!verifyKingBeforeMove(game)) return {success: false, result: []};
     }
 
@@ -46,8 +72,9 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
     let p = listCase[toI][toJ].piece;
 
     let resultAction = [];
-
+    
     if(p){
+        console.log("mauvaise copy")
         if(p.color == piece.color){
             return {success: false, result: []}
         }
@@ -110,6 +137,8 @@ export async function upgradePiece(userId: number, piece: PieceType): Promise<Fo
         let p = game.getListCase()[pieceToPromote.i][pieceToPromote.j].piece;
         if(!p) return {success: false}
         p.pieceType = piece;
+        let newPiece = generatePieceClassByType(p, p.pieceType);
+        game.getListCase()[pieceToPromote.i][pieceToPromote.j].piece = newPiece;
 
         const gameAction = await GameAction.findOne({where: {game_id: game.getIdInDB()}, order: [['id', 'DESC']], limit: 1})
         if(gameAction){
@@ -153,15 +182,42 @@ export function verifyKingStatus(game: Game, userId: number): string[]{
     let returnAction: string[] = [];
 
     game.getListCase().forEach(element=>{
-        element.forEach(c =>{
+        element.forEach(async c =>{
             if(c.piece && c.piece.pieceType == 'KING'){
                 const r = King.checkKingStatus(game.getListCase(), c.piece);
                 returnAction.push(r.status+":"+r.king.color);
                 if(r.status == 'KINGLOSE'){
+                
                     deleteGameStorage(userId);
                 }
             }
         })
     })
     return returnAction;
+}
+
+function generatePieceClassByType(piece: Piece, type: string){
+    let p: Piece = new Bishop(PieceType.BISHOP, piece.color == "BLACK" ? 0:1, piece.i, piece.j);
+
+    switch (type) {
+        case "ROOK":
+            p = new Rook(PieceType.ROOK, piece.color == "BLACK" ? 0:1, piece.i, piece.j);
+            break;
+        case "PAWN":
+            p = new Pawn(PieceType.PAWN, piece.color == "BLACK" ? 0:1, piece.i, piece.j);
+            break;
+        case "KNIGHT":
+            p = new Knight(PieceType.KNIGHT, piece.color == "BLACK" ? 0:1, piece.i, piece.j);
+            break;
+        case "QUEEN":
+            p = new Queen(PieceType.QUEEN, piece.color == "BLACK" ? 0:1, piece.i, piece.j);
+            break;
+        case "KING":
+            p = new King(PieceType.KING, piece.color == "BLACK" ? 0:1, piece.i, piece.j);
+            break;
+        default:
+            break;
+    }
+
+    return p;
 }

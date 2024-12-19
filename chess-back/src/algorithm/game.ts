@@ -156,6 +156,11 @@ export class Game{
     public getIdInDB(){
         return this.idInDB;
     }
+
+    copy(): Game {
+        const newGame = Object.create(Object.getPrototypeOf(this)); 
+        return Object.assign(newGame, this);
+    }
 }
 
 
