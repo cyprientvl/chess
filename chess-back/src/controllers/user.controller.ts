@@ -23,7 +23,7 @@ export class UserController extends Controller {
   @Post("/")
   public async createUser(@Body() requestBody: CreateUserBody): Promise<UserDTO | null> {
     const user = await userService.createUser(requestBody);
-    if(!user){
+    if (!user) {
       this.setStatus(401);
       return null;
     }
@@ -38,26 +38,26 @@ export class UserController extends Controller {
 
   @Security("jwt", [])
   @Patch("/")
-  public async updateUser(@Request() req: ExpressRequest, @Body() body: UpdateUser): Promise<{success: boolean}> {
+  public async updateUser(@Request() req: ExpressRequest, @Body() body: UpdateUser): Promise<{ success: boolean }> {
     const response = await userService.updateUser(req.user.id, body);
-    
+
     if (response.success) {
       this.setStatus(200);
       return { success: true };
     } else {
       switch (response.error) {
         case "USERNAME_ALREADY_EXISTS":
-            this.setStatus(409); 
-            return { success: false };
+          this.setStatus(409);
+          return { success: false };
         case "INCORRECT_PASSWORD":
-            this.setStatus(401); 
-            return { success: false };
+          this.setStatus(401);
+          return { success: false };
         case "PASSWORD_NOT_MATCH":
-            this.setStatus(400); 
-            return { success: false };    
+          this.setStatus(400);
+          return { success: false };
         default:
-            this.setStatus(500); 
-            return { success: false};
+          this.setStatus(500);
+          return { success: false };
       }
     }
   }

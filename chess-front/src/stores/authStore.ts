@@ -15,6 +15,11 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('username', newUsername);
   };
 
+  const updateUsername = (newUsername: string) => {
+    username.value = newUsername;
+    localStorage.setItem('username', newUsername);
+  };
+
   const logout = () => {
     token.value = null;
     username.value = null;
@@ -29,6 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     loading,
     save,
-    logout
+    logout,
+    updateUsername
   };
 });

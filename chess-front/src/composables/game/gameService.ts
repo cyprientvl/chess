@@ -6,6 +6,7 @@ import type { CreateGameDTO } from '@/modelDTO/CreateGame.dto';
 import type { PossibleMove } from '@/model/PossibleMove.model';
 import type { PieceType } from '@/model/Pieces.model';
 import type { ChessReplay } from '@/model/Replay.model';
+import type { UpdateGameDTO } from '@/modelDTO/UpdateGame.dto';
 
 const gameApi = useGameApi();
 export function useGameService() {
@@ -33,6 +34,9 @@ export function useGameService() {
     },
     async getReplay(gameId: number): Promise<ChessReplay> {
       return gameApi.getReplay(gameId);
+    },
+    async updateGamePrivacy(update: UpdateGameDTO): Promise<{ success: boolean }> {
+      return gameApi.updateGamePrivacy(update);
     }
   };
 }

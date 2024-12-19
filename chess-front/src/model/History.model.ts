@@ -4,7 +4,7 @@ import type { User } from "./User.model";
 export interface HistoryModel {
   id: number;
   owner: User;
-  public: boolean;
+  public: string;
   owner_win: number;
   creation_date: number;
   date_end?: number;
