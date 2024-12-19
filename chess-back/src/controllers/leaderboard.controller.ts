@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Path, Post, Request, Route, Security, Tags } from "tsoa";
+import { Controller, Get, Path, Request, Route, Security, Tags } from "tsoa";
 import { leaderboardService } from "../services/leaderboard.service";
 import { Request as ExpressRequest } from 'express';
 import { LeaderboardEntryDTO } from "../dto/leaderboard.dto";
@@ -15,13 +15,13 @@ export class LeaderboardController extends Controller {
 
     @Get("/history/me")
     @Security("jwt", [])
-    public async getUserGame(@Request() req: ExpressRequest){
+    public async getUserGame(@Request() req: ExpressRequest) {
         const games = await leaderboardService.getUserGames(req.user.id);
         return games;
     }
 
     @Get("/history/{userId}")
-    public async getLeaderboardUser(@Request() req: ExpressRequest, @Path() userId: number){
+    public async getLeaderboardUser(@Request() req: ExpressRequest, @Path() userId: number) {
         const games = await leaderboardService.getLeaderboardUser(userId);
         return games;
     }

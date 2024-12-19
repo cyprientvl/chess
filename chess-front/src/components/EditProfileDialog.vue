@@ -58,6 +58,10 @@ import Password from 'primevue/password';
 import { useUserService } from '@/composables/user/userService';
 import { useToast } from 'primevue/usetoast';
 import type { EditUserDTO } from '@/modelDTO/EditUser.dto';
+import { useAuthStore } from '@/stores/authStore';
+import { AxiosError } from 'axios';
+
+const authStore = useAuthStore();
 
 const props = defineProps<{
   visible: boolean
@@ -192,24 +196,62 @@ const handleSubmit = async () => {
       dataToSubmit.new_password = formData.new_password;
     }
 
+    if (formData.new_password_confirm) {
+      dataToSubmit.new_password_confirm = formData.new_password_confirm;
+    }
+
     await userService.editUser(dataToSubmit);
 
-    toast.add({
-      severity: 'success',
-      summary: 'Succès',
-      detail: 'Profil mis à jour avec succès',
-      life: 3000
-    });
+    if (formData.username) {
+      authStore.updateUsername(formData.username);
+    }
 
     emit('profile-updated');
     handleVisibilityChange(false);
-  } catch {
-    toast.add({
-      severity: 'error',
-      summary: 'Erreur',
-      detail: 'Une erreur est survenue lors de la mise à jour du profil',
-      life: 3000
-    });
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      switch (error?.response?.status) {
+        case 409:
+          toast.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: 'Le nom d\'utilisateur est déjà utilisé',
+            life: 3000
+          });
+          break;
+        case 401:
+          toast.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: 'Le mot de passe actuel est incorrect',
+            life: 3000
+          });
+          break;
+        case 400:
+          toast.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: 'Les mots de passes doivent correspondre',
+            life: 3000
+          });
+          break;
+        default:
+          toast.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: 'Une erreur est survenue lors de la mise à jour du profil',
+            life: 3000
+          });
+          break;
+      }
+    } else {
+      toast.add({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'Une erreur est survenue lors de la mise à jour du profil',
+        life: 3000
+      });
+    }
   } finally {
     loading.value = false;
   }
