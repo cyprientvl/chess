@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Path, Post, Request, Route, Security, Tags } from "tsoa";
+import { Body, Controller, Delete, Get, Patch, Path, Post, Request, Route, Security, Tags } from "tsoa";
 import { CreateGameBody } from "../interfaces/createGameBody.interface";
 import { gameService } from "../services/game.service";
 import { Request as ExpressRequest } from 'express';
 import { MovePiece } from "../interfaces/movePiece.interface";
 import { PieceType } from "../enums/piece.enum";
+import { UpdateGame } from "../interfaces/updateGame.interface";
 
 @Route("games")
 @Tags("Games")
@@ -84,5 +85,16 @@ export class GameController extends Controller {
     @Security("jwt", [])
     public delete(@Request() req: ExpressRequest){
       return gameService.delete(req.user.id);
+    }
+
+    @Patch("/")
+    @Security("jwt", [])
+    public async updateGame(@Request() req: ExpressRequest, @Body() body: UpdateGame){
+      const response = await gameService.updateGame(req.user.id, body);
+      if(!response){
+        this.setStatus(401);
+        return {success: false}
+      }
+      return {succes: true}
     }
 }

@@ -16,6 +16,7 @@ import { User } from "../models/user.model";
 import { FormatedGame } from "../interfaces/formatedGame.interface";
 import { ChessLocation } from "../interfaces/location.interface";
 import { ReplayKilledPiece } from "../interfaces/replayKilledPiece.interface";
+import { UpdateGame } from "../interfaces/updateGame.interface";
 
 
 export class GameService {
@@ -175,6 +176,18 @@ export class GameService {
 
         return piece.possibleMove(game.getListCase());
         
+    }
+
+    async updateGame(userId: number, body: UpdateGame): Promise<boolean>{
+        const game = await Game.findOne({where: {id: body.gameId, owner_id: userId}});
+    
+        if(!game){
+            return false;
+        }
+
+        game.public = body.isPublic;
+        await game.save();
+        return true;
     }
 }
 
