@@ -45,27 +45,27 @@ export function movePiece(game: Game, i: number, j: number, toI: number, toJ: nu
             if(checkKIngStatus.status != Action.KINGSAFE) return {success: false, result: []};
         }
     }else{
-        let copyListCase = [...game.getListCase()];
-        let copyPiece = copyListCase[i][j].piece;
-        let copyPieceKilled = copyListCase[toI][toJ].piece;
-
-        console.log("copy puece");
-        if(!copyPiece) return {success: false, result: []}
-
-        console.log("verified killed");
-        if(copyPieceKilled){
-            if(copyPieceKilled.color == copyPiece.color){
+        let pCopy = listCase[toI][toJ].piece;
+        if(pCopy){
+            if(pCopy.color == piece.color){
                 return {success: false, result: []}
             }
         }
+    
+        listCase[i][j].piece = undefined;
+        listCase[toI][toJ].piece = piece;
+        
+        piece.i = toI;
+        piece.j = toJ;
 
-        console.log("definied")
-        copyListCase[i][j].piece = undefined;
-        copyListCase[toI][toJ].piece = copyPiece;
+        const r = verifyKingBeforeMove(game);
 
-        copyPiece.i = toI;
-        copyPiece.j = toJ;
-        if(!verifyKingBeforeMove(game)) return {success: false, result: []};
+        listCase[i][j].piece = piece;
+        listCase[toI][toJ].piece = pCopy;
+        piece.i = i;
+        piece.j = j;
+
+        if(!r) return {success: false, result: []};
     }
 
 
