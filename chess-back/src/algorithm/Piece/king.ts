@@ -68,18 +68,17 @@ export class King extends Piece{
             { di: 1, dj: -1 }, { di: 1, dj: 0 }, { di: 1, dj: 1 }
         ];
     
-        // Fonction pour vérifier si une pièce alliée peut intercepter une menace
         const canAllyIntercept = (threatI: number, threatJ: number): boolean => {
             for (let row of listCase) {
                 for (let c of row) {
                     if (c.piece && c.piece.color === king.color && !(c.piece instanceof King)) {
                         if (c.piece.move(threatI, threatJ, listCase)) {
-                            return true; // Une pièce alliée peut intercepter
+                            return true; 
                         }
                     }
                 }
             }
-            return false; // Aucune pièce alliée ne peut intercepter
+            return false; 
         };
     
         for (let { di, dj } of directions) {
@@ -92,7 +91,6 @@ export class King extends Piece{
                 for (let row of listCase) {
                     for (let c of row) {
                         if (c.piece && c.piece.color !== king.color && c.piece.move(newI, newJ, listCase)) {
-                            // Si une pièce menace cette position
                             if (!canAllyIntercept(c.piece.i, c.piece.j)) {
                                 isSafe = false;
                             }
