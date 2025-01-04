@@ -21,7 +21,7 @@
           <router-link v-slot="{ href, navigate }" to="/leaderboard" custom>
             <a :href="href" @click="navigate">
               <img src="/assets/img/nav-item-1.png" alt="nav-icon" />
-              <p>Leaderboard</p>
+              <p>Classement</p>
             </a>
           </router-link>
         </li>
