@@ -28,11 +28,7 @@
       </div>
 
       <div class="flex justify-content-center align-items-top mt-6 gap-5">
-        <GameBoard :board="board" :colorPlayer="colorPlayer" :blackKilledPieces="blackKilledPieces"
-          :whiteKilledPieces="whiteKilledPieces" :lastMove="lastMove" :possibleMoves="possibleMoves"
-          :gameOverMessage="gameOverMessage" :showGameOverDialog="showGameOverDialog"
-          :showPromotionDialog="showPromotionDialog" :availablePromotionPieces="availablePromotionPieces"
-          @move="handleMove" @promote="handlePromotion" @goHome="goToHome" @selectPiece="handleSelectPiece" />
+        <GameBoard :board="board" :colorPlayer="colorPlayer" :blackKilledPieces="blackKilledPieces" :whiteKilledPieces="whiteKilledPieces" :lastMove="lastMove" :possibleMoves="possibleMoves" :gameOverMessage="gameOverMessage" :showGameOverDialog="showGameOverDialog" :showPromotionDialog="showPromotionDialog" :availablePromotionPieces="availablePromotionPieces" @move="handleMove" @promote="handlePromotion" @goHome="goToHome" @selectPiece="handleSelectPiece" />
 
         <div class="text-center mt-4">
           <Button class="leave-game" style="color: white;" label="Quitter la partie" @click="quitGame" />
@@ -192,7 +188,8 @@ const handleGameResult = (game: GameModel, row: number, col: number) => {
           toast.add({
             severity: 'warn',
             summary: 'Attention',
-            detail: 'Votre roi est en danger ! Vous devez le déplacer.'
+            detail: 'Votre roi est en danger ! Vous devez le déplacer.',
+            life: 10000
           });
           break;
       }
