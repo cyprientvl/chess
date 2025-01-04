@@ -13,8 +13,7 @@
             <ProgressSpinner style="width: 50px; height: 50px" />
           </div>
           <div v-else>
-            <DataTable :value="history" tableStyle="min-width: 50rem" selectionMode="single" paginator :rows="10"
-              @rowSelect="goToReplay" :rowsPerPageOptions="[5, 10, 20]">
+            <DataTable :value="history" tableStyle="min-width: 50rem" selectionMode="single" paginator :rows="10" @rowSelect="goToReplay" :rowsPerPageOptions="[5, 10, 20]">
               <Column field="id" header="ID" :sortable="true" />
               <Column field="owner.username" header="Joueur" :sortable="true" />
               <Column field="public" header="Visibilité" :sortable="true">
@@ -24,10 +23,10 @@
                   </span>
                 </template>
               </Column>
-              <Column field="owner_win" header="Victoire" :sortable="true">
+              <Column field="owner_win" header="Gagnat" :sortable="true">
                 <template #body="{ data }">
                   <span :class="data.owner_win ? 'text-green-500' : 'text-red-500'">
-                    {{ data.owner_win ? 'Victoire' : 'Défaite' }}
+                    {{ data.date_end ? data.owner_win ? 'Victoire' : 'Défaite' : 'En cours' }}
                   </span>
                 </template>
               </Column>
@@ -53,8 +52,7 @@
               </Column>
               <Column v-if="!router.currentRoute.value.params.userId" header="Modifier visibilité">
                 <template #body="{ data }">
-                  <InputSwitch :modelValue="data.public === '1'"
-                    @update:modelValue="value => handlePrivacyChange(data, value)" :disabled="privacyLoading" />
+                  <InputSwitch :modelValue="data.public === '1'" @update:modelValue="value => handlePrivacyChange(data, value)" :disabled="privacyLoading" />
                 </template>
               </Column>
             </DataTable>
