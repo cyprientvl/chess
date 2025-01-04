@@ -144,12 +144,9 @@ export class GameService {
 
         let isLastAction = returnAction.result.find(e => e.startsWith('KINGLOSE'))
         if(isLastAction){
-            console.log("incude kinglose")
             const dbGame = await Game.findByPk(game.getIdInDB());
             
-            console.log(dbGame)
             if(dbGame){
-                console.log("game find")
                 dbGame.date_end = Date.now();
 
                 const winnerColor = isLastAction.split(':')[1];
@@ -159,7 +156,6 @@ export class GameService {
                     }
 
                 }
-                console.log("save db");
                 await dbGame.save(); 
             }
             
@@ -188,18 +184,14 @@ export class GameService {
 
     getPossibleMove(userId: number, i: number, j: number): ChessLocation[] | undefined{
         let game = getGameStorage(userId);
-        console.log(game)
 
         if(!game) return;
-        console.log(i, " ", j)
         if(!isInBounds(i, j)) return;
         
         let listCase = game.getListCase();
         let piece = listCase[i][j].piece
-        console.log(piece)
 
         if(!piece) return;
-        console.log("possible move")
         return piece.possibleMove(game.getListCase());
         
     }

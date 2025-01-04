@@ -40,7 +40,7 @@ export class King extends Piece{
         if (this.isKingThreatened(listCase, king)) {
     
             if (this.canKingMove(listCase, king)) {
-                return { king: king, status: Action['KINGMOVE'] }; 
+                return { king: king, status: Action['KINGMOVE'] }
             } else {
                 return { king: king, status: Action['KINGLOSE'] };
             }
@@ -61,7 +61,7 @@ export class King extends Piece{
         return false;
     }
     
-    public static canKingMove(listCase: Case[][], king: King): boolean {
+    public static canKingMove(listCase: Case[][], king: King): number {
         const directions = [
             { di: -1, dj: -1 }, { di: -1, dj: 0 }, { di: -1, dj: 1 },
             { di: 0, dj: -1 },                  { di: 0, dj: 1 },
@@ -73,12 +73,23 @@ export class King extends Piece{
                 for (let c of row) {
                     if (c.piece && c.piece.color === king.color && !(c.piece instanceof King)) {
                         if (c.piece.move(threatI, threatJ, listCase)) {
-                            return true; 
+                            return true;
                         }
                     }
                 }
             }
-            return false; 
+            return false;
+        };
+    
+        const isSquareThreatened = (i: number, j: number): boolean => {
+            for (let row of listCase) {
+                for (let c of row) {
+                    if (c.piece && c.piece.color !== king.color && c.piece.move(i, j, listCase)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         };
     
         for (let { di, dj } of directions) {
@@ -99,11 +110,19 @@ export class King extends Piece{
                     }
                     if (!isSafe) break;
                 }
-                if (isSafe) return true;
+    
+                if (!isSafe && listCase[newI][newJ].piece && listCase[newI][newJ].piece.color !== king.color) {
+                    if (!isSquareThreatened(newI, newJ)) {
+                        return 1;
+                    }
+                }
+    
+                if (isSafe) return 1;
             }
         }
-        return false;
+        return 0;
     }
+    
 
 
     public static isOccupiedByOwnPiece(listCase: Case[][], king: King, i: number, j: number): boolean {
