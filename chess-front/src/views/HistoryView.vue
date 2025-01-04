@@ -23,7 +23,7 @@
                   </span>
                 </template>
               </Column>
-              <Column field="owner_win" header="Gagnat" :sortable="true">
+              <Column field="owner_win" header="Gagnant" :sortable="true">
                 <template #body="{ data }">
                   <span :class="data.owner_win ? 'text-green-500' : 'text-red-500'">
                     {{ data.date_end ? data.owner_win ? 'Victoire' : 'Défaite' : 'En cours' }}
