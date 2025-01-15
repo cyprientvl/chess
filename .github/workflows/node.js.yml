@@ -40,10 +40,10 @@ jobs:
           docker build -t chess-backend:latest .
       
       - name: Log in to Docker Hub
-        run: echo "${{ secrets.TOKEN }}" | docker login -u "${{ secrets.USERNAME }}" --password-stdin
+        run: echo "${{ secrets.TOKEN }}" | docker login -u "${{ vars.USERNAME }}" --password-stdin
       
       - name: Push Docker Image
         working-directory: ./chess-back
         run: |
-          docker tag ${{ secrets.USERNAME }}/chess-back:latest ${{ secrets.USERNAME }}/chess-back:latest
-          docker push ${{ secrets.USERNAME }}/chess-back:latest    
+          docker tag ${{ vars.USERNAME }}/chess-back:latest ${{ vars.USERNAME }}/chess-back:latest
+          docker push ${{ vars.USERNAME }}/chess-back:latest    
