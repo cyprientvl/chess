@@ -37,7 +37,7 @@ jobs:
       - name: Build Docker Image
         working-directory: ./chess-back
         run: |
-          docker build -t chess-backend:latest .
+          docker build -t ${{ vars.USERNAME }}/chess-back:latest .
       
       - name: Log in to Docker Hub
         run: echo "${{ secrets.TOKEN }}" | docker login -u "${{ vars.USERNAME }}" --password-stdin
