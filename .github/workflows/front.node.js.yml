@@ -21,9 +21,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-          cache-dependency-path: "chess-back/package-lock.json"
+          cache-dependency-path: "chess-front/package-lock.json"
       - name: Install and build
-        working-directory: ./chess-back
+        working-directory: ./chess-front
         run: |
           npm ci
           npm run generate
@@ -33,17 +33,4 @@ jobs:
         continue-on-error: true
         run: |
           npm run lint
-          npm run typecheck
-      - name: Build Docker Image
-        working-directory: ./chess-back
-        run: |
-          docker build -t ${{ vars.USERNAME }}/chess-back:latest .
-      
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.TOKEN }}" | docker login -u "${{ vars.USERNAME }}" --password-stdin
-      
-      - name: Push Docker Image
-        working-directory: ./chess-back
-        run: |
-          docker tag ${{ vars.USERNAME }}/chess-back:latest ${{ vars.USERNAME }}/chess-back:latest
-          docker push ${{ vars.USERNAME }}/chess-back:latest    
+          npm run typecheck 
