@@ -157,7 +157,8 @@ const nextStep = () => {
       currentBoard.value[step.i][step.j].piece = undefined;
 
       if(step.piece){
-        currentBoard.value[step.toI][step.toJ].piece.pieceType = step.piece;
+        let aaa = currentBoard.value[step.toI][step.toJ].piece;
+        if(aaa) aaa.pieceType = step.piece;
       }
 
     }
@@ -205,7 +206,8 @@ const previousStep = () => {
       }
 
       if(step.piece){
-        currentBoard.value[step.i][step.j].piece.pieceType = PieceType['PAWN'];
+        let aaa = currentBoard.value[step.i][step.j].piece;
+        if(aaa) aaa.pieceType = PieceType['PAWN'];
       }
     }
 
