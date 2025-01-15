@@ -28,3 +28,22 @@ jobs:
           npm ci
           npm run generate
           npm run build --if-present
+      - name: Lint and Type check
+        working-directory: ./chess-back
+        continue-on-error: true
+        run: |
+          npm run lint
+          npm run typecheck
+      - name: Build Docker Image
+        working-directory: ./chess-back
+        run: |
+          docker build -t ${{ vars.USERNAME }}/chess-back:latest .
+      
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.TOKEN }}" | docker login -u "${{ vars.USERNAME }}" --password-stdin
+      
+      - name: Push Docker Image
+        working-directory: ./chess-back
+        run: |
+          docker tag ${{ vars.USERNAME }}/chess-back:latest ${{ vars.USERNAME }}/chess-back:latest
+          docker push ${{ vars.USERNAME }}/chess-back:latest    
