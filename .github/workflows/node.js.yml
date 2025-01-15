@@ -27,4 +27,5 @@ jobs:
         working-directory: ./chess-back
         run: |
           npm ci
+          npm run generate
           npm run build --if-present
