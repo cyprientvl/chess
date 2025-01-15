@@ -48,15 +48,15 @@ jobs:
           docker tag ${{ vars.USERNAME }}/chess-back:latest ${{ vars.USERNAME }}/chess-back:latest
           docker push ${{ vars.USERNAME }}/chess-back:latest    
 
-deploy:
-    if: ${{ github.ref_name == 'dev' }}
-    needs: publish
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to Render
-        uses: gh-actions-workflows/deploy-docker-render@v1.1
-        with:
-          deploy-hook: ${{ secrets.WEB_SERVICE }}
-          image-url: ${{ vars.USERNAME }}/chess-back:latest
-          render-api-key: ${{ secrets.RENDER_API_KEY }}
-          wait-for-deployment: true
+  deploy:
+      if: ${{ github.ref_name == 'dev' }}
+      needs: build
+      runs-on: ubuntu-latest
+      steps:
+        - name: Deploy to Render
+          uses: gh-actions-workflows/deploy-docker-render@v1.1
+          with:
+            deploy-hook: ${{ secrets.WEB_SERVICE }}
+            image-url: ${{ vars.USERNAME }}/chess-back:latest
+            render-api-key: ${{ secrets.RENDER_API_KEY }}
+            wait-for-deployment: true
