@@ -27,4 +27,12 @@ jobs:
         run: |
           npm ci
           npm run generate
-          npm run build --if-present       
+          npm run build --if-present
+      - name: Run ESLint
+        working-directory: ./chess-back
+        run: |
+          npm run lint
+      - name: Run TypeCheck
+        working-directory: ./chess-back
+        run: |
+          npm run typecheck    
