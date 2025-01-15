@@ -28,3 +28,11 @@ jobs:
           npm ci
           npm run generate
           npm run build --if-present
+      - name: Run ESLint
+        working-directory: ./chess-back
+        run: |
+          npx eslint . --ext .js,.ts
+      - name: Run TypeScript type-check
+        working-directory: ./chess-back
+        run: |
+          npx tsc --noEmit
