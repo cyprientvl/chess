@@ -2,8 +2,8 @@ name: Node.js CI
 
 on:
   push:
-    branches: "*",
-    tags: '*'
+    branches: "*"
+    tags: "*"
   pull_request:
     branches: "*"
 
