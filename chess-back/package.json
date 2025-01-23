@@ -14,7 +14,9 @@
     "build": "tsc",
     "dev": "concurrently \"nodemon\" \"nodemon --ignore routes/index.ts -x tsoa spec-and-routes\"",
     "swagger": "tsoa spec",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint \"**/*.ts\"",
+    "typecheck": "tsc --noEmit"
   },
   "nodemonConfig": {
     "watch": [
@@ -47,6 +49,7 @@
     "@types/sequelize": "^4.28.20",
     "@types/swagger-ui-express": "^4.1.6",
     "concurrently": "^9.0.1",
+    "eslint": "^9.18.0",
     "nodemon": "^3.1.5",
     "ts-node": "^10.9.2"
   }

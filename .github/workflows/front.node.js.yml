@@ -1,0 +1,67 @@
+name: Node.js CI
+
+on:
+  push:
+    tags: "*"
+    branches:
+      - dev
+      - main
+  pull_request:
+    branches:
+      - dev
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: "chess-front/package-lock.json"
+      - name: Install and build
+        working-directory: ./chess-front
+        run: |
+          npm ci
+          npm run build --if-present
+      - name: Lint and Type check
+        working-directory: ./chess-front
+        continue-on-error: true
+        run: |
+          npm run lint
+          npm run typecheck
+  deploy_dev:
+    if: github.ref == 'refs/heads/dev' && github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: Development
+    steps:
+      - name: Deploy to Render (Dev)
+        uses: bankfliptech/deploy-to-render@v1
+        with:
+          serviceId: ${{ secrets.RENDER_SERVICE_ID_DEV }}
+          apiKey: ${{ secrets.RENDER_API_KEY_DEV }}
+          deployHookURL: ${{ secrets.STATIC_SITE_DEV }}
+          wait-for-deployment: true
+
+  deploy_prod:
+    if: github.ref == 'refs/heads/main' && github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - name: Deploy to Render (Prod)
+        uses: bankfliptech/deploy-to-render@v1
+        with:
+          serviceId: ${{ secrets.RENDER_SERVICE_ID_PROD }}
+          apiKey: ${{ secrets.RENDER_API_KEY_PROD }}
+          deployHookURL: ${{ secrets.STATIC_SITE_PROD }}
+          wait-for-deployment: true
