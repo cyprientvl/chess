@@ -56,7 +56,7 @@ Vous pouvez utiliser l'application de deux manières :
 Vous pouvez également créer votre propre compte en utilisant le formulaire d'inscription.
 
 
-
+```
 name: Node.js CI
 
 on:
@@ -177,3 +177,4 @@ jobs:
             image-url: ${{ vars.USERNAME }}/chess-back:latest
             render-api-key: ${{ secrets.RENDER_API_KEY }}
             wait-for-deployment: true
+```
