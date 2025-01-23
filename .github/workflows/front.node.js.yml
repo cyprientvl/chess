@@ -42,7 +42,7 @@ jobs:
     if: github.ref == 'refs/heads/dev'
     needs: build
     runs-on: ubuntu-latest
-    environment: Developpment
+    environment: Developpement
     steps:
       - name: Deploy to Render (Dev)
         uses: bankfliptech/deploy-to-render@v1
