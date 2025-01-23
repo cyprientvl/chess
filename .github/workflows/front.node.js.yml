@@ -36,9 +36,9 @@ jobs:
           npm run typecheck
 
   deploy:
-    runs-on: ubuntu-latest
     if: github.ref_type == 'tag'
     needs: build
+    runs-on: ubuntu-latest
     steps:
       - name: Deploy
         uses: bankfliptech/deploy-to-render@v1
