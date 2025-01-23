@@ -63,21 +63,21 @@ jobs:
           fi
 
   deploy_dev:
-    if: github.ref == 'refs/heads/dev' && github.ref_type == 'tag'
+    if: github.ref == 'refs/heads/dev'
     needs: build
     runs-on: ubuntu-latest
-    environment: Development
+    environment: Developpement
     steps:
       - name: Deploy to Render (Dev)
         uses: gh-actions-workflows/deploy-docker-render@v1.1
         with:
-          deploy-hook: ${{ secrets.WEB_SERVICE_DEV }}
+          deploy-hook: ${{ secrets.WEB_SERVICE }}
           image-url: ${{ vars.USERNAME }}/chess-back:dev
-          render-api-key: ${{ secrets.RENDER_API_KEY_DEV }}
+          render-api-key: ${{ secrets.RENDER_API_KEY }}
           wait-for-deployment: true
 
   deploy_prod:
-    if: github.ref == 'refs/heads/main' && github.ref_type == 'tag'
+    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment: Production
@@ -85,7 +85,7 @@ jobs:
       - name: Deploy to Render (Prod)
         uses: gh-actions-workflows/deploy-docker-render@v1.1
         with:
-          deploy-hook: ${{ secrets.WEB_SERVICE_PROD }}
+          deploy-hook: ${{ secrets.WEB_SERVICE }}
           image-url: ${{ vars.USERNAME }}/chess-back:prod
-          render-api-key: ${{ secrets.RENDER_API_KEY_PROD }}
+          render-api-key: ${{ secrets.RENDER_API_KEY }}
           wait-for-deployment: true
