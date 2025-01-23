@@ -73,7 +73,7 @@ jobs:
         with:
           deploy-hook: ${{ secrets.WEB_SERVICE }}
           image-url: ${{ vars.USERNAME }}/chess-back:dev
-          render-api-key: ${{ secrets.RENDER_API_KEY_DEV }}
+          render-api-key: ${{ secrets.RENDER_API_KEY }}
           wait-for-deployment: true
 
   deploy_prod:
