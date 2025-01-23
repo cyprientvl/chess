@@ -63,7 +63,7 @@ jobs:
           fi
 
   deploy_dev:
-    if: github.ref == 'refs/heads/dev' && github.ref_type == 'tag'
+    if: github.ref == 'refs/heads/dev'
     needs: build
     runs-on: ubuntu-latest
     environment: Development
@@ -77,7 +77,7 @@ jobs:
           wait-for-deployment: true
 
   deploy_prod:
-    if: github.ref == 'refs/heads/main' && github.ref_type == 'tag'
+    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment: Production
