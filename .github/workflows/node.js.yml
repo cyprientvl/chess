@@ -54,6 +54,12 @@ jobs:
       needs: build
       runs-on: ubuntu-latest
       steps:
+      steps:
+        - name: Display secrets (for debugging only)
+          run: |
+            echo "WEB_SERVICE=$WEB_SERVICE"
+            echo "RENDER_API_KEY=$RENDER_API_KEY"
+            echo "USERNAME=$USERNAME"
         - name: Deploy to Render
           uses: gh-actions-workflows/deploy-docker-render@v1.1
           with:

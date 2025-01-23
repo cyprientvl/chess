@@ -40,6 +40,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Display secrets (for debugging only)
+        run: |
+          echo "RENDER_SERVICE_ID=$RENDER_SERVICE_ID"
+          echo "RENDER_API_KEY=$RENDER_API_KEY"
+          echo "STATIC_SITE=$STATIC_SITE"
+
       - name: Deploy
         uses: bankfliptech/deploy-to-render@v1
         with:
