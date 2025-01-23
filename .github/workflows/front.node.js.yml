@@ -2,10 +2,14 @@ name: Node.js CI
 
 on:
   push:
-    branches: "*"
     tags: "*"
+    branches:
+      - dev
+      - main
   pull_request:
-    branches: "*"
+    branches:
+      - dev
+      - main
 
 jobs:
   build:
@@ -34,16 +38,53 @@ jobs:
         run: |
           npm run lint
           npm run typecheck
+      - name: Build Docker Image (Dev or Prod)
+        working-directory: ./chess-front
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+            docker build -t ${{ vars.USERNAME }}/chess-front:dev .
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            docker build -t ${{ vars.USERNAME }}/chess-front:prod .
+          fi
 
-  deploy:
-    if: github.ref_type == 'tag'
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.TOKEN }}" | docker login -u "${{ vars.USERNAME }}" --password-stdin
+
+      - name: Push Docker Image (Dev or Prod)
+        working-directory: ./chess-front
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+            docker tag ${{ vars.USERNAME }}/chess-front:dev ${{ vars.USERNAME }}/chess-front:dev
+            docker push ${{ vars.USERNAME }}/chess-front:dev
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            docker tag ${{ vars.USERNAME }}/chess-front:prod ${{ vars.USERNAME }}/chess-front:prod
+            docker push ${{ vars.USERNAME }}/chess-front:prod
+          fi
+
+  deploy_dev:
+    if: github.ref == 'refs/heads/dev' && github.ref_type == 'tag'
     needs: build
     runs-on: ubuntu-latest
+    environment: Development
     steps:
-      - name: Deploy
+      - name: Deploy to Render (Dev)
         uses: bankfliptech/deploy-to-render@v1
         with:
-          serviceId: ${{ secrets.RENDER_SERVICE_ID }}
-          apiKey: ${{ secrets.RENDER_API_KEY }}
-          deployHookURL: ${{ secrets.STATIC_SITE }}
+          serviceId: ${{ secrets.RENDER_SERVICE_ID_DEV }}
+          apiKey: ${{ secrets.RENDER_API_KEY_DEV }}
+          deployHookURL: ${{ secrets.STATIC_SITE_DEV }}
+          wait-for-deployment: true
+
+  deploy_prod:
+    if: github.ref == 'refs/heads/main' && github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - name: Deploy to Render (Prod)
+        uses: bankfliptech/deploy-to-render@v1
+        with:
+          serviceId: ${{ secrets.RENDER_SERVICE_ID_PROD }}
+          apiKey: ${{ secrets.RENDER_API_KEY_PROD }}
+          deployHookURL: ${{ secrets.STATIC_SITE_PROD }}
           wait-for-deployment: true

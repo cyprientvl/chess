@@ -3,9 +3,13 @@ name: Node.js CI
 on:
   push:
     tags: "*"
-    branches: "*"
+    branches:
+      - dev
+      - main
   pull_request:
-    branches: "*"
+    branches:
+      - dev
+      - main
 
 jobs:
   build:
@@ -35,30 +39,53 @@ jobs:
         run: |
           npm run lint
           npm run typecheck
-      - name: Build Docker Image
+      - name: Build Docker Image (Dev or Prod)
         working-directory: ./chess-back
         run: |
-          docker build -t ${{ vars.USERNAME }}/chess-back:latest .
-      
+          if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+            docker build -t ${{ vars.USERNAME }}/chess-back:dev .
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            docker build -t ${{ vars.USERNAME }}/chess-back:prod .
+          fi
+
       - name: Log in to Docker Hub
         run: echo "${{ secrets.TOKEN }}" | docker login -u "${{ vars.USERNAME }}" --password-stdin
       
-      - name: Push Docker Image
+      - name: Push Docker Image (Dev or Prod)
         working-directory: ./chess-back
         run: |
-          docker tag ${{ vars.USERNAME }}/chess-back:latest ${{ vars.USERNAME }}/chess-back:latest
-          docker push ${{ vars.USERNAME }}/chess-back:latest    
+          if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+            docker tag ${{ vars.USERNAME }}/chess-back:dev ${{ vars.USERNAME }}/chess-back:dev
+            docker push ${{ vars.USERNAME }}/chess-back:dev
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            docker tag ${{ vars.USERNAME }}/chess-back:prod ${{ vars.USERNAME }}/chess-back:prod
+            docker push ${{ vars.USERNAME }}/chess-back:prod
+          fi
 
-  deploy:
-      if: github.ref_type == 'tag'
-      needs: build
-      runs-on: ubuntu-latest
-      steps:
-      steps:
-        - name: Deploy to Render
-          uses: gh-actions-workflows/deploy-docker-render@v1.1
-          with:
-            deploy-hook: ${{ secrets.WEB_SERVICE }}
-            image-url: ${{ vars.USERNAME }}/chess-back:latest
-            render-api-key: ${{ secrets.RENDER_API_KEY }}
-            wait-for-deployment: true
+  deploy_dev:
+    if: github.ref == 'refs/heads/dev' && github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: Development
+    steps:
+      - name: Deploy to Render (Dev)
+        uses: gh-actions-workflows/deploy-docker-render@v1.1
+        with:
+          deploy-hook: ${{ secrets.WEB_SERVICE_DEV }}
+          image-url: ${{ vars.USERNAME }}/chess-back:dev
+          render-api-key: ${{ secrets.RENDER_API_KEY_DEV }}
+          wait-for-deployment: true
+
+  deploy_prod:
+    if: github.ref == 'refs/heads/main' && github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - name: Deploy to Render (Prod)
+        uses: gh-actions-workflows/deploy-docker-render@v1.1
+        with:
+          deploy-hook: ${{ secrets.WEB_SERVICE_PROD }}
+          image-url: ${{ vars.USERNAME }}/chess-back:prod
+          render-api-key: ${{ secrets.RENDER_API_KEY_PROD }}
+          wait-for-deployment: true
