@@ -32,12 +32,16 @@ jobs:
         continue-on-error: true
         run: |
           npm run lint
-          npm run typecheck 
+          npm run typecheck
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/tags/*'
+    needs: build
+    steps:
       - name: Deploy
         uses: bankfliptech/deploy-to-render@v1
         with:
           serviceId: ${{ secrets.RENDER_SERVICE_ID }}
           apiKey: ${{ secrets.RENDER_API_KEY }}
           deployHookURL: ${{ secrets.STATIC_SITE }}
-
-  

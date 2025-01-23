@@ -49,7 +49,7 @@ jobs:
           docker push ${{ vars.USERNAME }}/chess-back:latest    
 
   deploy:
-      if: ${{ github.ref_name == 'dev' }}
+      if: github.ref == 'refs/tags/*'
       needs: build
       runs-on: ubuntu-latest
       steps:
