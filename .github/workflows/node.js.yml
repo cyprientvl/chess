@@ -43,9 +43,9 @@ jobs:
         working-directory: ./chess-back
         run: |
           if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
-            docker build -t cyprien123456789/chess-back:dev .
+            docker build -t ${{ vars.USERNAME }}/chess-back:dev .
           elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            docker build -t cyprien123456789/chess-back:prod .
+            docker build -t ${{ vars.USERNAME }}/chess-back:prod .
           fi
 
       - name: Log in to Docker Hub
