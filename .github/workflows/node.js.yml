@@ -71,7 +71,7 @@ jobs:
       - name: Deploy to Render (Dev)
         uses: gh-actions-workflows/deploy-docker-render@v1.1
         with:
-          deploy-hook: ${{ secrets.WEB_SERVICE_DEV }}
+          deploy-hook: ${{ secrets.WEB_SERVICE }}
           image-url: ${{ vars.USERNAME }}/chess-back:dev
           render-api-key: ${{ secrets.RENDER_API_KEY_DEV }}
           wait-for-deployment: true
@@ -85,7 +85,7 @@ jobs:
       - name: Deploy to Render (Prod)
         uses: gh-actions-workflows/deploy-docker-render@v1.1
         with:
-          deploy-hook: ${{ secrets.WEB_SERVICE_PROD }}
+          deploy-hook: ${{ secrets.WEB_SERVICE }}
           image-url: ${{ vars.USERNAME }}/chess-back:prod
-          render-api-key: ${{ secrets.RENDER_API_KEY_PROD }}
+          render-api-key: ${{ secrets.RENDER_API_KEY }}
           wait-for-deployment: true

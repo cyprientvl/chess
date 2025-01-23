@@ -47,9 +47,9 @@ jobs:
       - name: Deploy to Render (Dev)
         uses: bankfliptech/deploy-to-render@v1
         with:
-          serviceId: ${{ secrets.RENDER_SERVICE_ID_DEV }}
-          apiKey: ${{ secrets.RENDER_API_KEY_DEV }}
-          deployHookURL: ${{ secrets.STATIC_SITE_DEV }}
+          serviceId: ${{ secrets.RENDER_SERVICE_ID }}
+          apiKey: ${{ secrets.RENDER_API_KEY }}
+          deployHookURL: ${{ secrets.STATIC_SITE }}
           wait-for-deployment: true
 
   deploy_prod:
@@ -61,7 +61,7 @@ jobs:
       - name: Deploy to Render (Prod)
         uses: bankfliptech/deploy-to-render@v1
         with:
-          serviceId: ${{ secrets.RENDER_SERVICE_ID_PROD }}
-          apiKey: ${{ secrets.RENDER_API_KEY_PROD }}
-          deployHookURL: ${{ secrets.STATIC_SITE_PROD }}
+          serviceId: ${{ secrets.RENDER_SERVICE_ID }}
+          apiKey: ${{ secrets.RENDER_API_KEY }}
+          deployHookURL: ${{ secrets.STATIC_SITE }}
           wait-for-deployment: true
