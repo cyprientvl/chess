@@ -43,23 +43,23 @@ jobs:
         working-directory: ./chess-back
         run: |
           if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
-            docker build -t ${{ vars.USERNAME }}/chess-back:dev .
+            docker build -t cyprien123456789/chess-back:dev .
           elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            docker build -t ${{ vars.USERNAME }}/chess-back:prod .
+            docker build -t cyprien123456789/chess-back:prod .
           fi
 
       - name: Log in to Docker Hub
-        run: echo "${{ secrets.TOKEN }}" | docker login -u "${{ vars.USERNAME }}" --password-stdin
+        run: echo "${{ secrets.TOKEN }}" | docker login -u "cyprien123456789" --password-stdin
       
       - name: Push Docker Image (Dev or Prod)
         working-directory: ./chess-back
         run: |
           if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
-            docker tag ${{ vars.USERNAME }}/chess-back:dev ${{ vars.USERNAME }}/chess-back:dev
-            docker push ${{ vars.USERNAME }}/chess-back:dev
+            docker tag cyprien123456789/chess-back:dev cyprien123456789/chess-back:dev
+            docker push cyprien123456789/chess-back:dev
           elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            docker tag ${{ vars.USERNAME }}/chess-back:prod ${{ vars.USERNAME }}/chess-back:prod
-            docker push ${{ vars.USERNAME }}/chess-back:prod
+            docker tag cyprien123456789/chess-back:prod cyprien123456789/chess-back:prod
+            docker push cyprien123456789/chess-back:prod
           fi
 
   deploy_dev:
@@ -72,7 +72,7 @@ jobs:
         uses: gh-actions-workflows/deploy-docker-render@v1.1
         with:
           deploy-hook: ${{ secrets.WEB_SERVICE_DEV }}
-          image-url: ${{ vars.USERNAME }}/chess-back:dev
+          image-url: cyprien123456789/chess-back:dev
           render-api-key: ${{ secrets.RENDER_API_KEY_DEV }}
           wait-for-deployment: true
 
@@ -86,6 +86,6 @@ jobs:
         uses: gh-actions-workflows/deploy-docker-render@v1.1
         with:
           deploy-hook: ${{ secrets.WEB_SERVICE_PROD }}
-          image-url: ${{ vars.USERNAME }}/chess-back:prod
+          image-url: cyprien123456789/chess-back:prod
           render-api-key: ${{ secrets.RENDER_API_KEY_PROD }}
           wait-for-deployment: true
