@@ -38,29 +38,6 @@ jobs:
         run: |
           npm run lint
           npm run typecheck
-      - name: Build Docker Image (Dev or Prod)
-        working-directory: ./chess-front
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
-            docker build -t ${{ vars.USERNAME }}/chess-front:dev .
-          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            docker build -t ${{ vars.USERNAME }}/chess-front:prod .
-          fi
-
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.TOKEN }}" | docker login -u "${{ vars.USERNAME }}" --password-stdin
-
-      - name: Push Docker Image (Dev or Prod)
-        working-directory: ./chess-front
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
-            docker tag ${{ vars.USERNAME }}/chess-front:dev ${{ vars.USERNAME }}/chess-front:dev
-            docker push ${{ vars.USERNAME }}/chess-front:dev
-          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            docker tag ${{ vars.USERNAME }}/chess-front:prod ${{ vars.USERNAME }}/chess-front:prod
-            docker push ${{ vars.USERNAME }}/chess-front:prod
-          fi
-
   deploy_dev:
     if: github.ref == 'refs/heads/dev' && github.ref_type == 'tag'
     needs: build
